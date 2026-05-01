@@ -8,7 +8,7 @@ import {
   SearchIcon, CheckCircleIcon, BookingIcon, CarIcon, ChevronDownIcon, MapPinIcon, 
   CalendarIcon, ClockIcon, ShieldIcon, StarIcon, DollarSignIcon, UploadCloudIcon,
   PhoneIcon, FacebookIcon, InstagramIcon, TikTokIcon, YoutubeIcon, PinterestIcon, 
-  TwitterIcon, ChevronRightIcon 
+  TwitterIcon, ChevronRightIcon, BriefcaseIcon, BarChart2Icon
 } from './components/Icons';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -246,8 +246,8 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
     </button>
   );
 
-  const DropdownLink: React.FC<{children: React.ReactNode}> = ({ children }) => (
-    <a href="#" onClick={(e) => e.preventDefault()} className="text-gray-600 hover:text-primary transition-colors text-sm font-medium py-2 px-6 rounded-sm whitespace-nowrap block">
+  const DropdownLink: React.FC<{children: React.ReactNode; onClick?: () => void}> = ({ children, onClick }) => (
+    <a href="#" onClick={(e) => { e.preventDefault(); onClick?.(); }} className="text-gray-600 hover:text-primary transition-colors text-sm font-medium py-2 px-6 rounded-sm whitespace-nowrap block">
       {children}
     </a>
   );
@@ -264,8 +264,8 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
     </button>
   );
 
-  const DropdownLinkMobile: React.FC<{children: React.ReactNode}> = ({ children }) => (
-    <a href="#" onClick={(e) => e.preventDefault()} className="text-gray-600 hover:text-primary font-medium py-2 text-base transition-colors">
+  const DropdownLinkMobile: React.FC<{children: React.ReactNode; onClick?: () => void}> = ({ children, onClick }) => (
+    <a href="#" onClick={(e) => { e.preventDefault(); onClick?.(); }} className="text-gray-600 hover:text-primary font-medium py-2 text-base transition-colors">
       {children}
     </a>
   );
@@ -411,6 +411,1896 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
     onRoleSelect('Customer');
   };
   
+  const StartCarReservationPage: React.FC<{
+    setView: (v: string) => void;
+    onRoleSelect: (role: Role) => void;
+    commonFooter: React.ReactNode;
+  }> = ({ setView, onRoleSelect, commonFooter }) => {
+    const [formData, setFormData] = useState({
+      pickupLocation: '',
+      dropoffLocation: '',
+      pickupDate: '',
+      pickupTime: '',
+      returnDate: '',
+      returnTime: '',
+      vehicleType: 'Economy',
+      extras: [] as string[],
+    });
+
+    const [errors, setErrors] = useState<Record<string, string>>({});
+
+    const handleInputChange = (field: string, value: any) => {
+      setFormData(prev => ({ ...prev, [field]: value }));
+      if (errors[field]) {
+        setErrors(prev => {
+          const newErrors = { ...prev };
+          delete newErrors[field];
+          return newErrors;
+        });
+      }
+    };
+
+    const validateForm = () => {
+      const newErrors: Record<string, string> = {};
+      if (!formData.pickupLocation) newErrors.pickupLocation = 'Pickup location is required';
+      if (!formData.pickupDate) newErrors.pickupDate = 'Pickup date is required';
+      if (!formData.pickupTime) newErrors.pickupTime = 'Pickup time is required';
+      if (!formData.returnDate) newErrors.returnDate = 'Return date is required';
+      if (!formData.returnTime) newErrors.returnTime = 'Return time is required';
+      
+      setErrors(newErrors);
+      return Object.keys(newErrors).length === 0;
+    };
+
+    const handleSubmit = (e: React.FormEvent) => {
+      e.preventDefault();
+      if (validateForm()) {
+        // Redirect to register/login to complete booking
+        onRoleSelect('Customer');
+      }
+    };
+
+    const vehicleTypes = [
+      { id: 'Economy', name: 'Economy', desc: 'Affordable & Fuel-Efficient', features: '4 Seats, 2 Bags, AC', icon: <CarIcon className="w-8 h-8" /> },
+      { id: 'SUV', name: 'SUV', desc: 'Spacious & Powerful', features: '5-7 Seats, 4 Bags, AC', icon: <SearchIcon className="w-8 h-8" /> },
+      { id: 'Luxury', name: 'Luxury', desc: 'Premium Experience', features: '4 Seats, Premium Interior, AC', icon: <StarIcon className="w-8 h-8" /> },
+      { id: 'Business', name: 'Business', desc: 'Professional & Modern', features: '4 Seats, WiFi, Water, AC', icon: <BriefcaseIcon className="w-8 h-8" /> },
+    ];
+
+    const generateTimeOptions = (): string[] => {
+      const times: string[] = [];
+      for (let hour = 0; hour < 24; hour++) {
+        for (let minute = 0; minute < 60; minute += 30) {
+          const h = hour % 12 === 0 ? 12 : hour % 12;
+          const m = minute.toString().padStart(2, '0');
+          const ampm = hour < 12 ? 'AM' : 'PM';
+          times.push(`${h}:${m} ${ampm}`);
+        }
+      }
+      return times;
+    };
+    const timeOptions = generateTimeOptions();
+
+    const faqs = [
+      { q: 'How do I modify a reservation?', a: 'You can modify your reservation through the "View / Modify / Cancel" link in the Reservations menu or by logging into your account.' },
+      { q: 'What documents are required?', a: 'A valid driver’s license, a form of ID (Ghana Card or Passport), and a payment method are required at pickup.' },
+      { q: 'Can I cancel my booking?', a: 'Yes, free cancellation is available up to 24 hours before your pickup time. Last-minute cancellations may incur a small fee.' },
+      { q: 'Payment methods available?', a: 'We accept major Credit/Debit cards, Mobile Money (MTN, Telecel, AT), and cash payments at select locations.' },
+    ];
+
+    return (
+      <main className="bg-gray-50">
+        {/* HERO SECTION */}
+        <section className="relative bg-primary text-white py-24 overflow-hidden">
+          <div className="absolute inset-0 opacity-20 bg-cover bg-center" style={{backgroundImage: "url('https://i.ibb.co/svMbtFfn/XTASS-Hero-Banner-2.jpg')"}}></div>
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <motion.h1 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-6"
+            >
+              Start Your Car Reservation
+            </motion.h1>
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto mb-10"
+            >
+              Experience seamless, reliable, and professional car rental services across Ghana. Book your perfect ride in just a few clicks.
+            </motion.p>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+            >
+              <a href="#booking-form" className="bg-accent text-primary font-bold py-4 px-10 rounded-lg shadow-xl hover:bg-accent/90 transition-all inline-block">
+                Start Booking Now
+              </a>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* BOOKING FORM SECTION */}
+        <section id="booking-form" className="py-16 -mt-12 relative z-10">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-2xl p-8 md:p-12">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                {/* Locations */}
+                <div className="space-y-6">
+                  <h3 className="text-xl font-bold text-gray-800 flex items-center">
+                    <MapPinIcon className="w-5 h-5 text-primary mr-2" />
+                    Where & When
+                  </h3>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-2">Pickup Location</label>
+                      <input 
+                        type="text" 
+                        placeholder="City, Airport or Street Address"
+                        className={`w-full p-4 bg-gray-50 border ${errors.pickupLocation ? 'border-red-500' : 'border-gray-200'} rounded-lg focus:ring-2 focus:ring-primary/20 focus:outline-none`}
+                        value={formData.pickupLocation}
+                        onChange={(e) => handleInputChange('pickupLocation', e.target.value)}
+                      />
+                      {errors.pickupLocation && <p className="text-red-500 text-xs mt-1">{errors.pickupLocation}</p>}
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-2">Drop-off Location (Optional)</label>
+                      <input 
+                        type="text" 
+                        placeholder="Same as pickup"
+                        className="w-full p-4 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary/20 focus:outline-none"
+                        value={formData.dropoffLocation}
+                        onChange={(e) => handleInputChange('dropoffLocation', e.target.value)}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Dates & Times */}
+                <div className="space-y-6">
+                   <h3 className="text-xl font-bold text-gray-800 flex items-center">
+                    <CalendarIcon className="w-5 h-5 text-primary mr-2" />
+                    Reservation Schedule
+                  </h3>
+                  <div className="grid grid-cols-2 gap-4 text-left">
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-2">Pickup Date</label>
+                      <input 
+                        type="date" 
+                        className={`w-full p-4 bg-gray-50 border ${errors.pickupDate ? 'border-red-500' : 'border-gray-200'} rounded-lg focus:ring-2 focus:ring-primary/20 focus:outline-none`}
+                        value={formData.pickupDate}
+                        onChange={(e) => handleInputChange('pickupDate', e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-2">Pickup Time</label>
+                      <select 
+                        className={`w-full p-4 bg-gray-50 border ${errors.pickupTime ? 'border-red-500' : 'border-gray-200'} rounded-lg focus:ring-2 focus:ring-primary/20 focus:outline-none`}
+                        value={formData.pickupTime}
+                        onChange={(e) => handleInputChange('pickupTime', e.target.value)}
+                      >
+                        <option value="">Time</option>
+                        {timeOptions.map(t => <option key={t} value={t}>{t}</option>)}
+                      </select>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 text-left">
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-2">Return Date</label>
+                      <input 
+                        type="date" 
+                        className={`w-full p-4 bg-gray-50 border ${errors.returnDate ? 'border-red-500' : 'border-gray-200'} rounded-lg focus:ring-2 focus:ring-primary/20 focus:outline-none`}
+                        value={formData.returnDate}
+                        onChange={(e) => handleInputChange('returnDate', e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-2">Return Time</label>
+                      <select 
+                        className={`w-full p-4 bg-gray-50 border ${errors.returnTime ? 'border-red-500' : 'border-gray-200'} rounded-lg focus:ring-2 focus:ring-primary/20 focus:outline-none`}
+                        value={formData.returnTime}
+                        onChange={(e) => handleInputChange('returnTime', e.target.value)}
+                      >
+                        <option value="">Time</option>
+                        {timeOptions.map(t => <option key={t} value={t}>{t}</option>)}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Vehicle Selection */}
+              <div className="mb-8">
+                <h3 className="text-xl font-bold text-gray-800 mb-4">Select Vehicle Type</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-left">
+                  {vehicleTypes.map(v => (
+                    <button
+                      key={v.id}
+                      type="button"
+                      onClick={() => handleInputChange('vehicleType', v.id)}
+                      className={`p-6 border-2 rounded-xl transition-all flex flex-col items-center text-center ${formData.vehicleType === v.id ? 'border-primary bg-primary/5 text-primary' : 'border-gray-100 hover:border-primary/30'}`}
+                    >
+                      {v.icon}
+                      <span className="font-bold mt-2">{v.name}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Extras */}
+              <div className="mb-8">
+                <h3 className="text-xl font-bold text-gray-800 mb-4">Optional Extras</h3>
+                <div className="flex flex-wrap gap-4 text-left">
+                  {['GPS Navigation', 'Child Safety Seat', 'Additional Driver', 'Full Insurance'].map(extra => (
+                    <label key={extra} className="flex items-center space-x-2 bg-gray-50 p-3 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors">
+                      <input 
+                        type="checkbox" 
+                        className="w-5 h-5 text-primary rounded"
+                        checked={formData.extras.includes(extra)}
+                        onChange={(e) => {
+                          const newExtras = e.target.checked 
+                            ? [...formData.extras, extra]
+                            : formData.extras.filter(x => x !== extra);
+                          handleInputChange('extras', newExtras);
+                        }}
+                      />
+                      <span className="text-sm font-medium text-gray-700">{extra}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex flex-col items-center">
+                <button type="submit" className="w-full md:w-auto bg-primary text-white font-bold py-5 px-16 rounded-xl text-lg shadow-xl hover:bg-primary-hover transition-all">
+                  Confirm & View Available Vehicles
+                </button>
+                <p className="mt-4 text-sm text-gray-500">Secure booking. No payment required today.</p>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        {/* BOOKING PROCESS EXPLANATION */}
+        <section className="py-20 bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl font-display font-bold text-gray-800">Your Booking Journey</h2>
+              <div className="w-20 h-1.5 bg-accent mx-auto mt-4 rounded-full"></div>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-12 text-left">
+              {[
+                { step: '01', title: 'Details', desc: 'Choose your location, dates, and vehicle preferences above.' },
+                { step: '02', title: 'Vehicle Selection', desc: 'Browse our real-time fleet and pick the one that fits your style.' },
+                { step: '03', title: 'Confirmation', desc: 'Review your selection and provide passenger details.' },
+                { step: '04', title: 'Finish', desc: 'Secure your booking instantly. Pay online or offline as needed.' },
+              ].map((item, idx) => (
+                <div key={idx} className="relative">
+                  <span className="text-6xl font-display font-black text-gray-50 opacity-10 absolute -top-4 -left-2">{item.step}</span>
+                  <div className="relative pt-6">
+                    <h4 className="text-xl font-bold text-gray-800 mb-2">{item.title}</h4>
+                    <p className="text-gray-600 leading-relaxed">{item.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* VEHICLE OPTIONS PREVIEW */}
+        <section className="py-20 bg-gray-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl font-display font-bold text-gray-800">Our Premium Fleet</h2>
+              <p className="text-gray-600 mt-2">Quality vehicles maintained to the highest standards.</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-left">
+              {vehicleTypes.map((v, idx) => (
+                <div key={idx} className="bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100 group hover:shadow-2xl transition-all">
+                  <div className="h-48 bg-gray-100 flex items-center justify-center">
+                    {/* Placeholder for Car Visualization */}
+                    <div className="text-primary/20 group-hover:scale-110 transition-transform duration-500">
+                      {v.icon}
+                    </div>
+                  </div>
+                  <div className="p-6">
+                    <h4 className="text-xl font-bold text-gray-800 mb-1">{v.name}</h4>
+                    <p className="text-primary text-sm font-bold mb-4">{v.desc}</p>
+                    <ul className="space-y-2 mb-6 text-sm text-gray-600 font-medium">
+                      {v.features.split(', ').map((f, i) => (
+                        <li key={i} className="flex items-center">
+                          <CheckCircleIcon className="w-4 h-4 text-green-500 mr-2" />
+                          {f}
+                        </li>
+                      ))}
+                    </ul>
+                    <button className="w-full py-3 border-2 border-primary text-primary font-bold rounded-lg hover:bg-primary hover:text-white transition-all">
+                      View Fleet Details
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* WHY BOOK WITH US */}
+        <section className="py-20 bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center gap-16">
+            <div className="w-full md:w-1/2">
+              <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-800 mb-8">Why Renters Choose XTASS</h2>
+              <div className="space-y-8">
+                {[
+                  { title: 'Extreme Ease of Booking', desc: 'Our intuitive interface ensures you spend more time driving and less time booking.' },
+                  { title: 'Transparent Pricing', desc: 'No hidden fees. What you see is what you pay, from fuel to tax.' },
+                  { title: 'Unmatched Reliability', desc: 'Every vehicle in our fleet is newer than 2021 and rigorously inspected.' },
+                  { title: '24/7 Roadside Assistance', desc: 'We are with you on every mile. Local support available in all regions.' },
+                ].map((item, idx) => (
+                  <div key={idx} className="flex items-start text-left">
+                    <div className="bg-primary/10 p-3 rounded-lg mr-4 mt-1">
+                      <ShieldIcon className="w-6 h-6 text-primary" />
+                    </div>
+                    <div>
+                      <h4 className="text-lg font-bold text-gray-800 mb-1">{item.title}</h4>
+                      <p className="text-gray-600">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="w-full md:w-1/2">
+               <div className="relative">
+                  <img 
+                    src="https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?q=80&w=2070&auto=format&fit=crop" 
+                    alt="Happy Renter" 
+                    className="rounded-2xl shadow-2xl"
+                  />
+                  <div className="absolute -bottom-8 -left-8 bg-accent p-8 rounded-2xl shadow-xl hidden lg:block">
+                    <div className="flex items-center space-x-4 mb-4">
+                      <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center font-bold text-primary">GH</div>
+                      <div className="text-left">
+                        <p className="font-bold text-primary">Licensed Partner</p>
+                        <p className="text-primary/70 text-xs">Certified by Ghana Tourism Authority</p>
+                      </div>
+                    </div>
+                    <div className="flex space-x-1">
+                      {[1,2,3,4,5].map(n => <StarIcon key={n} className="w-4 h-4 text-primary" />)}
+                    </div>
+                  </div>
+               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* PRICING & TRANSPARENCY NOTE */}
+        <section className="py-20 bg-primary text-white text-center">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <DollarSignIcon className="w-16 h-16 mx-auto mb-6 text-accent opacity-50" />
+            <h2 className="text-3xl font-display font-bold mb-6">Our Transparency Guarantee</h2>
+            <p className="text-lg text-white/80 leading-relaxed mb-10">
+              At XTASS, we hate surprises as much as you do. Our pricing is straightforward. All quotes include relevant local taxes, basic insurance, and unlimited kilometers for most categories. We provide clear billing breakdowns so you can book with complete confidence.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="bg-white/10 p-6 rounded-xl border border-white/20">
+                <p className="font-bold text-xl mb-1">No Hidden Fees</p>
+                <p className="text-sm opacity-80">Guaranteed fixed prices</p>
+              </div>
+               <div className="bg-white/10 p-6 rounded-xl border border-white/20">
+                <p className="font-bold text-xl mb-1">Flexible Billing</p>
+                <p className="text-sm opacity-80">Pay online or at pickup</p>
+              </div>
+               <div className="bg-white/10 p-6 rounded-xl border border-white/20">
+                <p className="font-bold text-xl mb-1">Clear Invoices</p>
+                <p className="text-sm opacity-80">Detailed receipts instantly</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* FAQ SECTION */}
+        <section className="py-20 bg-white">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+             <div className="text-center mb-16">
+              <h2 className="text-3xl font-display font-bold text-gray-800">Booking Help & FAQs</h2>
+              <p className="text-gray-600 mt-2">Answers to common reservation questions.</p>
+            </div>
+            
+            <div className="space-y-4">
+              {faqs.map((faq, idx) => (
+                <div key={idx} className="border border-gray-100 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                  <div className="p-6 bg-white flex items-start text-left">
+                    <div className="bg-primary/5 text-primary font-bold w-10 h-10 rounded-full flex items-center justify-center shrink-0 mr-4">Q</div>
+                    <div>
+                      <h4 className="font-bold text-gray-800 mb-2">{faq.q}</h4>
+                      <p className="text-gray-600 text-sm leading-relaxed">{faq.a}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            <div className="mt-16 text-center">
+              <p className="text-gray-500 mb-4 font-medium">Still have questions?</p>
+              <button className="text-primary font-bold hover:underline flex items-center mx-auto">
+                Visit Our Help Center
+                <ChevronRightIcon className="w-4 h-4 ml-1" />
+              </button>
+            </div>
+          </div>
+        </section>
+
+        {commonFooter}
+      </main>
+    );
+  };
+
+  const DealsAndCouponsPage: React.FC<{
+    setView: (v: string) => void;
+    commonFooter: React.ReactNode;
+  }> = ({ setView, commonFooter }) => {
+    const [filter, setFilter] = useState('All');
+    const [searchQuery, setSearchQuery] = useState('');
+
+    const deals = [
+      {
+        id: 1,
+        title: 'Weekend Getaway Discount',
+        type: '15% OFF',
+        code: 'WEEKEND15',
+        category: 'Services',
+        expiry: '2025-12-31',
+        description: 'Get 15% off on all SUV rentals for weekend bookings (Friday - Sunday).',
+        highlight: 'Hot Deal',
+        conditions: 'Minimum 2-day rental required. Valid on SUVs only.'
+      },
+      {
+        id: 2,
+        title: 'Airport Transfer Special',
+        type: 'GHS 50 OFF',
+        code: 'AIRPORT50',
+        category: 'Bookings',
+        expiry: '2025-08-30',
+        description: 'Save GHS 50 on your next airport pickup or drop-off at Kotoka Int’l Airport.',
+        highlight: 'New',
+        conditions: 'Applicable for airport transfer service only.'
+      },
+      {
+        id: 3,
+        title: 'First-Time User Bonus',
+        type: 'FREE GPS',
+        code: 'NEWXTASS',
+        category: 'Memberships',
+        expiry: '2026-01-01',
+        description: 'Enjoy free GPS navigation on your first car reservation with XTASS.',
+        highlight: null,
+        conditions: 'Valid for new customers only.'
+      },
+      {
+        id: 4,
+        title: 'Long-Term Rental Offer',
+        type: '25% OFF',
+        code: 'LONGDRIVE',
+        category: 'Services',
+        expiry: '2025-10-15',
+        description: 'Massive savings for rentals exceeding 14 days.',
+        highlight: 'Ending Soon',
+        conditions: 'Minimum 14-day rental period required.'
+      },
+      {
+         id: 5,
+         title: 'Business Class Upgrade',
+         type: 'FREE UPGRADE',
+         code: 'BIZUPGRADE',
+         category: 'Bookings',
+         expiry: '2025-07-20',
+         description: 'Book an Economy car and get a free upgrade to Business class if available.',
+         highlight: null,
+         conditions: 'Subject to availability at pickup time.'
+      }
+    ];
+
+    const filteredDeals = deals.filter(deal => {
+      const matchesFilter = filter === 'All' || deal.category === filter;
+      const matchesSearch = deal.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                          deal.code.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchesFilter && matchesSearch;
+    });
+
+    const copyToClipboard = (code: string) => {
+      navigator.clipboard.writeText(code);
+      alert(`Coupon code ${code} copied to clipboard!`);
+    };
+
+    return (
+      <main className="bg-gray-50 min-h-screen">
+        {/* HERO SECTION */}
+        <section className="bg-primary text-white py-20 relative overflow-hidden">
+          <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-accent via-transparent to-transparent"></div>
+          <div className="max-w-7xl mx-auto px-4 text-center relative z-10">
+            <motion.h1 
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-4xl md:text-5xl font-display font-bold mb-4"
+            >
+              All Deals & Coupons
+            </motion.h1>
+            <p className="text-xl text-white/80 max-w-2xl mx-auto">
+              Unlock exclusive savings on your next journey. Browse our active promotions and grab the best deals today.
+            </p>
+          </div>
+        </section>
+
+        {/* CONTROLS SECTION */}
+        <section className="py-8 bg-white border-b border-gray-100 sticky top-[73px] lg:top-[123px] z-30 shadow-sm">
+          <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex flex-wrap gap-2 text-left">
+              {['All', 'Services', 'Bookings', 'Memberships'].map(cat => (
+                <button
+                  key={cat}
+                  onClick={() => setFilter(cat)}
+                  className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${filter === cat ? 'bg-primary text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+            <div className="relative">
+              <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <input 
+                type="text" 
+                placeholder="Search deals or enter code..."
+                className="pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:outline-none w-full md:w-80"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* DEALS GRID */}
+        <section className="py-16">
+          <div className="max-w-7xl mx-auto px-4">
+            {filteredDeals.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
+                {filteredDeals.map((deal) => (
+                  <motion.div 
+                    layout
+                    key={deal.id}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden group hover:shadow-2xl transition-all"
+                  >
+                    <div className="p-6">
+                      <div className="flex justify-between items-start mb-4">
+                        <span className="text-xs font-bold text-primary bg-primary/5 px-3 py-1 rounded-full uppercase tracking-wider">
+                          {deal.category}
+                        </span>
+                        {deal.highlight && (
+                          <span className={`text-[10px] font-black px-2 py-0.5 rounded uppercase ${
+                            deal.highlight === 'Hot Deal' ? 'bg-red-500 text-white' : 
+                            deal.highlight === 'New' ? 'bg-green-500 text-white' : 'bg-orange-500 text-white'
+                          }`}>
+                            {deal.highlight}
+                          </span>
+                        )}
+                      </div>
+                      
+                      <h3 className="text-xl font-bold text-gray-800 mb-2">{deal.title}</h3>
+                      <p className="text-gray-600 text-sm mb-4 leading-relaxed line-clamp-2">{deal.description}</p>
+                      
+                      <div className="flex items-end justify-between mb-6">
+                        <div>
+                          <p className="text-xs text-gray-400 font-bold uppercase">Discount Type</p>
+                          <p className="text-2xl font-black text-primary">{deal.type}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-xs text-gray-400 font-bold uppercase">Expires On</p>
+                          <p className="text-sm font-bold text-gray-800">{deal.expiry}</p>
+                        </div>
+                      </div>
+
+                      <div className="bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl p-4 flex items-center justify-between group-hover:border-primary/30 transition-colors">
+                        <div>
+                          <p className="text-[10px] text-gray-400 font-bold uppercase mb-1">Promo Code</p>
+                          <p className="font-mono font-bold text-gray-800 tracking-wider uppercase">{deal.code}</p>
+                        </div>
+                        <button 
+                          onClick={() => copyToClipboard(deal.code)}
+                          className="bg-white border border-gray-200 p-2 rounded-lg hover:bg-primary hover:text-white hover:border-primary transition-all shadow-sm"
+                          title="Copy Code"
+                        >
+                          <CheckCircleIcon className="w-5 h-5" />
+                        </button>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-gray-50 p-4 border-t border-gray-100">
+                      <button 
+                        onClick={() => { setView('start-reservation'); }}
+                        className="w-full bg-primary text-white font-bold py-3 rounded-xl shadow-md hover:bg-primary-hover transition-all"
+                      >
+                        Apply Discount Now
+                      </button>
+                      <button className="w-full mt-2 text-xs text-gray-500 hover:text-primary transition-colors text-center pb-2 underline" onClick={() => alert(`Terms: ${deal.conditions}`)}>
+                         View Terms & Conditions
+                      </button>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            ) : (
+              <div className="bg-white p-16 rounded-3xl text-center shadow-sm border border-gray-100">
+                 <div className="bg-gray-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+                   <SearchIcon className="w-10 h-10 text-gray-300" />
+                 </div>
+                 <h3 className="text-2xl font-bold text-gray-800 mb-2">No Deals Found</h3>
+                 <p className="text-gray-500">We couldn't find any deals matching your current filters. Try relaxing your search!</p>
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* NEWSLETTER ENFORCER */}
+        <section className="py-20 bg-accent/10">
+          <div className="max-w-4xl mx-auto px-4 text-center">
+            <h2 className="text-3xl font-display font-bold text-gray-800 mb-4">Never Miss a Deal Again!</h2>
+            <p className="text-gray-600 mb-8">Sign up for our newsletter to receive exclusive coupons and flash sale notifications right in your inbox.</p>
+            <div className="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
+              <input type="email" placeholder="Enter your email address" className="flex-1 p-4 border border-gray-200 rounded-xl focus:outline-none" />
+              <button className="bg-primary text-white font-bold px-8 py-4 rounded-xl hover:bg-primary-hover transition-all">Subscribe</button>
+            </div>
+            <p className="text-[10px] text-gray-400 mt-4 uppercase font-bold tracking-widest">No Spam. Just Savings. Guaranteed.</p>
+          </div>
+        </section>
+
+        {commonFooter}
+      </main>
+    );
+  };
+  
+  const GetReceiptPage: React.FC<{
+    commonFooter: React.ReactNode;
+    onRoleSelect: (role: Role) => void;
+  }> = ({ commonFooter, onRoleSelect }) => {
+    const [searchType, setSearchType] = useState<'id' | 'email'>('id');
+    const [searchValue, setSearchValue] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [receipt, setReceipt] = useState<any>(null);
+    const [error, setError] = useState('');
+
+    const handleLookup = (e: React.FormEvent) => {
+      e.preventDefault();
+      setIsLoading(true);
+      setError('');
+      
+      // Simulate API lookup
+      setTimeout(() => {
+        if (searchValue.length < 5) {
+          setError('No record found with the provided details. Please check your input and try again.');
+          setIsLoading(false);
+          return;
+        }
+
+        setReceipt({
+          transactionId: 'TXN-998822-ABC',
+          refNo: 'REC-2025-06-15-01',
+          date: 'June 15, 2025',
+          time: '10:45 AM',
+          customer: {
+            name: 'John Doe',
+            email: 'john.doe@example.com',
+            phone: '+233 24 123 4567'
+          },
+          service: 'Luxury SUV Rental',
+          bookingId: 'XT-8829-GH',
+          paymentMethod: 'Credit Card (Visa ending in 4455)',
+          status: 'Paid',
+          breakdown: {
+            subtotal: 'GHS 2,100.00',
+            tax: 'GHS 252.00',
+            fees: 'GHS 98.00',
+            discount: '-GHS 0.00'
+          },
+          total: 'GHS 2,450.00'
+        });
+        setIsLoading(false);
+      }, 1500);
+    };
+
+    const handleDownload = () => {
+      alert('Generating PDF receipt for download...');
+    };
+
+    const handleEmail = () => {
+      alert('Proof of payment has been sent to ' + receipt.customer.email);
+    };
+
+    const handlePrint = () => {
+      window.print();
+    };
+
+    return (
+      <main className="bg-gray-50 min-h-screen">
+        {/* HERO */}
+        <section className="bg-primary text-white py-16">
+          <div className="max-w-7xl mx-auto px-4 text-center">
+            <h1 className="text-3xl md:text-4xl font-display font-bold">Get A Receipt</h1>
+            <p className="text-white/70 mt-2">Access and download your official payment records instantly.</p>
+          </div>
+        </section>
+
+        <section className="py-12 -mt-8 relative z-10">
+          <div className="max-w-4xl mx-auto px-4">
+            {!receipt ? (
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-white rounded-2xl shadow-xl p-8 md:p-12"
+              >
+                <div className="flex items-center space-x-4 mb-10">
+                  <div className="bg-primary/5 p-4 rounded-full">
+                    <DollarSignIcon className="w-8 h-8 text-primary" />
+                  </div>
+                  <div className="text-left">
+                    <h2 className="text-2xl font-bold text-gray-800">Receipt Lookup</h2>
+                    <p className="text-gray-500">Provide your transaction or booking details to retrieve your receipt.</p>
+                  </div>
+                </div>
+
+                <form onSubmit={handleLookup} className="space-y-8">
+                  <div className="flex gap-4 p-1 bg-gray-100 rounded-xl max-w-sm">
+                    <button 
+                      type="button"
+                      onClick={() => setSearchType('id')}
+                      className={`flex-1 py-3 text-sm font-bold rounded-lg transition-all ${searchType === 'id' ? 'bg-white text-primary shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                    >
+                      Transaction/Booking ID
+                    </button>
+                    <button 
+                      type="button"
+                      onClick={() => setSearchType('email')}
+                      className={`flex-1 py-3 text-sm font-bold rounded-lg transition-all ${searchType === 'email' ? 'bg-white text-primary shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                    >
+                      Email Address
+                    </button>
+                  </div>
+
+                  <div className="text-left">
+                    <label className="block text-sm font-bold text-gray-700 mb-2">
+                      {searchType === 'id' ? 'Enter Confirmation or Transaction ID' : 'Enter Registered Email Address'}
+                    </label>
+                    <input 
+                      type={searchType === 'id' ? 'text' : 'email'} 
+                      placeholder={searchType === 'id' ? 'e.g. XT-8829-GH' : 'example@domain.com'}
+                      className={`w-full p-5 bg-gray-50 border ${error ? 'border-red-500' : 'border-gray-200'} rounded-xl focus:ring-2 focus:ring-primary/20 focus:outline-none text-lg font-medium`}
+                      value={searchValue}
+                      onChange={(e) => setSearchValue(e.target.value)}
+                      required
+                    />
+                    {error && <p className="text-red-500 text-sm mt-3 font-medium flex items-center">
+                      <ShieldIcon className="w-4 h-4 mr-2" />
+                      {error}
+                    </p>}
+                  </div>
+
+                  <button 
+                    disabled={isLoading}
+                    className="w-full bg-primary text-white font-bold py-5 rounded-2xl shadow-xl hover:bg-primary-hover transition-all flex items-center justify-center text-lg disabled:opacity-70"
+                  >
+                    {isLoading ? (
+                      <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    ) : 'Retrieve Receipt'}
+                  </button>
+                </form>
+
+                <div className="mt-12 pt-8 border-t border-gray-100 flex flex-col md:flex-row items-center justify-between gap-6">
+                  <div className="flex items-center text-gray-500 text-sm">
+                    <ShieldIcon className="w-5 h-5 mr-3 text-primary animate-pulse" />
+                    <p>Financial records are encrypted and secure.</p>
+                  </div>
+                  <button onClick={() => onRoleSelect('Customer')} className="text-primary font-bold hover:underline text-sm uppercase tracking-wider">
+                    Sign in to view full history
+                  </button>
+                </div>
+              </motion.div>
+            ) : (
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="bg-white rounded-2xl shadow-2xl overflow-hidden print:shadow-none"
+              >
+                {/* ACTIONS BAR (Sticky or Floating) */}
+                <div className="bg-gray-100 p-4 border-b border-gray-200 flex flex-wrap justify-center gap-4 print:hidden">
+                  <button onClick={handleDownload} className="flex items-center px-6 py-2 bg-white text-primary font-bold rounded-lg border border-gray-200 hover:shadow-md transition-all">
+                    <UploadCloudIcon className="w-4 h-4 mr-2" />
+                    Download PDF
+                  </button>
+                  <button onClick={handleEmail} className="flex items-center px-6 py-2 bg-white text-primary font-bold rounded-lg border border-gray-200 hover:shadow-md transition-all">
+                    <CheckCircleIcon className="w-4 h-4 mr-2" />
+                    Email to Me
+                  </button>
+                  <button onClick={handlePrint} className="flex items-center px-6 py-2 bg-white text-primary font-bold rounded-lg border border-gray-200 hover:shadow-md transition-all">
+                    <StarIcon className="w-4 h-4 mr-2" />
+                    Print
+                  </button>
+                  <button onClick={() => setReceipt(null)} className="flex items-center px-6 py-2 text-gray-500 hover:text-primary transition-all">
+                    Search Again
+                  </button>
+                </div>
+
+                {/* RECEIPT DOCUMENT */}
+                <div className="p-12 text-left" id="printable-receipt">
+                  <div className="flex flex-col md:flex-row justify-between items-start mb-12 gap-8">
+                    <div>
+                      <div className="flex items-center space-x-2 text-primary font-black text-4xl mb-4 italic tracking-tighter">
+                        <span className="bg-primary text-white px-2 py-1 rounded not-italic">X</span>
+                        TASS
+                      </div>
+                      <div className="text-xs text-gray-500 uppercase font-black tracking-widest">
+                        Official Payment Receipt
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="inline-block px-4 py-1.5 bg-green-100 text-green-700 rounded-full font-black text-xs uppercase tracking-widest mb-4">
+                        {receipt.status}
+                      </div>
+                      <p className="text-sm font-bold text-gray-800">Date: {receipt.date}</p>
+                      <p className="text-xs text-gray-500">Ref: {receipt.refNo}</p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12 pb-12 border-b border-gray-100">
+                    <div>
+                      <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-4">Billed To</h4>
+                      <p className="font-bold text-gray-800 text-lg">{receipt.customer.name}</p>
+                      <p className="text-gray-600 font-medium">{receipt.customer.email}</p>
+                      <p className="text-gray-600 font-medium">{receipt.customer.phone}</p>
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-4">Transaction Details</h4>
+                      <div className="space-y-1">
+                        <p className="text-gray-600 font-medium"><span className="text-gray-400">ID:</span> {receipt.transactionId}</p>
+                        <p className="text-gray-600 font-medium"><span className="text-gray-400">Booking:</span> {receipt.bookingId}</p>
+                        <p className="text-gray-600 font-medium"><span className="text-gray-400">Method:</span> {receipt.paymentMethod}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mb-12">
+                     <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-4">Service Summary</h4>
+                     <div className="bg-gray-50 p-6 rounded-2xl flex justify-between items-center">
+                        <div>
+                          <p className="font-bold text-gray-800 text-lg">{receipt.service}</p>
+                          <p className="text-gray-500 text-sm">Professional Transportation Service</p>
+                        </div>
+                        <p className="text-xl font-black text-primary">{receipt.total}</p>
+                     </div>
+                  </div>
+
+                  <div className="max-w-xs ml-auto">
+                    <div className="space-y-4 mb-8">
+                       <div className="flex justify-between text-gray-500 font-medium">
+                         <span>Subtotal</span>
+                         <span>{receipt.breakdown.subtotal}</span>
+                       </div>
+                       <div className="flex justify-between text-gray-500 font-medium">
+                         <span>Taxes (VAT 12%)</span>
+                         <span>{receipt.breakdown.tax}</span>
+                       </div>
+                       <div className="flex justify-between text-gray-500 font-medium">
+                         <span>Service Fees</span>
+                         <span>{receipt.breakdown.fees}</span>
+                       </div>
+                       <div className="pt-4 border-t border-gray-100 flex justify-between text-primary font-black text-2xl">
+                         <span>Total</span>
+                         <span>{receipt.total}</span>
+                       </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-16 pt-8 border-t border-gray-100 text-center">
+                    <p className="text-[10px] text-gray-400 uppercase font-bold tracking-widest mb-2">Automated Document - Legal for reimbursement</p>
+                    <p className="text-[10px] text-gray-400 leading-relaxed uppercase tracking-tighter">
+                      XTASS Car Rental & Transportation Services | Accra, Ghana | TIN: GHA-0029381-01
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </div>
+        </section>
+
+        {commonFooter}
+      </main>
+    );
+  };
+  
+  const LongTermRentalPage: React.FC<{
+    commonFooter: React.ReactNode;
+    onRoleSelect: (role: Role) => void;
+  }> = ({ commonFooter, onRoleSelect }) => {
+    const [duration, setDuration] = useState(1);
+    
+    const monthlyDeals = [
+      { 
+        id: 'standard', 
+        name: 'Eco Monthly', 
+        price: 'GHS 4,500', 
+        car: 'Economy Hatchback', 
+        features: ['Insurance Included', '24/7 Roadside', 'Basic Maintenance'],
+        img: 'https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?q=80&w=2070&auto=format&fit=crop'
+      },
+      { 
+        id: 'pro', 
+        name: 'Business Monthly', 
+        price: 'GHS 6,800', 
+        car: 'Modern Sedan', 
+        features: ['Free GPS', 'Priority Support', 'Full Maintenance', 'Occasional Swaps'],
+        img: 'https://images.unsplash.com/photo-1550355291-bbee04a92027?q=80&w=2072&auto=format&fit=crop'
+      },
+      { 
+        id: 'premium', 
+        name: 'Executive Monthly', 
+        price: 'GHS 12,500', 
+        car: 'Premium SUV', 
+        features: ['Full Concierge', 'Valet Pickup', 'Elite Insurance', 'Unlimited Kilometers'],
+        img: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=2070&auto=format&fit=crop'
+      },
+    ];
+
+    return (
+      <main className="bg-gray-50 min-h-screen">
+        {/* HERO */}
+        <section className="bg-[#1A0006] text-white py-24 relative overflow-hidden">
+          <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
+          <div className="max-w-7xl mx-auto px-4 text-center relative z-10">
+            <motion.h1 
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-4xl md:text-6xl font-display font-bold mb-6"
+            >
+              Long-Term Car Rental
+            </motion.h1>
+            <p className="text-xl text-white/70 max-w-2xl mx-auto mb-10 leading-relaxed">
+              The smart alternative to car ownership. Monthly rentals with complete flexibility, full maintenance, and fixed predictable costs.
+            </p>
+            <div className="flex justify-center flex-wrap gap-4">
+              <div className="bg-white/10 px-6 py-3 rounded-full flex items-center space-x-2 border border-white/20">
+                <CheckCircleIcon className="w-5 h-5 text-accent" />
+                <span className="text-sm font-bold">No Long-Term Contracts</span>
+              </div>
+              <div className="bg-white/10 px-6 py-3 rounded-full flex items-center space-x-2 border border-white/20">
+                <CheckCircleIcon className="w-5 h-5 text-accent" />
+                <span className="text-sm font-bold">Maintenance Included</span>
+              </div>
+              <div className="bg-white/10 px-6 py-3 rounded-full flex items-center space-x-2 border border-white/20">
+                <CheckCircleIcon className="w-5 h-5 text-accent" />
+                <span className="text-sm font-bold">24/7 Roadside Support</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* SUBSCRIPTION CALCULATOR */}
+        <section className="py-20">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-12 mb-16 overflow-hidden relative">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-32 -mt-32"></div>
+              
+              <div className="md:flex items-center justify-between gap-12 relative z-10">
+                <div className="flex-1 mb-8 md:mb-0 text-left">
+                  <h2 className="text-3xl font-display font-bold text-gray-800 mb-4">Choose Your Duration</h2>
+                  <p className="text-gray-500 mb-8 max-w-md">The longer you rent, the more you save. Select your expected rental duration to see exclusive monthly rates.</p>
+                  
+                  <div className="space-y-6">
+                    <div>
+                      <div className="flex justify-between mb-4">
+                        <span className="font-bold text-gray-700">Duration: <span className="text-primary">{duration} Month{duration > 1 ? 's' : ''}</span></span>
+                        <span className="text-xs font-black text-accent bg-accent/10 px-2 py-1 rounded">-{duration > 1 ? (duration * 2) : 0}% Discount applied</span>
+                      </div>
+                      <input 
+                        type="range" 
+                        min="1" 
+                        max="12" 
+                        value={duration}
+                        onChange={(e) => setDuration(parseInt(e.target.value))}
+                        className="w-full h-3 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-primary"
+                      />
+                      <div className="flex justify-between text-[10px] font-black text-gray-400 mt-2 uppercase tracking-widest">
+                        <span>1 Month</span>
+                        <span>6 Months</span>
+                        <span>12 Months</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="w-full md:w-1/3 bg-gray-50 p-8 rounded-2xl border border-gray-100">
+                  <h4 className="font-bold text-gray-800 mb-6 text-left">Monthly Benefits</h4>
+                  <ul className="space-y-4">
+                    {[
+                      'Comprehensive Insurance',
+                      'Free Seasonal Maintenance',
+                      'Vehicle Replacement Guard',
+                      'Local Taxes Included',
+                      'Flexible Exit Terms'
+                    ].map((benefit, i) => (
+                      <li key={i} className="flex items-center text-sm font-medium text-gray-600">
+                        <ShieldIcon className="w-4 h-4 text-primary mr-3" />
+                        {benefit}
+                      </li>
+                    ))}
+                  </ul>
+                  <button onClick={() => onRoleSelect('Customer')} className="w-full mt-8 bg-primary text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-xl transition-all">
+                    Start Custom Plan
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* MONTHLY DEALS */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
+              {monthlyDeals.map((deal) => (
+                <div key={deal.id} className="bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100 flex flex-col hover:shadow-2xl transition-all duration-300">
+                  <div className="h-56 bg-cover bg-center" style={{backgroundImage: `url(${deal.img})`}}></div>
+                  <div className="p-8 flex-1 flex flex-col">
+                    <div className="flex justify-between items-start mb-6">
+                      <div>
+                        <h3 className="text-2xl font-bold text-gray-800 mb-1">{deal.name}</h3>
+                        <p className="text-primary text-sm font-bold uppercase tracking-widest">{deal.car}</p>
+                      </div>
+                    </div>
+                    
+                    <ul className="space-y-3 mb-10 flex-1">
+                      {deal.features.map((f, i) => (
+                        <li key={i} className="flex items-center text-sm text-gray-500 font-medium">
+                          <CheckCircleIcon className="w-4 h-4 text-green-500 mr-2" />
+                          {f}
+                        </li>
+                      ))}
+                    </ul>
+
+                    <div className="pt-6 border-t border-gray-50 flex items-center justify-between">
+                       <div>
+                         <p className="text-xs text-gray-400 font-bold uppercase">Starting From</p>
+                         <p className="text-2xl font-black text-gray-800">{deal.price}<span className="text-sm font-bold text-gray-400">/mo</span></p>
+                       </div>
+                       <button 
+                        onClick={() => onRoleSelect('Customer')}
+                        className="bg-accent text-primary font-bold px-6 py-3 rounded-xl hover:bg-accent/90 transition-all text-sm"
+                       >
+                         Choose
+                       </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* VS OWNERSHIP */}
+        <section className="py-20 bg-white">
+          <div className="max-w-5xl mx-auto px-4">
+             <div className="text-center mb-16">
+               <h2 className="text-3xl font-display font-bold text-gray-800">Long-Term Rental vs. Ownership</h2>
+               <p className="text-gray-500 mt-2">Why more professionals are switching to flexible transportation.</p>
+             </div>
+
+             <div className="overflow-hidden rounded-2xl border border-gray-100 shadow-xl">
+               <table className="w-full text-left">
+                 <thead>
+                   <tr className="bg-primary text-white">
+                     <th className="p-6 font-bold uppercase tracking-wider text-sm">Feature</th>
+                     <th className="p-6 font-bold uppercase tracking-wider text-sm">XTASS Long-Term</th>
+                     <th className="p-6 font-bold uppercase tracking-wider text-sm">Ownership / Lease</th>
+                   </tr>
+                 </thead>
+                 <tbody className="divide-y divide-gray-50">
+                   {[
+                     { f: 'Upfront Cost', x: 'Zero Deposit', o: 'High Down Payment' },
+                     { f: 'Maintenance', x: '100% Covered', o: 'Out of Pocket' },
+                     { f: 'Commitment', x: 'Monthly Renewal', o: '3-5 Year Minimum' },
+                     { f: 'Resale Value', x: 'Not Your Concern', o: 'Depreciating Asset' },
+                     { f: 'Vehicle Swap', x: 'Available Anytime', o: 'Not Possible' },
+                   ].map((row, i) => (
+                     <tr key={i} className="hover:bg-gray-50">
+                       <td className="p-6 font-bold text-gray-800">{row.f}</td>
+                       <td className="p-6 text-green-600 font-bold">{row.x}</td>
+                       <td className="p-6 text-gray-400 font-medium">{row.o}</td>
+                     </tr>
+                   ))}
+                 </tbody>
+               </table>
+             </div>
+          </div>
+        </section>
+
+        {/* CORPORATE / ENTERPRISE SECTION */}
+        <section className="py-20 bg-gray-50">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="bg-primary rounded-3xl p-12 md:p-20 text-white flex flex-col md:flex-row items-center gap-16 relative overflow-hidden">
+               <div className="absolute inset-0 opacity-5 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+               <div className="flex-1 relative z-10 text-left">
+                 <h2 className="text-3xl md:text-5xl font-display font-bold mb-6">Enterprise & Corporate Fleet</h2>
+                 <p className="text-xl text-white/70 mb-10 leading-relaxed">
+                   Need a dedicated fleet for your staff or consultants? We provide tailored long-term solutions for businesses of all sizes, including dedicated account managers and centralized billing.
+                 </p>
+                 <div className="flex flex-wrap gap-4">
+                   <button className="bg-accent text-primary font-bold py-4 px-10 rounded-xl hover:scale-105 transition-all">
+                     Get Corporate Quote
+                   </button>
+                   <button className="bg-white/10 text-white border border-white/20 font-bold py-4 px-10 rounded-xl hover:bg-white/20 transition-all">
+                     Download Fleet Guide
+                   </button>
+                 </div>
+               </div>
+               <div className="w-full md:w-1/3 relative z-10">
+                 <div className="bg-white/10 p-8 rounded-3xl border border-white/20 backdrop-blur-md">
+                   <BriefcaseIcon className="w-12 h-12 text-accent mb-6" />
+                   <div className="space-y-4">
+                     <div className="flex items-center text-sm">
+                       <div className="w-1.5 h-1.5 bg-accent rounded-full mr-3"></div>
+                       <span>Dedicated Fleet Manager</span>
+                     </div>
+                     <div className="flex items-center text-sm">
+                       <div className="w-1.5 h-1.5 bg-accent rounded-full mr-3"></div>
+                       <span>Monthly Usage Reports</span>
+                     </div>
+                     <div className="flex items-center text-sm">
+                       <div className="w-1.5 h-1.5 bg-accent rounded-full mr-3"></div>
+                       <span>Priority VIP Support</span>
+                     </div>
+                   </div>
+                 </div>
+               </div>
+            </div>
+          </div>
+        </section>
+
+        {commonFooter}
+      </main>
+    );
+  };
+
+  const OneWayRentalPage: React.FC<{
+    commonFooter: React.ReactNode;
+    onRoleSelect: (role: Role) => void;
+  }> = ({ commonFooter, onRoleSelect }) => {
+    const [formData, setFormData] = useState({
+      pickupLocation: '',
+      dropoffLocation: '',
+      pickupDate: '',
+      pickupTime: '',
+      returnDate: '',
+      returnTime: '',
+      vehicleType: 'Economy',
+    });
+
+    const [estimatedPrice, setEstimatedPrice] = useState<string | null>(null);
+
+    const handleInputChange = (field: string, value: string) => {
+      setFormData(prev => ({ ...prev, [field]: value }));
+      // Simple logic to trigger a price estimate
+      if (formData.pickupLocation && value && field === 'dropoffLocation') {
+        setEstimatedPrice('GHS 450.00 - 850.00');
+      }
+    };
+
+    const vehicleTypes = [
+      { id: 'Economy', name: 'Economy', features: '4 Seats, 2 Bags', icon: <CarIcon className="w-8 h-8" /> },
+      { id: 'SUV', name: 'SUV', features: '7 Seats, 4 Bags', icon: <SearchIcon className="w-8 h-8" /> },
+      { id: 'Luxury', name: 'Luxury', features: 'Premium Interior', icon: <StarIcon className="w-8 h-8" /> },
+      { id: 'Business', name: 'Business', features: 'Professional Pick', icon: <BriefcaseIcon className="w-8 h-8" /> },
+    ];
+
+    return (
+      <main className="bg-gray-50 min-h-screen">
+        {/* HERO SECTION */}
+        <section className="bg-primary text-white py-20 relative overflow-hidden">
+          <div className="absolute inset-0 opacity-20 bg-cover bg-center" style={{backgroundImage: "url('https://images.unsplash.com/photo-1464851707681-f9d5fdaccea8?q=80&w=2070&auto=format&fit=crop')"}}></div>
+          <div className="max-w-7xl mx-auto px-4 text-center relative z-10">
+            <motion.h1 
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-4xl md:text-5xl font-display font-bold mb-4"
+            >
+              One-Way Car Rental
+            </motion.h1>
+            <p className="text-xl text-white/80 max-w-2xl mx-auto">
+              Pick up your ride in one city and drop it off in another. Total travel flexibility for your next big move or cross-country road trip.
+            </p>
+          </div>
+        </section>
+
+        {/* BOOKING FORM */}
+        <section className="py-12 -mt-12 relative z-10">
+          <div className="max-w-6xl mx-auto px-4 flex flex-col lg:flex-row gap-8">
+            <div className="flex-1 bg-white rounded-2xl shadow-xl p-8 md:p-10">
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 text-left">
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">From: Pickup Location</label>
+                    <div className="relative">
+                      <MapPinIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                      <input 
+                        type="text" 
+                        placeholder="Start City or Station"
+                        className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:outline-none"
+                        value={formData.pickupLocation}
+                        onChange={(e) => handleInputChange('pickupLocation', e.target.value)}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">To: Drop-off Location</label>
+                     <div className="relative">
+                      <MapPinIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary" />
+                      <input 
+                        type="text" 
+                        placeholder="Destination City or Station"
+                        className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:outline-none"
+                        value={formData.dropoffLocation}
+                        onChange={(e) => handleInputChange('dropoffLocation', e.target.value)}
+                      />
+                    </div>
+                  </div>
+               </div>
+
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 text-left">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-2">Pickup Date</label>
+                      <input type="date" className="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl" />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-2">Time</label>
+                      <input type="time" className="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl" />
+                    </div>
+                  </div>
+                   <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-2">Drop-off Date</label>
+                      <input type="date" className="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl" />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-2">Time</label>
+                      <input type="time" className="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl" />
+                    </div>
+                  </div>
+               </div>
+
+               <div className="mb-10 text-left">
+                  <h4 className="text-sm font-bold text-gray-700 mb-4 uppercase tracking-widest">Select Your Vehicle</h4>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {vehicleTypes.map(v => (
+                      <button 
+                        key={v.id}
+                        type="button"
+                        onClick={() => handleInputChange('vehicleType', v.id)}
+                        className={`p-6 border-2 rounded-2xl flex flex-col items-center transition-all ${formData.vehicleType === v.id ? 'border-primary bg-primary/5 text-primary' : 'border-gray-100 hover:border-primary/20'}`}
+                      >
+                        {v.icon}
+                        <span className="font-bold mt-2">{v.name}</span>
+                        <span className="text-[10px] opacity-70">{v.features}</span>
+                      </button>
+                    ))}
+                  </div>
+               </div>
+
+               <button 
+                onClick={() => onRoleSelect('Customer')}
+                className="w-full bg-primary text-white font-bold py-5 rounded-2xl shadow-xl hover:bg-primary-hover transition-all text-lg"
+               >
+                 Book One-Way Ride
+               </button>
+            </div>
+
+            {/* SIDEBAR SUMMARY */}
+            <div className="w-full lg:w-80 space-y-6">
+               {estimatedPrice && (
+                 <motion.div 
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="bg-accent p-6 rounded-2xl text-primary shadow-lg"
+                 >
+                    <p className="text-xs font-bold uppercase tracking-widest mb-1 opacity-70">Estimated Price</p>
+                    <p className="text-3xl font-black">{estimatedPrice}</p>
+                    <p className="text-[10px] mt-2 opacity-60">*Final price based on distance and vehicle availability.</p>
+                 </motion.div>
+               )}
+
+               <div className="bg-white p-6 rounded-2xl shadow-md border border-gray-100">
+                  <h4 className="font-bold text-gray-800 mb-4 text-left">Why One-Way?</h4>
+                  <ul className="space-y-4">
+                    {[
+                      { icon: <CheckCircleIcon className="w-4 h-4 text-green-500" />, text: 'Intercity Travel' },
+                      { icon: <CheckCircleIcon className="w-4 h-4 text-green-500" />, text: 'Airport Relocation' },
+                      { icon: <CheckCircleIcon className="w-4 h-4 text-green-500" />, text: 'No-Return Logistics' },
+                      { icon: <CheckCircleIcon className="w-4 h-4 text-green-500" />, text: 'Flexible Touring' },
+                    ].map((item, i) => (
+                      <li key={i} className="flex items-center text-sm text-gray-600 font-medium">
+                        {item.icon}
+                        <span className="ml-2">{item.text}</span>
+                      </li>
+                    ))}
+                  </ul>
+               </div>
+
+               <div className="bg-primary p-6 rounded-2xl text-white shadow-xl text-left">
+                  <ShieldIcon className="w-8 h-8 text-accent mb-4" />
+                  <h4 className="font-bold mb-2">Fully Insured</h4>
+                  <p className="text-xs text-white/70 leading-relaxed">All one-way trips include comprehensive roadside assistance across all major regions in Ghana.</p>
+               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* LOGIC EXPLANATION */}
+        <section className="py-20 bg-white">
+          <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center gap-16">
+            <div className="flex-1 text-left">
+              <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-800 mb-6">How Our One-Way Rental Works</h2>
+              <p className="text-gray-600 mb-8 leading-relaxed">
+                Sometimes your journey doesn't bring you back to where you started. Whether it's a move to Kumasi from Accra or a business trip ending at a different regional hub, we've optimized our fleet redistribution to support your linear travels.
+              </p>
+              <div className="space-y-6">
+                {[
+                  { title: 'Distance-Based Pricing', desc: 'Our smart algorithm calculates the route distance and local vehicle demand to give you the fairest possible rate.' },
+                  { title: 'Wide Network Support', desc: 'Drop off at any of our 15+ hubs nationwide. No extra "return trip" fees for standard routes.' },
+                  { title: '24/7 Availability', desc: 'Book your one-way ride any time. Our system adjusts for fleet balance in real-time.' },
+                ].map((item, i) => (
+                  <div key={i} className="flex gap-4 text-left">
+                    <div className="h-2 w-2 bg-accent rounded-full mt-2 shrink-0"></div>
+                    <div>
+                      <h4 className="font-bold text-gray-800">{item.title}</h4>
+                      <p className="text-sm text-gray-500">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="flex-1">
+               <img 
+                src="https://images.unsplash.com/photo-1502877338535-766e1452684a?q=80&w=2072&auto=format&fit=crop" 
+                alt="Car on Road" 
+                className="rounded-3xl shadow-2xl"
+               />
+            </div>
+          </div>
+        </section>
+
+        {/* FAQ */}
+        <section className="py-20 bg-gray-50">
+          <div className="max-w-4xl mx-auto px-4">
+             <div className="text-center mb-12">
+               <h2 className="text-3xl font-display font-bold text-gray-800">One-Way Rental FAQs</h2>
+             </div>
+             <div className="space-y-4 text-left">
+               {[
+                 { q: 'Is there an extra fee for one-way?', a: 'Standard regional routes have clear, fixed pricing. Long-distance bespoke routes may include a small redistribution fee which is clearly shown in your quote.' },
+                 { q: 'Can I change my drop-off location mid-trip?', a: 'Yes, but please contact our 24/7 support. Changing the destination may result in a recalculation of the total price.' },
+                 { q: 'What vehicles are eligible?', a: 'All our vehicles from Economy to Luxury are available for one-way rentals across major city routes.' },
+               ].map((item, i) => (
+                 <div key={i} className="bg-white p-6 rounded-xl border border-gray-100">
+                    <h4 className="font-bold text-gray-800 mb-2">{item.q}</h4>
+                    <p className="text-sm text-gray-600">{item.a}</p>
+                 </div>
+               ))}
+             </div>
+          </div>
+        </section>
+
+        {commonFooter}
+      </main>
+    );
+  };
+
+  const BusinessSolutionsPage: React.FC<{
+    commonFooter: React.ReactNode;
+    onRoleSelect: (role: Role) => void;
+  }> = ({ commonFooter, onRoleSelect }) => {
+    return (
+      <main className="bg-gray-50 min-h-screen">
+        {/* HERO SECTION */}
+        <section className="bg-[#0A192F] text-white py-24 relative overflow-hidden">
+          <div className="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069&auto=format&fit=crop')] bg-cover bg-center"></div>
+          <div className="max-w-7xl mx-auto px-4 text-center relative z-10">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="inline-block px-4 py-1 bg-accent text-primary text-xs font-black uppercase tracking-widest rounded mb-6"
+            >
+              Enterprise Excellence
+            </motion.div>
+            <h1 className="text-4xl md:text-6xl font-display font-bold mb-6">Solutions for Business</h1>
+            <p className="text-xl text-white/70 max-w-2xl mx-auto mb-10 leading-relaxed">
+              Scalable, efficient, and tailored transportation solutions designed to drive your business forward. Centralize your logistics and empower your team.
+            </p>
+            <div className="flex justify-center flex-wrap gap-4">
+              <button onClick={() => onRoleSelect('Customer')} className="bg-primary text-white font-bold py-4 px-10 rounded-xl hover:bg-primary-hover transition-all">
+                Open Business Account
+              </button>
+              <button className="bg-white/10 text-white border border-white/20 font-bold py-4 px-10 rounded-xl hover:bg-white/20 transition-all">
+                Request a Demo
+              </button>
+            </div>
+          </div>
+        </section>
+
+        {/* VALUE PROPOSITION */}
+        <section className="py-20">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-left">
+              {[
+                { icon: <ShieldIcon className="w-10 h-10 text-primary" />, title: 'Reliability & Priority', desc: 'Guaranteed vehicle availability and priority support for all corporate bookings.' },
+                { icon: <BarChart2Icon className="w-10 h-10 text-primary" />, title: 'Centralized Billing', desc: 'Stop managing individual reimbursements. Get monthly consolidated invoices for your entire team.' },
+                { icon: <ClockIcon className="w-10 h-10 text-primary" />, title: 'Scalable Growth', desc: 'From a single consultant to a multi-city sales force, our solutions grow with your business.' },
+              ].map((item, i) => (
+                <div key={i} className="bg-white p-10 rounded-3xl shadow-lg border border-gray-100 hover:-translate-y-2 transition-all">
+                  <div className="bg-primary/5 w-20 h-20 rounded-2xl flex items-center justify-center mb-8">
+                    {item.icon}
+                  </div>
+                  <h3 className="text-2xl font-bold text-gray-800 mb-4">{item.title}</h3>
+                  <p className="text-gray-600 leading-relaxed">{item.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* SOLUTIONS GRID */}
+        <section className="py-20 bg-white">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8 text-left">
+               <div>
+                 <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-800">Designed for Every Organization</h2>
+                 <p className="text-gray-500 mt-2">Tailored packages that fit your operational rhythm.</p>
+               </div>
+               <div className="flex bg-gray-100 p-1 rounded-xl">
+                 <button className="px-6 py-2 bg-white text-primary font-bold rounded-lg shadow-sm">Subscription</button>
+                 <button className="px-6 py-2 text-gray-500 font-bold">On-Demand</button>
+               </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-left">
+              {[
+                { title: 'SME Starter', target: 'Teams up to 10', features: ['Monthly Invoicing', 'Standard Fleet Access', '3 Users'], price: 'Custom' },
+                { title: 'Corporate Pro', target: 'Teams up to 50', features: ['Priority Dispatch', 'Premium Fleet', '10 Users', 'Dedicated Mgr'], price: 'Custom' },
+                { title: 'Logistics Hub', target: 'Ops & Deliveries', features: ['Bulk Booking API', 'Van/Truck Options', 'Unlimited Users'], price: 'Custom' },
+                { title: 'Executive Elite', target: 'VIP Travel', features: ['Chauffeur Service', 'Luxury Fleet Only', 'Airport Concierge'], price: 'Custom' },
+              ].map((plane, i) => (
+                <div key={i} className="bg-gray-50 p-8 rounded-3xl border border-gray-100 flex flex-col group hover:bg-primary transition-all duration-500">
+                  <h4 className="text-xl font-bold text-gray-800 group-hover:text-white mb-2">{plane.title}</h4>
+                  <p className="text-xs font-black text-primary group-hover:text-accent uppercase tracking-widest mb-6">{plane.target}</p>
+                  <ul className="space-y-3 mb-10 flex-1">
+                    {plane.features.map((f, j) => (
+                      <li key={j} className="flex items-center text-sm text-gray-600 group-hover:text-white/80">
+                        <CheckCircleIcon className="w-4 h-4 text-primary group-hover:text-accent mr-2" />
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+                  <button className="w-full bg-white text-primary font-bold py-3 rounded-xl shadow-md border border-gray-100 group-hover:bg-accent group-hover:text-primary transition-all">
+                    Contact Sales
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* FEATURES / DASHBOARD */}
+        <section className="py-24 bg-gray-50 overflow-hidden">
+          <div className="max-w-7xl mx-auto px-4 flex flex-col lg:flex-row items-center gap-16">
+            <div className="flex-1 text-left relative">
+               <div className="absolute -top-10 -left-10 w-40 h-40 bg-accent/20 rounded-full blur-3xl"></div>
+               <h2 className="text-3xl md:text-5xl font-display font-bold text-gray-800 mb-8 relative z-10">Centralized Control for Your Team</h2>
+               <div className="space-y-8 relative z-10">
+                 {[
+                   { title: 'Master Dashboard', desc: 'Real-time visibility into all active bookings and historical trip data across your organization.' },
+                   { title: 'Advanced Reporting', desc: 'Export detailed cost-tracking and usage reports for seamless internal accounting.' },
+                   { title: 'Team Management', desc: 'Invite team members, set budget limits, and manage permissions from a single interface.' },
+                 ].map((item, i) => (
+                   <div key={i} className="flex gap-6">
+                      <div className="w-12 h-12 bg-white rounded-xl shadow-md flex items-center justify-center shrink-0">
+                        <span className="font-display font-bold text-primary">{i+1}</span>
+                      </div>
+                      <div>
+                        <h4 className="text-xl font-bold text-gray-800 mb-1">{item.title}</h4>
+                        <p className="text-gray-500 leading-relaxed">{item.desc}</p>
+                      </div>
+                   </div>
+                 ))}
+               </div>
+            </div>
+            <div className="flex-1 relative">
+               <div className="relative z-10 bg-white p-4 rounded-3xl shadow-2xl border border-gray-100">
+                  <img 
+                    src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2026&auto=format&fit=crop" 
+                    alt="Business Dashboard" 
+                    className="rounded-2xl"
+                  />
+               </div>
+               <div className="absolute -bottom-10 -right-10 bg-accent p-8 rounded-3xl shadow-xl hidden md:block">
+                  <p className="text-primary font-black text-4xl mb-1">99.9%</p>
+                  <p className="text-primary text-xs font-bold uppercase tracking-widest">Uptime & Reliability</p>
+               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* CONSULTATION FORM */}
+        <section className="py-24 bg-white">
+          <div className="max-w-4xl mx-auto px-4 bg-primary rounded-[3rem] p-12 md:p-20 text-white shadow-2xl">
+             <div className="text-center mb-12">
+               <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">Request a Consultation</h2>
+               <p className="text-white/70">Tell us about your business needs and our enterprise team will reach out within 24 hours.</p>
+             </div>
+             <form className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
+               <div>
+                  <label className="block text-xs font-black uppercase tracking-widest mb-2 opacity-70">Company Name</label>
+                  <input type="text" className="w-full bg-white/10 border border-white/20 rounded-xl p-4 focus:bg-white/20 focus:outline-none transition-all" />
+               </div>
+               <div>
+                  <label className="block text-xs font-black uppercase tracking-widest mb-2 opacity-70">Business Email</label>
+                  <input type="email" className="w-full bg-white/10 border border-white/20 rounded-xl p-4 focus:bg-white/20 focus:outline-none transition-all" />
+               </div>
+               <div>
+                  <label className="block text-xs font-black uppercase tracking-widest mb-2 opacity-70">Contact Person</label>
+                  <input type="text" className="w-full bg-white/10 border border-white/20 rounded-xl p-4 focus:bg-white/20 focus:outline-none transition-all" />
+               </div>
+               <div>
+                  <label className="block text-xs font-black uppercase tracking-widest mb-2 opacity-70">Fleet Size Needed</label>
+                  <select className="w-full bg-white/10 border border-white/20 rounded-xl p-4 focus:bg-white/20 focus:outline-none transition-all appearance-none cursor-pointer">
+                    <option className="text-gray-800">1-5 Vehicles</option>
+                    <option className="text-gray-800">5-20 Vehicles</option>
+                    <option className="text-gray-800">20+ Vehicles</option>
+                  </select>
+               </div>
+               <div className="md:col-span-2">
+                  <label className="block text-xs font-black uppercase tracking-widest mb-2 opacity-70">Your Requirements</label>
+                  <textarea rows={4} className="w-full bg-white/10 border border-white/20 rounded-xl p-4 focus:bg-white/20 focus:outline-none transition-all"></textarea>
+               </div>
+               <button type="button" className="md:col-span-2 bg-accent text-primary font-black py-5 rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl text-lg uppercase tracking-widest">
+                 Submit Request
+               </button>
+             </form>
+          </div>
+        </section>
+
+        {commonFooter}
+      </main>
+    );
+  };
+
+  const ManageReservationPage: React.FC<{
+    setView: (v: string) => void;
+    onRoleSelect: (role: Role) => void;
+    commonFooter: React.ReactNode;
+  }> = ({ setView, onRoleSelect, commonFooter }) => {
+    const [lookupMode, setLookupMode] = useState(true);
+    const [confirmationNo, setConfirmationNo] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [booking, setBooking] = useState<any>(null);
+    const [isEditing, setIsEditing] = useState(false);
+    const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+
+    const handleLookup = (e: React.FormEvent) => {
+      e.preventDefault();
+      setIsLoading(true);
+      // Simulate API call
+      setTimeout(() => {
+        setBooking({
+          id: confirmationNo || 'XT-8829-GH',
+          lastName: lastName || 'Doe',
+          pickupLocation: 'Kotoka International Airport (ACC)',
+          dropoffLocation: 'East Legon, Accra',
+          pickupDate: '2025-06-15',
+          pickupTime: '10:00 AM',
+          returnDate: '2025-06-20',
+          returnTime: '02:00 PM',
+          vehicle: 'SUV (Toyota Highlander)',
+          status: 'Confirmed',
+          total: 'GHS 2,450.00'
+        });
+        setIsLoading(false);
+        setLookupMode(false);
+      }, 1500);
+    };
+
+    const handleCancel = () => {
+      setIsLoading(true);
+      setTimeout(() => {
+        setBooking(prev => ({ ...prev, status: 'Cancelled' }));
+        setIsLoading(false);
+        setShowCancelConfirm(false);
+      }, 1000);
+    };
+
+    return (
+      <main className="bg-gray-50 min-h-screen">
+        {/* HERO */}
+        <section className="bg-[#1A0006] text-white py-16">
+          <div className="max-w-7xl mx-auto px-4 text-center">
+            <h1 className="text-3xl md:text-4xl font-display font-bold">Manage Your Reservation</h1>
+            <p className="text-white/70 mt-2">View, modify, or cancel your booking with ease.</p>
+          </div>
+        </section>
+
+        <section className="py-12 -mt-8 relative z-10">
+          <div className="max-w-3xl mx-auto px-4">
+            {lookupMode ? (
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-white rounded-2xl shadow-xl p-8 md:p-10"
+              >
+                <div className="flex items-center space-x-4 mb-8">
+                  <div className="bg-primary/10 p-3 rounded-full">
+                    <SearchIcon className="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold text-gray-800">Find Your Booking</h2>
+                    <p className="text-gray-500 text-sm">Enter your details to access your reservation.</p>
+                  </div>
+                </div>
+
+                <form onSubmit={handleLookup} className="space-y-6">
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">Confirmation Number</label>
+                    <input 
+                      type="text" 
+                      placeholder="e.g. XT-123456"
+                      className="w-full p-4 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary/20 focus:outline-none font-mono uppercase"
+                      value={confirmationNo}
+                      onChange={(e) => setConfirmationNo(e.target.value.toUpperCase())}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">Last Name</label>
+                    <input 
+                      type="text" 
+                      placeholder="As it appears on booking"
+                      className="w-full p-4 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary/20 focus:outline-none"
+                      value={lastName}
+                      onChange={(e) => setLastName(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <button 
+                    disabled={isLoading}
+                    className="w-full bg-primary text-white font-bold py-4 rounded-xl shadow-lg hover:bg-primary-hover transition-all flex items-center justify-center"
+                  >
+                    {isLoading ? (
+                      <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    ) : 'Access Reservation'}
+                  </button>
+                </form>
+
+                <div className="mt-8 pt-8 border-t border-gray-100 text-center">
+                  <p className="text-gray-500 text-sm">Don't have your confirmation number?</p>
+                  <button 
+                    onClick={() => onRoleSelect('Customer')}
+                    className="text-primary font-bold text-sm mt-2 hover:underline"
+                  >
+                    Login to view all bookings
+                  </button>
+                </div>
+              </motion.div>
+            ) : (
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="bg-white rounded-2xl shadow-xl overflow-hidden"
+              >
+                {/* Header */}
+                <div className="bg-primary p-6 text-white flex justify-between items-center">
+                  <div>
+                    <p className="text-white/60 text-xs font-bold uppercase tracking-widest">Confirmation Number</p>
+                    <h3 className="text-2xl font-mono">{booking.id}</h3>
+                  </div>
+                  <div className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider ${
+                    booking.status === 'Confirmed' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+                  }`}>
+                    {booking.status}
+                  </div>
+                </div>
+
+                {/* Details */}
+                <div className="p-8">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+                    <div className="space-y-6">
+                      <div>
+                        <p className="text-gray-400 text-xs font-bold uppercase mb-1">Pick-up</p>
+                        <p className="font-bold text-gray-800">{booking.pickupLocation}</p>
+                        <p className="text-gray-600 text-sm">{booking.pickupDate} at {booking.pickupTime}</p>
+                      </div>
+                      <div>
+                        <p className="text-gray-400 text-xs font-bold uppercase mb-1">Return</p>
+                        <p className="font-bold text-gray-800">{booking.dropoffLocation}</p>
+                        <p className="text-gray-600 text-sm">{booking.returnDate} at {booking.returnTime}</p>
+                      </div>
+                    </div>
+                    <div className="space-y-6">
+                      <div>
+                        <p className="text-gray-400 text-xs font-bold uppercase mb-1">Vehicle Class</p>
+                        <div className="flex items-center space-x-2">
+                          <CarIcon className="w-5 h-5 text-primary" />
+                          <p className="font-bold text-gray-800">{booking.vehicle}</p>
+                        </div>
+                      </div>
+                      <div>
+                        <p className="text-gray-400 text-xs font-bold uppercase mb-1">Total Estimated</p>
+                        <p className="text-2xl font-bold text-primary">{booking.total}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {booking.status === 'Confirmed' && (
+                    <div className="grid grid-cols-2 gap-4">
+                      <button 
+                        onClick={() => setIsEditing(true)}
+                        className="bg-gray-100 text-gray-800 font-bold py-3 rounded-lg hover:bg-gray-200 transition-colors flex items-center justify-center"
+                      >
+                        Modify Booking
+                      </button>
+                      <button 
+                        onClick={() => setShowCancelConfirm(true)}
+                        className="bg-red-50 text-red-600 font-bold py-3 rounded-lg hover:bg-red-100 transition-colors"
+                      >
+                        Cancel Reservation
+                      </button>
+                    </div>
+                  )}
+
+                  {booking.status === 'Cancelled' && (
+                    <div className="bg-red-50 border border-red-100 p-4 rounded-xl text-center">
+                      <p className="text-red-600 font-bold">This reservation has been cancelled.</p>
+                      <button 
+                        onClick={() => setView('start-reservation')}
+                        className="text-primary font-bold text-sm mt-2 hover:underline"
+                      >
+                        Book a new ride
+                      </button>
+                    </div>
+                  )}
+
+                  <button 
+                    onClick={() => setLookupMode(true)}
+                    className="w-full mt-8 text-gray-400 text-sm hover:text-gray-600 transition-colors"
+                  >
+                    ← Back to lookup
+                  </button>
+                </div>
+              </motion.div>
+            )}
+
+            {/* Support Info */}
+            <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-start">
+                <ShieldIcon className="w-6 h-6 text-primary mr-4 mt-1" />
+                <div>
+                  <h4 className="font-bold text-gray-800 mb-1">Cancellation Policy</h4>
+                  <p className="text-sm text-gray-500">Free cancellation up to 24 hours before pickup. Late fees may apply thereafter.</p>
+                </div>
+              </div>
+              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-start">
+                <PhoneIcon className="w-6 h-6 text-primary mr-4 mt-1" />
+                <div>
+                  <h4 className="font-bold text-gray-800 mb-1">Need Assistance?</h4>
+                  <p className="text-sm text-gray-500">Our 24/7 support team is here to help with your reservation.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* MODALS */}
+        <AnimatePresence>
+          {showCancelConfirm && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setShowCancelConfirm(false)}
+                className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+              />
+              <motion.div 
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                className="bg-white rounded-2xl shadow-2xl relative z-10 max-w-md w-full p-8 overflow-hidden text-center"
+              >
+                <div className="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <ShieldIcon className="w-8 h-8" />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-800 mb-2">Cancel Reservation?</h3>
+                <p className="text-gray-600 mb-8">Are you sure you want to cancel your booking? This action cannot be undone.</p>
+                
+                <div className="space-y-4">
+                  <button 
+                    onClick={handleCancel}
+                    disabled={isLoading}
+                    className="w-full bg-red-600 text-white font-bold py-4 rounded-xl hover:bg-red-700 transition-all flex items-center justify-center"
+                  >
+                    {isLoading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div> : 'Confirm Cancellation'}
+                  </button>
+                  <button 
+                    onClick={() => setShowCancelConfirm(false)}
+                    className="w-full bg-gray-100 text-gray-800 font-bold py-4 rounded-xl hover:bg-gray-200 transition-all"
+                  >
+                    Keep Reservation
+                  </button>
+                </div>
+              </motion.div>
+            </div>
+          )}
+
+          {isEditing && (
+             <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setIsEditing(false)}
+                className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+              />
+              <motion.div 
+                initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                className="bg-white rounded-2xl shadow-2xl relative z-10 max-w-2xl w-full p-8 overflow-hidden"
+              >
+                <h3 className="text-2xl font-bold text-gray-800 mb-6 font-display">Modify Reservation</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 text-left">
+                  <div>
+                    <label className="block text-xs font-bold text-gray-400 uppercase mb-2">Pickup Date</label>
+                    <input type="date" className="w-full p-4 bg-gray-50 border border-gray-200 rounded-lg" defaultValue={booking.pickupDate} />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-400 uppercase mb-2">Return Date</label>
+                    <input type="date" className="w-full p-4 bg-gray-50 border border-gray-200 rounded-lg" defaultValue={booking.returnDate} />
+                  </div>
+                </div>
+                <div className="bg-yellow-50 border border-yellow-100 p-4 rounded-xl mb-8 text-left">
+                   <p className="text-yellow-800 text-sm font-medium">Modifying may affect the total price of your reservation. You'll review any changes before confirming.</p>
+                </div>
+                <div className="flex space-x-4">
+                  <button 
+                    onClick={() => {
+                      setIsLoading(true);
+                      setTimeout(() => {
+                        setIsLoading(false);
+                        setIsEditing(false);
+                        alert('Your reservation has been updated successfully.');
+                      }, 1000);
+                    }}
+                    className="flex-1 bg-primary text-white font-bold py-4 rounded-xl hover:bg-primary-hover transition-all"
+                  >
+                    Save Changes
+                  </button>
+                  <button 
+                    onClick={() => setIsEditing(false)}
+                    className="px-8 bg-gray-100 text-gray-800 font-bold py-4 rounded-xl hover:bg-gray-200 transition-all"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
+
+        {commonFooter}
+      </main>
+    );
+  };
+
   const commonFooter = (
       <footer className="text-white" style={{ backgroundColor: '#1A0006' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -556,6 +2446,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                 <NavLinkRed active={view === 'home'} onClick={() => setView('home')}>Home</NavLinkRed>
                 <NavLinkRed active={view === 'who-we-are'} onClick={() => setView('about')}>Who We Are</NavLinkRed>
                 <NavLinkRed active={view === 'services'} onClick={() => setView('services')}>What We Do</NavLinkRed>
+                <NavLinkRed active={view === 'hospitality'} onClick={() => setView('hospitality')}>Hospitality</NavLinkRed>
                 
                 {/* Reservations Dropdown Trigger */}
                 <div 
@@ -591,12 +2482,13 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
 
                         {/* Right Column (Specific Actions) */}
                         <div className="flex-1 p-4 flex flex-col space-y-1">
-                          <DropdownLink>Start A Car Reservation</DropdownLink>
-                          <DropdownLink>View / Modify / Cancel</DropdownLink>
-                          <DropdownLink>All Deals And Coupons</DropdownLink>
-                          <DropdownLink>Get A Receipt</DropdownLink>
-                          <DropdownLink>One Way Car Rental</DropdownLink>
-                          <DropdownLink>Long-Term Car Rental</DropdownLink>
+                          <DropdownLink onClick={() => { setView('start-reservation'); setIsReservationsOpen(false); }}>Start A Car Reservation</DropdownLink>
+                          <DropdownLink onClick={() => { setView('manage-reservation'); setIsReservationsOpen(false); }}>View / Modify / Cancel</DropdownLink>
+                          <DropdownLink onClick={() => { setView('deals-and-coupons'); setIsReservationsOpen(false); }}>All Deals And Coupons</DropdownLink>
+                          <DropdownLink onClick={() => { setView('get-receipt'); setIsReservationsOpen(false); }}>Get A Receipt</DropdownLink>
+                          <DropdownLink onClick={() => { setView('one-way-rental'); setIsReservationsOpen(false); }}>One Way Car Rental</DropdownLink>
+                          <DropdownLink onClick={() => { setView('long-term-rental'); setIsReservationsOpen(false); }}>Long-Term Car Rental</DropdownLink>
+                          <DropdownLink onClick={() => { setView('business-solutions'); setIsReservationsOpen(false); }}>Solutions for Business</DropdownLink>
                         </div>
                       </motion.div>
                     )}
@@ -634,6 +2526,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                 <MobileNavLink onClick={() => { setView('home'); setIsMobileMenuOpen(false); }}>Home</MobileNavLink>
                 <MobileNavLink onClick={() => { setView('about'); setIsMobileMenuOpen(false); }}>Who We Are</MobileNavLink>
                 <MobileNavLink onClick={() => { setView('services'); setIsMobileMenuOpen(false); }}>What We Do</MobileNavLink>
+                <MobileNavLink onClick={() => { setView('hospitality'); setIsMobileMenuOpen(false); }}>Hospitality</MobileNavLink>
                 
                 {/* Mobile Reservations Accordion */}
                 <div className="flex flex-col">
@@ -654,14 +2547,15 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                       >
                         <div className="py-4 flex flex-col space-y-4">
                           <p className="text-primary font-bold text-sm uppercase tracking-wider">Car Rental</p>
-                          <DropdownLinkMobile>Start A Car Reservation</DropdownLinkMobile>
-                          <DropdownLinkMobile>View / Modify / Cancel</DropdownLinkMobile>
-                          <DropdownLinkMobile>All Deals And Coupons</DropdownLinkMobile>
+                          <DropdownLinkMobile onClick={() => { setView('start-reservation'); setIsMobileMenuOpen(false); }}>Start A Car Reservation</DropdownLinkMobile>
+                          <DropdownLinkMobile onClick={() => { setView('manage-reservation'); setIsMobileMenuOpen(false); }}>View / Modify / Cancel</DropdownLinkMobile>
+                          <DropdownLinkMobile onClick={() => { setView('deals-and-coupons'); setIsMobileMenuOpen(false); }}>All Deals And Coupons</DropdownLinkMobile>
                           
                           <p className="text-primary font-bold text-sm uppercase tracking-wider pt-2 border-t border-gray-200">Business</p>
-                          <DropdownLinkMobile>Get A Receipt</DropdownLinkMobile>
-                          <DropdownLinkMobile>One Way Car Rental</DropdownLinkMobile>
-                          <DropdownLinkMobile>Long-Term Car Rental</DropdownLinkMobile>
+                          <DropdownLinkMobile onClick={() => { setView('get-receipt'); setIsMobileMenuOpen(false); }}>Get A Receipt</DropdownLinkMobile>
+                          <DropdownLinkMobile onClick={() => { setView('one-way-rental'); setIsMobileMenuOpen(false); }}>One Way Car Rental</DropdownLinkMobile>
+                          <DropdownLinkMobile onClick={() => { setView('long-term-rental'); setIsMobileMenuOpen(false); }}>Long-Term Car Rental</DropdownLinkMobile>
+                          <DropdownLinkMobile onClick={() => { setView('business-solutions'); setIsMobileMenuOpen(false); }}>Solutions for Business</DropdownLinkMobile>
                         </div>
                       </motion.div>
                     )}
@@ -2427,6 +4321,40 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
           </section>
 
           {commonFooter}
+        </main>
+      )}
+
+      {view === 'start-reservation' && (
+        <StartCarReservationPage setView={setView} onRoleSelect={onRoleSelect} commonFooter={commonFooter} />
+      )}
+
+      {view === 'manage-reservation' && (
+        <ManageReservationPage setView={setView} onRoleSelect={onRoleSelect} commonFooter={commonFooter} />
+      )}
+
+      {view === 'deals-and-coupons' && (
+        <DealsAndCouponsPage setView={setView} commonFooter={commonFooter} />
+      )}
+
+      {view === 'get-receipt' && (
+        <GetReceiptPage commonFooter={commonFooter} onRoleSelect={onRoleSelect} />
+      )}
+
+      {view === 'one-way-rental' && (
+        <OneWayRentalPage commonFooter={commonFooter} onRoleSelect={onRoleSelect} />
+      )}
+
+      {view === 'long-term-rental' && (
+        <LongTermRentalPage commonFooter={commonFooter} onRoleSelect={onRoleSelect} />
+      )}
+
+      {view === 'business-solutions' && (
+        <BusinessSolutionsPage commonFooter={commonFooter} onRoleSelect={onRoleSelect} />
+      )}
+
+      {view === 'hospitality' && (
+        <main className="min-h-screen bg-white">
+          {/* Empty Hospitality Page */}
         </main>
       )}
 
