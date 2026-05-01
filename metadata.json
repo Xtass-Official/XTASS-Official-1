@@ -1,0 +1,8 @@
+{
+  "name": "XTASS",
+  "description": "A comprehensive platform connecting passengers to airport shuttle drivers in Ghana. It includes a customer app for booking, a driver app for managing trips, and an admin panel for oversight.",
+  "requestFramePermissions": [
+    "camera"
+  ],
+  "majorCapabilities": []
+}
