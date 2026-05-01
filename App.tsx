@@ -247,7 +247,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
   );
 
   const DropdownLink: React.FC<{children: React.ReactNode}> = ({ children }) => (
-    <a href="#" onClick={(e) => e.preventDefault()} className="text-gray-600 hover:text-accent transition-colors text-sm font-medium py-2 px-6 rounded-sm whitespace-nowrap block">
+    <a href="#" onClick={(e) => e.preventDefault()} className="text-gray-600 hover:text-primary transition-colors text-sm font-medium py-2 px-6 rounded-sm whitespace-nowrap block">
       {children}
     </a>
   );
@@ -265,7 +265,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
   );
 
   const DropdownLinkMobile: React.FC<{children: React.ReactNode}> = ({ children }) => (
-    <a href="#" onClick={(e) => e.preventDefault()} className="text-gray-600 font-medium py-2 text-base">
+    <a href="#" onClick={(e) => e.preventDefault()} className="text-gray-600 hover:text-primary font-medium py-2 text-base transition-colors">
       {children}
     </a>
   );
@@ -580,11 +580,11 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                       >
                         {/* Left Column (Main Sub-Categories) */}
                         <div className="w-max min-w-[160px] bg-gray-50 flex flex-col border-r border-gray-100">
-                          <button className="flex items-center justify-between group text-accent font-bold text-sm text-left p-4 pr-10 whitespace-nowrap">
+                          <button className="flex items-center justify-between group text-primary font-bold text-sm text-left p-4 pr-10 whitespace-nowrap">
                             Car Rental
-                            <ChevronRightIcon className="w-4 h-4 text-accent ml-4" />
+                            <ChevronRightIcon className="w-4 h-4 text-primary ml-4" />
                           </button>
-                          <button className="text-gray-600 hover:text-accent font-bold text-sm text-left p-4 pr-10 transition-colors whitespace-nowrap">
+                          <button className="text-gray-600 hover:text-primary font-bold text-sm text-left p-4 pr-10 transition-colors whitespace-nowrap">
                             Business
                           </button>
                         </div>
