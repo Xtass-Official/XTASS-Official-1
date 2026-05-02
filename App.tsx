@@ -2378,6 +2378,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
   );
 
   const [isReservationsOpen, setIsReservationsOpen] = useState(false);
+  const [activeCategory, setActiveCategory] = useState<'Car Rental' | 'Business'>('Car Rental');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobileReservationsOpen, setIsMobileReservationsOpen] = useState(false);
 
@@ -2444,7 +2445,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
             <nav className="flex items-center h-full">
               <div className="flex items-center space-x-0 h-full">
                 <NavLinkRed active={view === 'home'} onClick={() => setView('home')}>Home</NavLinkRed>
-                <NavLinkRed active={view === 'who-we-are'} onClick={() => setView('about')}>Who We Are</NavLinkRed>
+                <NavLinkRed active={view === 'about'} onClick={() => setView('about')}>Who We Are</NavLinkRed>
                 <NavLinkRed active={view === 'services'} onClick={() => setView('services')}>What We Do</NavLinkRed>
                 <NavLinkRed active={view === 'hospitality'} onClick={() => setView('hospitality')}>Hospitality</NavLinkRed>
                 
@@ -2471,24 +2472,41 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                       >
                         {/* Left Column (Main Sub-Categories) */}
                         <div className="w-max min-w-[160px] bg-gray-50 flex flex-col border-r border-gray-100">
-                          <button className="flex items-center justify-between group text-primary font-bold text-sm text-left p-4 pr-10 whitespace-nowrap">
+                          <button 
+                            onMouseEnter={() => setActiveCategory('Car Rental')}
+                            className={`flex items-center justify-between group font-bold text-sm text-left p-4 pr-10 whitespace-nowrap transition-colors ${activeCategory === 'Car Rental' ? 'text-primary bg-white' : 'text-gray-600 hover:text-primary'}`}
+                          >
                             Car Rental
-                            <ChevronRightIcon className="w-4 h-4 text-primary ml-4" />
+                            <ChevronRightIcon className={`w-4 h-4 ml-4 transition-opacity ${activeCategory === 'Car Rental' ? 'opacity-100' : 'opacity-0'}`} />
                           </button>
-                          <button className="text-gray-600 hover:text-primary font-bold text-sm text-left p-4 pr-10 transition-colors whitespace-nowrap">
+                          <button 
+                            onMouseEnter={() => setActiveCategory('Business')}
+                            className={`flex items-center justify-between group font-bold text-sm text-left p-4 pr-10 whitespace-nowrap transition-colors ${activeCategory === 'Business' ? 'text-primary bg-white' : 'text-gray-600 hover:text-primary'}`}
+                          >
                             Business
+                            <ChevronRightIcon className={`w-4 h-4 ml-4 transition-opacity ${activeCategory === 'Business' ? 'opacity-100' : 'opacity-0'}`} />
                           </button>
                         </div>
 
                         {/* Right Column (Specific Actions) */}
-                        <div className="flex-1 p-4 flex flex-col space-y-1">
-                          <DropdownLink onClick={() => { setView('start-reservation'); setIsReservationsOpen(false); }}>Start A Car Reservation</DropdownLink>
-                          <DropdownLink onClick={() => { setView('manage-reservation'); setIsReservationsOpen(false); }}>View / Modify / Cancel</DropdownLink>
-                          <DropdownLink onClick={() => { setView('deals-and-coupons'); setIsReservationsOpen(false); }}>All Deals And Coupons</DropdownLink>
-                          <DropdownLink onClick={() => { setView('get-receipt'); setIsReservationsOpen(false); }}>Get A Receipt</DropdownLink>
-                          <DropdownLink onClick={() => { setView('one-way-rental'); setIsReservationsOpen(false); }}>One Way Car Rental</DropdownLink>
-                          <DropdownLink onClick={() => { setView('long-term-rental'); setIsReservationsOpen(false); }}>Long-Term Car Rental</DropdownLink>
-                          <DropdownLink onClick={() => { setView('business-solutions'); setIsReservationsOpen(false); }}>Solutions for Business</DropdownLink>
+                        <div className="flex-1 p-4 flex flex-col space-y-1 min-w-[240px]">
+                          {activeCategory === 'Car Rental' && (
+                            <>
+                              <DropdownLink onClick={() => { setView('start-reservation'); setIsReservationsOpen(false); }}>Start A Car Reservation</DropdownLink>
+                              <DropdownLink onClick={() => { setView('manage-reservation'); setIsReservationsOpen(false); }}>View / Modify / Cancel</DropdownLink>
+                              <DropdownLink onClick={() => { setView('deals-and-coupons'); setIsReservationsOpen(false); }}>All Deals And Coupons</DropdownLink>
+                              <DropdownLink onClick={() => { setView('get-receipt'); setIsReservationsOpen(false); }}>Get A Receipt</DropdownLink>
+                              <DropdownLink onClick={() => { setView('one-way-rental'); setIsReservationsOpen(false); }}>One Way Car Rental</DropdownLink>
+                              <DropdownLink onClick={() => { setView('long-term-rental'); setIsReservationsOpen(false); }}>Long-Term Car Rental</DropdownLink>
+                            </>
+                          )}
+                          {activeCategory === 'Business' && (
+                            <>
+                              <DropdownLink onClick={() => { setView('business-solutions'); setIsReservationsOpen(false); }}>Solutions for Business</DropdownLink>
+                              <DropdownLink onClick={() => { setView('services'); setIsReservationsOpen(false); }}>Corporate Services</DropdownLink>
+                              <DropdownLink onClick={() => { setView('about'); setIsReservationsOpen(false); }}>Partner With Us</DropdownLink>
+                            </>
+                          )}
                         </div>
                       </motion.div>
                     )}
