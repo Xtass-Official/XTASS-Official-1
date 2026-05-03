@@ -1,0 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Figtree", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Figtree", ui-sans-serif, system-ui, sans-serif;
+  
+  --color-primary: #800020;
+  --color-primary-hover: #A33B3B;
+  --color-primary-active: #4D0011;
+  --color-accent: #FFD700;
+}
