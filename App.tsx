@@ -8,7 +8,8 @@ import {
   SearchIcon, CheckCircleIcon, BookingIcon, CarIcon, ChevronDownIcon, MapPinIcon, 
   CalendarIcon, ClockIcon, ShieldIcon, StarIcon, DollarSignIcon, UploadCloudIcon,
   PhoneIcon, FacebookIcon, InstagramIcon, TikTokIcon, YoutubeIcon, PinterestIcon, 
-  TwitterIcon, ChevronRightIcon, BriefcaseIcon, BarChart2Icon
+  TwitterIcon, ChevronRightIcon, BriefcaseIcon, BarChart2Icon, ArrowRightIcon,
+  HandshakeIcon, TrendingUpIcon, UsersIcon, MailIcon, CpuIcon, HeartIcon, AwardIcon, GlobeIcon
 } from './components/Icons';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -240,7 +241,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
   const NavLinkRed: React.FC<{children: React.ReactNode; onClick: () => void; active?: boolean}> = ({ children, onClick, active }) => (
     <button 
       onClick={onClick} 
-      className={`h-full px-6 flex items-center text-sm font-bold transition-all ${active ? 'text-accent' : 'text-white hover:text-accent'}`}
+      className={`h-full px-3 flex items-center text-sm font-bold transition-all ${active ? 'text-accent' : 'text-white hover:text-accent'}`}
     >
       {children}
     </button>
@@ -1975,6 +1976,613 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
     );
   };
 
+  const BookingPage: React.FC<{
+    commonFooter: React.ReactNode;
+    onRoleSelect: (role: Role) => void;
+  }> = ({ commonFooter, onRoleSelect }) => {
+    return (
+      <main className="min-h-screen bg-gray-50">
+        {/* HERO */}
+        <section className="bg-primary text-white py-24 relative overflow-hidden">
+          <div 
+            className="absolute inset-0 bg-cover bg-center opacity-20" 
+            style={{backgroundImage: "url('https://i.ibb.co/svMbtFfn/XTASS-Hero-Banner-2.jpg')"}}>
+          </div>
+          <div className="max-w-7xl mx-auto px-4 text-center relative z-10">
+            <h1 className="text-4xl md:text-6xl font-display font-bold mb-6">Booking Services</h1>
+            <p className="text-xl text-white/80 max-w-2xl mx-auto leading-relaxed">
+              Experience seamless airport transportation and car rental services tailored to your needs.
+            </p>
+          </div>
+        </section>
+
+        {/* PLACEHOLDER CONTENT */}
+        <section className="py-20">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="bg-white rounded-3xl shadow-xl p-12 text-center">
+              <div className="w-20 h-20 bg-primary/5 rounded-full flex items-center justify-center mx-auto mb-8">
+                <CarIcon className="w-10 h-10 text-primary" />
+              </div>
+              <h2 className="text-3xl font-display font-bold text-gray-800 mb-4">Start Your Booking</h2>
+              <p className="text-gray-500 max-w-lg mx-auto mb-10">
+                Our advanced booking system is being integrated. Soon you'll be able to manage all your transport needs directly from this portal.
+              </p>
+              <div className="flex justify-center flex-wrap gap-4">
+                <button 
+                  onClick={() => onRoleSelect('Customer')}
+                  className="bg-primary text-white font-bold py-4 px-10 rounded-xl hover:bg-primary-hover transition-all"
+                >
+                  Book Instant Ride
+                </button>
+                <button 
+                  onClick={() => onRoleSelect('Customer')}
+                  className="bg-accent text-primary font-bold py-4 px-10 rounded-xl hover:bg-accent/90 transition-all"
+                >
+                  Rent A Car
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {commonFooter}
+      </main>
+    );
+  };
+
+  const CorporateServicesPage: React.FC<{
+    commonFooter: React.ReactNode;
+  }> = ({ commonFooter }) => {
+    return (
+      <main className="min-h-screen bg-white">
+        {/* HERO SECTION */}
+        <section className="bg-primary text-white py-24 relative overflow-hidden">
+          <div 
+            className="absolute inset-0 bg-cover bg-center opacity-30 mix-blend-overlay" 
+            style={{backgroundImage: "url('https://i.ibb.co/svMbtFfn/XTASS-Hero-Banner-2.jpg')"}}>
+          </div>
+          <div className="max-w-7xl mx-auto px-4 relative z-10 text-center">
+            <h1 className="text-4xl md:text-6xl font-display font-bold mb-6 tracking-tight">Enterprise-Grade Transport Solutions</h1>
+            <p className="text-xl text-white/90 max-w-2xl mx-auto leading-relaxed">
+              XTASS Corporate is built for organizations that demand precision, reliability, and scale. Streamline your personnel transport and logistics with centralized management.
+            </p>
+            <div className="mt-10 flex justify-center gap-4">
+              <button className="bg-accent text-primary font-bold py-4 px-10 rounded-xl hover:bg-accent/90 transition-all shadow-lg hover:shadow-accent/20">
+                Register Your Organization
+              </button>
+              <button className="bg-white/10 backdrop-blur-md border border-white/20 text-white font-bold py-4 px-10 rounded-xl hover:bg-white/20 transition-all">
+                Speak to an Expert
+              </button>
+            </div>
+          </div>
+        </section>
+
+        {/* OVERVIEW SECTION */}
+        <section className="py-20 bg-gray-50 border-b border-gray-100">
+          <div className="max-w-7xl mx-auto px-4 text-center">
+            <span className="text-primary font-bold text-sm uppercase tracking-widest mb-4 block">Corporate Excellence</span>
+            <h2 className="text-3xl md:text-5xl font-display font-bold text-gray-900 mb-6">Why Partner with XTASS?</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mt-16">
+              <div className="space-y-4">
+                <div className="w-16 h-16 bg-primary/5 rounded-2xl flex items-center justify-center mx-auto">
+                  <ShieldIcon className="w-8 h-8 text-primary" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-800">Priority & Reliability</h3>
+                <p className="text-gray-500">Corporate accounts enjoy priority fleet access, ensuring your personnel are never late for critical meetings or flights.</p>
+              </div>
+              <div className="space-y-4">
+                <div className="w-16 h-16 bg-primary/5 rounded-2xl flex items-center justify-center mx-auto">
+                  <BriefcaseIcon className="w-8 h-8 text-primary" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-800">Operational Efficiency</h3>
+                <p className="text-gray-500">Eliminate reimbursement headaches. Direct corporate billing and digital receipting simplify your administrative workflow.</p>
+              </div>
+              <div className="space-y-4">
+                <div className="w-16 h-16 bg-primary/5 rounded-2xl flex items-center justify-center mx-auto">
+                  <BarChart2Icon className="w-8 h-8 text-primary" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-800">Centralized Control</h3>
+                <p className="text-gray-500">Monitor usage, costs, and performance through a dedicated dashboard with role-based permissions.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* OFFERINGS GRID */}
+        <section className="py-24">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="flex flex-col md:flex-row items-end justify-between mb-12 gap-6">
+              <div className="max-w-2xl">
+                <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900">Tailored Corporate Offerings</h2>
+                <p className="text-gray-500 mt-4">We provide flexible service models that adapt to the unique operational requirements of your organization.</p>
+              </div>
+              <button className="text-primary font-bold text-sm flex items-center hover:underline">
+                View All Contract Options <ArrowRightIcon className="ml-2 w-4 h-4" />
+              </button>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[
+                { title: 'Corporate Shuttle Accounts', desc: 'Pre-scheduled or instant shuttle services for employee commutes and airport transfers.' },
+                { title: 'Executive Car Services', desc: 'Chauffeur-driven premium vehicles for senior management and visiting partners.' },
+                { title: 'Centralized Billing', desc: 'Consolidated weekly or monthly invoicing with detailed trip breakdowns for procurement.' },
+                { title: 'Bulk Booking Portal', desc: 'High-volume scheduling capability for corporate events, retreats, and group logistics.' },
+                { title: 'Custom Logistics Support', desc: 'Bespoke transport planning for specialized government or enterprise-level operations.' },
+                { title: 'Employee Perks Program', desc: 'Preferred rates and priority service for employees booked via the corporate portal.' }
+              ].map((item, idx) => (
+                <div key={idx} className="p-8 border border-gray-100 rounded-3xl hover:border-primary/20 hover:shadow-xl hover:shadow-primary/5 transition-all group bg-white">
+                  <div className="w-12 h-12 bg-gray-50 rounded-xl flex items-center justify-center mb-6 group-hover:bg-primary/5 transition-colors">
+                    <CheckCircleIcon className="w-6 h-6 text-primary/40 group-hover:text-primary transition-colors" />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-800 mb-3">{item.title}</h3>
+                  <p className="text-gray-500 text-sm leading-relaxed">{item.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ONBOARDING SECTION */}
+        <section className="py-24 bg-[#1A0006] text-white">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+              <div>
+                <h2 className="text-3xl md:text-4xl font-display font-bold mb-8">4 Simple Steps to Onboarding</h2>
+                <div className="space-y-12">
+                  {[
+                    { num: '01', title: 'Register Organization', desc: 'Submit your business details and required documentation for rapid verification.' },
+                    { num: '02', title: 'Verification & Approval', desc: 'Our corporate team reviews your application and activates your primary account.' },
+                    { num: '03', title: 'Configure Dashboard', desc: 'Add authorized users, set service limits, and configure your billing preferences.' },
+                    { num: '04', title: 'Ready to Book', desc: 'Your team can now book services via the app or portal under the corporate mandate.' }
+                  ].map((step, idx) => (
+                    <div key={idx} className="flex gap-6">
+                      <span className="text-3xl font-display font-black text-accent/30">{step.num}</span>
+                      <div>
+                        <h3 className="text-xl font-bold mb-2">{step.title}</h3>
+                        <p className="text-white/60 text-sm">{step.desc}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="bg-white rounded-3xl p-8 md:p-12 text-gray-900 shadow-2xl">
+                <h3 className="text-2xl font-display font-bold mb-6">Request Enterprise Consult</h3>
+                <form className="space-y-4" onClick={(e) => e.stopPropagation()}>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <label className="text-xs font-bold uppercase text-gray-400">Company Name</label>
+                      <input type="text" className="w-full bg-gray-50 border-none rounded-xl p-4 focus:ring-2 focus:ring-primary/20" placeholder="e.g., Ghana National Petroleum" />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-xs font-bold uppercase text-gray-400">Industry</label>
+                      <select className="w-full bg-gray-50 border-none rounded-xl p-4 focus:ring-2 focus:ring-primary/20">
+                        <option>Government</option>
+                        <option>Oil & Gas</option>
+                        <option>Finance</option>
+                        <option>Tech/Innovation</option>
+                        <option>Telecoms</option>
+                        <option>Other</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold uppercase text-gray-400">Contact Email</label>
+                    <input type="email" className="w-full bg-gray-50 border-none rounded-xl p-4 focus:ring-2 focus:ring-primary/20" placeholder="admin@organization.com" />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold uppercase text-gray-400">Estimated Monthly Bookings</label>
+                    <input type="number" className="w-full bg-gray-50 border-none rounded-xl p-4 focus:ring-2 focus:ring-primary/20" placeholder="e.g., 50" />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold uppercase text-gray-400">Additional Inquiry</label>
+                    <textarea className="w-full bg-gray-50 border-none rounded-xl p-4 focus:ring-2 focus:ring-primary/20 h-32" placeholder="Tell us more about your logistics needs..."></textarea>
+                  </div>
+                  <button className="w-full bg-primary text-white font-bold py-4 rounded-xl hover:bg-primary-hover transition-all mt-4">
+                    Submit Request
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {commonFooter}
+      </main>
+    );
+  };
+
+  const CareersPage: React.FC<{ commonFooter: React.ReactNode }> = ({ commonFooter }) => {
+    const [departmentFilter, setDepartmentFilter] = useState('All');
+    const [selectedJob, setSelectedJob] = useState<any>(null);
+
+    const jobs = [
+      { id: 1, title: 'Senior Full-Stack Engineer', dept: 'Tech', loc: 'Accra/Remote', type: 'Full-time' },
+      { id: 2, title: 'Operations Manager', dept: 'Operations', loc: 'Kumasi', type: 'Full-time' },
+      { id: 3, title: 'Customer Experience Lead', dept: 'Support', loc: 'Accra', type: 'Full-time' },
+      { id: 4, title: 'Digital Marketing Specialist', dept: 'Marketing', loc: 'Remote', type: 'Contract' },
+      { id: 5, title: 'Fleet Maintenance Supervisor', dept: 'Operations', loc: 'Takoradi', type: 'Full-time' },
+      { id: 6, title: 'Data Analyst (Logistics)', dept: 'Tech', loc: 'Remote', type: 'Full-time' },
+    ];
+
+    const filteredJobs = departmentFilter === 'All' ? jobs : jobs.filter(j => j.dept === departmentFilter);
+
+    return (
+      <main className="min-h-screen bg-white">
+        {/* HERO */}
+        <section className="bg-[#0A0002] text-white py-24 relative overflow-hidden">
+          <div className="absolute inset-0 bg-[url('https://i.ibb.co/svMbtFfn/XTASS-Hero-Banner-2.jpg')] opacity-20 bg-cover bg-center"></div>
+          <div className="max-w-7xl mx-auto px-4 relative z-10 text-center">
+            <motion.h1 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-4xl md:text-6xl font-display font-bold mb-6"
+            >
+              Drive Your Career Forward
+            </motion.h1>
+            <p className="text-xl text-white/70 max-w-2xl mx-auto mb-10 leading-relaxed">
+              Join a high-performance team revolutionizing ground transportation across West Africa. We’re looking for bold thinkers and efficient doers.
+            </p>
+            <a href="#jobs" className="bg-accent text-primary font-bold py-4 px-10 rounded-xl hover:bg-accent/90 transition-all shadow-xl shadow-accent/10">
+              View Open Roles
+            </a>
+          </div>
+        </section>
+
+        {/* CULTURE & BENEFITS */}
+        <section className="py-24">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl font-display font-bold text-gray-900">Why Work at XTASS?</h2>
+              <div className="w-20 h-1.5 bg-accent mx-auto mt-4 rounded-full"></div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+              {[
+                { icon: <CpuIcon className="w-8 h-8 text-primary" />, title: "Innovation First", desc: "Work with the latest logistics technology and help us build scalable, data-driven transport ecosystems." },
+                { icon: <HeartIcon className="w-8 h-8 text-primary" />, title: "Inclusive Culture", desc: "We celebrate diversity and foster a workspace where every voice contributes to our collective success." },
+                { icon: <TrendingUpIcon className="w-8 h-8 text-primary" />, title: "Growth & Impact", desc: "As a rapidly growing company, you'll have the autonomy to make a real impact and grow your career fast." }
+              ].map((item, i) => (
+                <div key={i} className="text-center p-8 bg-gray-50 rounded-3xl border border-gray-100 group hover:shadow-xl transition-all">
+                  <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm group-hover:scale-110 transition-transform">
+                    {item.icon}
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-800 mb-4">{item.title}</h3>
+                  <p className="text-gray-500 leading-relaxed">{item.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* OPEN POSITIONS */}
+        <section id="jobs" className="py-24 bg-gray-50 border-y border-gray-100">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="flex flex-col md:flex-row justify-between items-center mb-12 gap-8 text-left">
+              <div className="text-left w-full md:w-auto">
+                <h2 className="text-3xl font-display font-bold text-gray-900">Open Positions</h2>
+                <p className="text-gray-500 mt-2">Find the role that matches your expertise.</p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {['All', 'Tech', 'Operations', 'Support', 'Marketing'].map(dept => (
+                  <button 
+                    key={dept}
+                    onClick={() => setDepartmentFilter(dept)}
+                    className={`px-6 py-2 rounded-full font-bold text-sm transition-all ${departmentFilter === dept ? 'bg-primary text-white' : 'bg-white text-gray-600 border border-gray-100 hover:border-primary/20'}`}
+                  >
+                    {dept}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <AnimatePresence mode="popLayout">
+                {filteredJobs.map((job) => (
+                  <motion.div 
+                    layout
+                    key={job.id}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.2 }}
+                    className="bg-white p-6 md:p-8 rounded-3xl border border-gray-100 flex flex-col md:flex-row justify-between items-center group hover:border-primary/20 hover:shadow-lg transition-all"
+                  >
+                    <div className="text-center md:text-left mb-6 md:mb-0">
+                      <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors">{job.title}</h3>
+                      <div className="flex flex-wrap justify-center md:justify-start gap-4 text-sm text-gray-400">
+                        <span className="flex items-center"><BriefcaseIcon className="w-4 h-4 mr-2" /> {job.dept}</span>
+                        <span className="flex items-center"><MapPinIcon className="w-4 h-4 mr-2" /> {job.loc}</span>
+                        <span className="flex items-center"><ClockIcon className="w-4 h-4 mr-2" /> {job.type}</span>
+                      </div>
+                    </div>
+                    <button 
+                      onClick={() => setSelectedJob(job)}
+                      className="bg-primary text-white font-bold py-3 px-8 rounded-xl hover:bg-primary-hover transition-all flex items-center group-hover:shadow-lg"
+                    >
+                      View Details
+                    </button>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+              {filteredJobs.length === 0 && (
+                <div className="text-center py-20 bg-white rounded-3xl border border-dashed border-gray-200">
+                  <p className="text-gray-400 font-bold">No positions found in this department.</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+
+        {/* APPLICATION MODAL/OVERLAY (CONDITIONAL) */}
+        {selectedJob && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="absolute inset-0 bg-primary/40 backdrop-blur-md"
+              onClick={() => setSelectedJob(null)}
+            ></motion.div>
+            <motion.div 
+              initial={{ opacity: 0, y: 100, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              className="bg-white w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-3xl relative z-10 shadow-2xl p-8 md:p-12 text-left"
+            >
+              <button 
+                onClick={() => setSelectedJob(null)}
+                className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <div className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100">✕</div>
+              </button>
+              
+              <div className="mb-10">
+                <span className="text-primary font-black text-[10px] uppercase tracking-widest block mb-2 italic">Now Hiring</span>
+                <h2 className="text-3xl font-display font-bold text-gray-900 mb-4">{selectedJob.title}</h2>
+                <div className="flex gap-4 text-sm font-medium text-gray-500">
+                  <span className="px-3 py-1 bg-gray-100 rounded-full">{selectedJob.dept}</span>
+                  <span className="px-3 py-1 bg-gray-100 rounded-full">{selectedJob.loc}</span>
+                </div>
+              </div>
+
+              <div className="prose prose-sm max-w-none text-gray-600 space-y-6">
+                <div>
+                  <h4 className="text-gray-900 font-bold mb-2">About the Role</h4>
+                  <p>As a {selectedJob.title}, you will play an instrumental role in scaling the XTASS platform. You'll be working in a fast-paced, mission-driven environment where operational excellence is the standard.</p>
+                </div>
+                <div>
+                  <h4 className="text-gray-900 font-bold mb-2">Requirements</h4>
+                  <ul className="list-disc pl-5 space-y-2">
+                    <li>3+ years of relevant industry experience.</li>
+                    <li>Strong alignment with our core values of Efficiency and Reliability.</li>
+                    <li>Excellent communication and problem-solving skills.</li>
+                    <li>Proven track record of high-performance in a high-growth environment.</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div className="mt-12 pt-12 border-t border-gray-100">
+                <h3 className="text-2xl font-display font-bold mb-8">Apply for this Position</h3>
+                <form className="space-y-6" onClick={(e) => e.stopPropagation()}>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-black uppercase text-gray-400 italic">Full Name</label>
+                      <input type="text" className="w-full bg-gray-50 border-none rounded-xl p-4 focus:ring-2 focus:ring-primary/20" placeholder="John Doe" />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-black uppercase text-gray-400 italic">Email Address</label>
+                      <input type="email" className="w-full bg-gray-50 border-none rounded-xl p-4 focus:ring-2 focus:ring-primary/20" placeholder="john@example.com" />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-black uppercase text-gray-400 italic">Resume/CV URL (LinkedIn or Drive)</label>
+                    <input type="url" className="w-full bg-gray-50 border-none rounded-xl p-4 focus:ring-2 focus:ring-primary/20" placeholder="https://linkedin.com/in/johndoe" />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-black uppercase text-gray-400 italic">Why XTASS?</label>
+                    <textarea className="w-full bg-gray-50 border-none rounded-xl p-4 focus:ring-2 focus:ring-primary/20 h-32 resize-none" placeholder="Tell us how you'll make an impact..."></textarea>
+                  </div>
+                  <button className="w-full bg-primary text-white font-bold py-5 rounded-xl hover:bg-primary-hover transition-all flex items-center justify-center">
+                    Submit Application <ArrowRightIcon className="ml-2 w-5 h-5 font-bold" />
+                  </button>
+                </form>
+              </div>
+            </motion.div>
+          </div>
+        )}
+
+        {commonFooter}
+      </main>
+    );
+  };
+
+  const PartnerWithUsPage: React.FC<{
+    commonFooter: React.ReactNode;
+  }> = ({ commonFooter }) => {
+    return (
+      <main className="min-h-screen bg-white font-sans text-left">
+        {/* HERO SECTION */}
+        <section className="bg-primary text-white py-24 relative overflow-hidden text-left">
+          <div 
+            className="absolute inset-0 bg-cover bg-center opacity-25 mix-blend-soft-light" 
+            style={{backgroundImage: "url('https://i.ibb.co/svMbtFfn/XTASS-Hero-Banner-2.jpg')"}}>
+          </div>
+          <div className="max-w-7xl mx-auto px-4 relative z-10">
+            <div className="max-w-3xl">
+              <motion.span 
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="inline-block bg-accent/20 text-accent font-bold py-2 px-4 rounded-full text-xs uppercase tracking-widest mb-6"
+              >
+                Partnership Ecosystem
+              </motion.span>
+              <h1 className="text-4xl md:text-6xl font-display font-bold mb-6 leading-tight">Scale Your Business with XTASS</h1>
+              <p className="text-xl text-white/80 leading-relaxed mb-10">
+                Join our network of elite service providers, strategic partners, and technology innovators. Together, we move the world.
+              </p>
+              <div className="flex flex-wrap gap-4">
+                <a href="#partner-form" className="bg-accent text-primary font-bold py-4 px-10 rounded-xl hover:bg-accent/90 transition-all shadow-xl shadow-accent/10">
+                  Become a Partner
+                </a>
+                <button className="bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white font-bold py-4 px-10 rounded-xl transition-all border border-white/10">
+                  Partnership Guide
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* VALUE PROPOSITION GRID */}
+        <section className="py-24 bg-gray-50">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-4">Why Partner With Us?</h2>
+              <p className="text-gray-500 max-w-2xl mx-auto">We provide the tools, the network, and the support to help you achieve sustainable growth and operational excellence.</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {[
+                { icon: <UsersIcon className="w-7 h-7 text-primary" />, title: "Global Network", desc: "Gain instant access to a vast and diverse customer base across multiple markets." },
+                { icon: <TrendingUpIcon className="w-7 h-7 text-primary" />, title: "Revenue Growth", desc: "Leverage our high-traffic platform to maximize your earnings and utilization." },
+                { icon: <ShieldIcon className="w-7 h-7 text-primary" />, title: "Brand Security", desc: "Partner with a trusted, enterprise-grade platform known for reliability and safety." },
+                { icon: <BriefcaseIcon className="w-7 h-7 text-primary" />, title: "Full Support", desc: "Dedicated account management and technical support to ensure your success." }
+              ].map((item, i) => (
+                <div key={i} className="bg-white p-8 rounded-3xl border border-gray-100 hover:shadow-2xl hover:shadow-primary/5 transition-all group">
+                  <div className="w-14 h-14 bg-primary/5 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    {item.icon}
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-800 mb-3">{item.title}</h3>
+                  <p className="text-gray-500 text-sm leading-relaxed">{item.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* PARTNERSHIP CATEGORIES */}
+        <section className="py-24">
+          <div className="max-w-7xl mx-auto px-4 text-center">
+            <h2 className="text-2xl md:text-3xl font-display font-bold text-gray-900 mb-12 uppercase tracking-tighter">Choose Your Path</h2>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {[
+                { title: "Service Partners", type: "Fleet & Logistics", features: ["Operator Dashboard", "Dispatch Integration", "Weekly Payouts"] },
+                { title: "Strategic Partners", type: "Enterprise & Gov", features: ["Contract Pricing", "Co-Branded Solutions", "Shared Roadmaps"] },
+                { title: "Affiliate Partners", type: "Marketing & Referrals", features: ["Tiered Commissions", "Real-time Tracking", "Promo Toolkit"] }
+              ].map((cat, i) => (
+                <div key={i} className="flex flex-col h-full bg-white border border-gray-100 rounded-3xl p-10 text-left hover:border-primary/20 transition-all">
+                  <span className="text-xs font-black text-primary uppercase tracking-widest mb-2">{cat.type}</span>
+                  <h3 className="text-2xl font-display font-bold text-gray-800 mb-6">{cat.title}</h3>
+                  <ul className="flex-grow space-y-4 mb-10">
+                    {cat.features.map((f, j) => (
+                      <li key={j} className="flex items-center text-sm text-gray-500">
+                        <CheckCircleIcon className="w-5 h-5 text-accent mr-3" /> {f}
+                      </li>
+                    ))}
+                  </ul>
+                  <button className="w-full bg-primary text-white font-bold py-4 rounded-xl hover:bg-primary-hover transition-all">
+                    Register Interest
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* HOW IT WORKS */}
+        <section className="py-24 bg-primary text-white overflow-hidden relative">
+          <div className="absolute top-0 right-0 w-1/2 h-full bg-accent/5 -skew-x-12 transform translate-x-1/4"></div>
+          <div className="max-w-7xl mx-auto px-4 relative z-10 text-left">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-5xl font-display font-bold mb-4">Simple Onboarding</h2>
+              <p className="text-white/60">We’ve designed our process to be as smooth as our rides.</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
+              {[
+                { num: "01", title: "Apply", desc: "Submit your details and specify your category." },
+                { num: "02", title: "Verify", desc: "Our team validates your identity and credentials." },
+                { num: "03", title: "Integrate", desc: "Connect your systems or set up your portal." },
+                { num: "04", title: "Scale", desc: "Start accepting requests and growing revenue." }
+              ].map((step, i) => (
+                <div key={i} className="text-center flex flex-col items-center">
+                  <div className="w-16 h-16 rounded-full border-2 border-accent/30 flex items-center justify-center text-2xl font-display font-black text-accent mb-6 shadow-2xl shadow-accent/20">
+                    {step.num}
+                  </div>
+                  <h3 className="text-lg font-bold mb-3">{step.title}</h3>
+                  <p className="text-white/40 text-sm leading-relaxed">{step.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* APPLICATION FORM SECTION */}
+        <section id="partner-form" className="py-24 bg-gray-50">
+          <div className="max-w-5xl mx-auto px-4">
+            <div className="bg-white rounded-3xl shadow-2xl shadow-primary/5 overflow-hidden flex flex-col md:flex-row">
+              <div className="w-full md:w-2/5 bg-primary p-12 text-white">
+                <h2 className="text-3xl font-display font-bold mb-8 italic">Ready to Start?</h2>
+                <p className="text-white/60 mb-10 leading-relaxed">"Joining the XTASS ecosystem was the single best strategic decision our logistics company made this year. The integration was seamless, and the growth was immediate."</p>
+                <div className="space-y-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center">
+                      <MailIcon className="w-5 h-5 text-accent" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-white/40 uppercase font-black tracking-widest">Email Support</p>
+                      <p className="text-sm font-bold">partnerships@xtass.com</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center">
+                      <PhoneIcon className="w-5 h-5 text-accent" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-white/40 uppercase font-black tracking-widest">Phone Inquiries</p>
+                      <p className="text-sm font-bold">+233 (0) 555-XTASS</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="w-full md:w-3/5 p-12 text-left">
+                <h3 className="text-2xl font-display font-bold text-gray-800 mb-8 tracking-tight">Partner Application</h3>
+                <form className="space-y-6" onClick={(e) => e.stopPropagation()}>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-1 text-left">
+                      <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest italic">Entity Name</label>
+                      <input type="text" className="w-full bg-gray-50 border border-gray-100 rounded-xl p-4 focus:ring-2 focus:ring-primary/20 outline-none transition-all" placeholder="Legal name" />
+                    </div>
+                    <div className="space-y-1 text-left">
+                      <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest italic">Partnership Type</label>
+                      <select className="w-full bg-gray-50 border border-gray-100 rounded-xl p-4 focus:ring-2 focus:ring-primary/20 outline-none transition-all appearance-none cursor-pointer">
+                        <option>Service Partner</option>
+                        <option>Strategic Partner</option>
+                        <option>Affiliate Partner</option>
+                        <option>Technology/API Partner</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="space-y-1 text-left">
+                    <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest italic">Email Address</label>
+                    <input type="email" className="w-full bg-gray-50 border border-gray-100 rounded-xl p-4 focus:ring-2 focus:ring-primary/20 outline-none" placeholder="business@example.com" />
+                  </div>
+                   <div className="space-y-1 text-left">
+                    <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest italic">Market Focus</label>
+                    <input type="text" className="w-full bg-gray-50 border border-gray-100 rounded-xl p-4 focus:ring-2 focus:ring-primary/20 outline-none" placeholder="e.g., Accra, Kumasi, International" />
+                  </div>
+                  <div className="space-y-1 text-left">
+                    <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest italic">Business Description</label>
+                    <textarea className="w-full bg-gray-50 border border-gray-100 rounded-xl p-4 focus:ring-2 focus:ring-primary/20 outline-none h-32 resize-none" placeholder="Briefly describe your business model..."></textarea>
+                  </div>
+                  <button className="w-full bg-primary text-white font-bold py-5 rounded-xl hover:bg-primary-hover transition-all shadow-xl shadow-primary/10 flex items-center justify-center">
+                    Initiate Onboarding <ArrowRightIcon className="ml-2 w-5 h-5" />
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {commonFooter}
+      </main>
+    );
+  };
+
   const ManageReservationPage: React.FC<{
     setView: (v: string) => void;
     onRoleSelect: (role: Role) => void;
@@ -2312,7 +2920,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
               <ul className="space-y-3 text-gray-300">
                 <li><a href="#" className="hover:text-white transition-colors">Why Choose XTASS</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Our Story</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Careers</a></li>
+                <li><button onClick={() => setView('careers')} className="hover:text-white transition-colors cursor-pointer text-left">Careers</button></li>
                 <li><a href="#" className="hover:text-white transition-colors">Press & Media</a></li>
               </ul>
             </div>
@@ -2448,6 +3056,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                 <NavLinkRed active={view === 'about'} onClick={() => setView('about')}>Who We Are</NavLinkRed>
                 <NavLinkRed active={view === 'services'} onClick={() => setView('services')}>What We Do</NavLinkRed>
                 <NavLinkRed active={view === 'hospitality'} onClick={() => setView('hospitality')}>Hospitality</NavLinkRed>
+                <NavLinkRed active={view === 'booking'} onClick={() => setView('booking')}>Booking</NavLinkRed>
                 
                 {/* Reservations Dropdown Trigger */}
                 <div 
@@ -2455,7 +3064,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                   onMouseEnter={() => setIsReservationsOpen(true)}
                   onMouseLeave={() => setIsReservationsOpen(false)}
                 >
-                  <button className={`h-full px-6 text-sm font-bold transition-all flex items-center group ${isReservationsOpen ? 'text-accent' : 'text-white hover:text-accent'}`}>
+                  <button className={`h-full px-3 text-sm font-bold transition-all flex items-center group ${isReservationsOpen ? 'text-accent' : 'text-white hover:text-accent'}`}>
                     Reservations
                     <ChevronDownIcon className={`ml-2 w-4 h-4 transition-transform ${isReservationsOpen ? 'rotate-180' : ''}`} />
                   </button>
@@ -2503,8 +3112,8 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                           {activeCategory === 'Business' && (
                             <>
                               <DropdownLink onClick={() => { setView('business-solutions'); setIsReservationsOpen(false); }}>Solutions for Business</DropdownLink>
-                              <DropdownLink onClick={() => { setView('services'); setIsReservationsOpen(false); }}>Corporate Services</DropdownLink>
-                              <DropdownLink onClick={() => { setView('about'); setIsReservationsOpen(false); }}>Partner With Us</DropdownLink>
+                              <DropdownLink onClick={() => { setView('corporate'); setIsReservationsOpen(false); }}>Corporate</DropdownLink>
+                              <DropdownLink onClick={() => { setView('partner'); setIsReservationsOpen(false); }}>Partner With Us</DropdownLink>
                             </>
                           )}
                         </div>
@@ -2513,13 +3122,13 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                   </AnimatePresence>
                 </div>
 
-                <NavLinkRed active={view === 'careers'} onClick={() => {}}>Careers</NavLinkRed>
-                <NavLinkRed active={view === 'contact'} onClick={() => {}}>Contact Us</NavLinkRed>
+                <NavLinkRed active={view === 'careers'} onClick={() => setView('careers')}>Careers</NavLinkRed>
+                <NavLinkRed active={view === 'contact'} onClick={() => setView('contact')}>Contact Us</NavLinkRed>
               </div>
             </nav>
 
             {/* Social Icons */}
-            <div className="hidden lg:flex items-center space-x-4">
+            <div className="hidden lg:flex items-center space-x-[9.6px]">
               <SocialIcon><FacebookIcon className="w-4 h-4" /></SocialIcon>
               <SocialIcon><InstagramIcon className="w-4 h-4" /></SocialIcon>
               <SocialIcon><TikTokIcon className="w-4 h-4" /></SocialIcon>
@@ -2545,6 +3154,9 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                 <MobileNavLink onClick={() => { setView('about'); setIsMobileMenuOpen(false); }}>Who We Are</MobileNavLink>
                 <MobileNavLink onClick={() => { setView('services'); setIsMobileMenuOpen(false); }}>What We Do</MobileNavLink>
                 <MobileNavLink onClick={() => { setView('hospitality'); setIsMobileMenuOpen(false); }}>Hospitality</MobileNavLink>
+                <MobileNavLink onClick={() => { setView('booking'); setIsMobileMenuOpen(false); }}>Booking</MobileNavLink>
+                <MobileNavLink onClick={() => { setView('corporate'); setIsMobileMenuOpen(false); }}>Corporate</MobileNavLink>
+                <MobileNavLink onClick={() => { setView('partner'); setIsMobileMenuOpen(false); }}>Partner With Us</MobileNavLink>
                 
                 {/* Mobile Reservations Accordion */}
                 <div className="flex flex-col">
@@ -2580,10 +3192,10 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                   </AnimatePresence>
                 </div>
 
-                <MobileNavLink onClick={() => setIsMobileMenuOpen(false)}>Careers</MobileNavLink>
-                <MobileNavLink onClick={() => setIsMobileMenuOpen(false)}>Contact Us</MobileNavLink>
+                <MobileNavLink onClick={() => { setView('careers'); setIsMobileMenuOpen(false); }}>Careers</MobileNavLink>
+                <MobileNavLink onClick={() => { setView('contact'); setIsMobileMenuOpen(false); }}>Contact Us</MobileNavLink>
                 
-                <div className="pt-8 flex justify-center space-x-6 text-primary">
+                <div className="pt-8 flex justify-center space-x-[14.4px] text-primary">
                   <FacebookIcon className="w-6 h-6" />
                   <InstagramIcon className="w-6 h-6" />
                   <TikTokIcon className="w-6 h-6" />
@@ -4374,6 +4986,22 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
         <main className="min-h-screen bg-white">
           {/* Empty Hospitality Page */}
         </main>
+      )}
+
+      {view === 'booking' && (
+        <BookingPage commonFooter={commonFooter} onRoleSelect={onRoleSelect} />
+      )}
+
+      {view === 'corporate' && (
+        <CorporateServicesPage commonFooter={commonFooter} />
+      )}
+
+      {view === 'partner' && (
+        <PartnerWithUsPage commonFooter={commonFooter} />
+      )}
+
+      {view === 'careers' && (
+        <CareersPage commonFooter={commonFooter} />
       )}
 
       {view === 'accessibility' && (
