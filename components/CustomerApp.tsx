@@ -1487,7 +1487,7 @@ const PaymentProcessingScreen: React.FC<PaymentProcessingScreenProps> = ({ navig
 const TripTrackingScreen: React.FC<NavigationProps> = ({ navigate }) => {
     return (
         <ScreenContainer>
-            <Header title="Tracking Your Ride" />
+            <Header title="Tracking Your Ride" onBack={() => navigate('ServiceSelection')} />
             <div className="relative h-[calc(100vh-120px)]">
                 <div className="absolute inset-0 bg-gray-300 flex items-center justify-center">
                     <p className="text-gray-500 font-semibold">Live Map Placeholder</p>
@@ -1526,7 +1526,7 @@ const TripCompletionReceiptScreen: React.FC<TripCompletionReceiptScreenProps> = 
     const fare = flow === 'rental' && car ? car.price * duration : 10;
     return (
         <ScreenContainer>
-            <Header title="Trip Receipt" />
+            <Header title="Trip Receipt" onBack={() => navigate('ServiceSelection')} />
             <div className="p-4 text-center">
                 <CheckCircleIcon className="w-24 h-24 text-green-500 mx-auto mb-4" />
                 <h2 className="text-2xl font-bold font-display">{flow === 'rental' ? 'Rental Complete' : 'Trip Completed'}!</h2>

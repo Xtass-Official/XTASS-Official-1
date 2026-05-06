@@ -3,6 +3,7 @@ import { CustomerApp } from './components/CustomerApp';
 import { DriverApp } from './components/DriverApp';
 import { AdminPanel } from './components/AdminPanel';
 import { AuthDropdown } from './components/shared/AuthDropdown';
+import { ReservationLayout } from './components/ReservationLayout';
 import type { Role, Screen } from './types';
 import { 
   SearchIcon, CheckCircleIcon, BookingIcon, CarIcon, ChevronDownIcon, MapPinIcon, 
@@ -78,13 +79,87 @@ const validateAndFormatDate = (value: string, previousValue: string): { newValue
 };
 
 
+// Screen to Route mapping for SEO-friendly URLs
+const SCREEN_ROUTES: Record<string, Screen> = {
+  '/': 'Welcome',
+  '/customer/login': 'Login',
+  '/customer/register': 'Register',
+  '/driver/login': 'DriverLogin',
+  '/admin/login': 'AdminLogin',
+};
+
+export const WELCOME_ROUTES_MAP: Record<string, string> = {
+  '/reservations/car-rental/start': 'start-reservation',
+  '/reservations/car-rental/manage': 'manage-reservation',
+  '/reservations/car-rental/deals': 'deals-and-coupons',
+  '/reservations/car-rental/one-way': 'one-way-rental',
+  '/reservations/car-rental/long-term': 'long-term-rental',
+  '/reservations/business/solutions': 'business-solutions',
+  '/reservations/business/corporate': 'corporate-services',
+};
+
+const REVERSE_WELCOME_ROUTES: Record<string, string> = {};
+for (const [route, view] of Object.entries(WELCOME_ROUTES_MAP)) {
+  REVERSE_WELCOME_ROUTES[view] = route;
+}
+
+// Generate reverse lookup
+const ROUTE_FOR_SCREEN: Partial<Record<Screen, string>> = {};
+for (const [route, screen] of Object.entries(SCREEN_ROUTES)) {
+  ROUTE_FOR_SCREEN[screen as Screen] = route;
+}
+
 const App: React.FC = () => {
   const [role, setRole] = useState<Role | null>(null);
   const [screen, setScreen] = useState<Screen>('Welcome');
   const [initialBookingDetails, setInitialBookingDetails] = useState<BookingDetails | null>(null);
+  const [initialWelcomeView, setInitialWelcomeView] = useState('home');
+
+  // Handle browser back/forward and initial load
+  React.useEffect(() => {
+    const handlePopState = () => {
+      const path = window.location.pathname;
+      let targetScreen = SCREEN_ROUTES[path];
+      let targetWelcomeView = WELCOME_ROUTES_MAP[path];
+      
+      if (targetWelcomeView) {
+        setInitialWelcomeView(targetWelcomeView);
+        setRole(null);
+        setScreen('Welcome');
+        return;
+      }
+
+      // Fallback for screens not mapped explicitly
+      if (!targetScreen && path !== '/') {
+        const potentialScreenEntry = Object.entries(ROUTE_FOR_SCREEN).find(([, r]) => r === path);
+        if (potentialScreenEntry) {
+           targetScreen = potentialScreenEntry[0] as Screen;
+        }
+      }
+      
+      if (!targetScreen) {
+          targetScreen = 'Welcome';
+          setInitialWelcomeView('home');
+      }
+      
+      setScreen(targetScreen);
+      
+      // Infer role from path or screen
+      if (path.startsWith('/driver') || targetScreen.toString().startsWith('Driver')) setRole('Driver');
+      else if (path.startsWith('/admin') || targetScreen.toString().startsWith('Admin')) setRole('Admin');
+      else if (path !== '/' && targetScreen !== 'Welcome') setRole('Customer');
+      else setRole(null);
+    };
+    
+    handlePopState();
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   const navigate = useCallback((newScreen: Screen) => {
     setScreen(newScreen);
+    const path = ROUTE_FOR_SCREEN[newScreen] || `/${newScreen.toString().toLowerCase()}`;
+    window.history.pushState({}, '', path);
   }, []);
 
   const handleRoleSelect = (selectedRole: Role) => {
@@ -110,7 +185,7 @@ const App: React.FC = () => {
 
   const renderContent = () => {
     if (!role) {
-      return <WelcomeScreen onRoleSelect={handleRoleSelect} setInitialBookingDetails={setInitialBookingDetails} />;
+      return <WelcomeScreen initialView={initialWelcomeView} onRoleSelect={handleRoleSelect} setInitialBookingDetails={setInitialBookingDetails} />;
     }
 
     switch (role) {
@@ -121,7 +196,7 @@ const App: React.FC = () => {
       case 'Admin':
         return <AdminPanel screen={screen} navigate={navigate} logout={logout} />;
       default:
-        return <WelcomeScreen onRoleSelect={handleRoleSelect} setInitialBookingDetails={setInitialBookingDetails} />;
+        return <WelcomeScreen initialView={initialWelcomeView} onRoleSelect={handleRoleSelect} setInitialBookingDetails={setInitialBookingDetails} />;
     }
   };
 
@@ -135,10 +210,25 @@ const App: React.FC = () => {
 interface WelcomeScreenProps {
   onRoleSelect: (role: Role) => void;
   setInitialBookingDetails: (details: BookingDetails | null) => void;
+  initialView?: string;
 }
 
-const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialBookingDetails }) => {
-  const [view, setView] = useState('home');
+const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialBookingDetails, initialView = 'home' }) => {
+  const [view, setView] = useState(initialView);
+  
+  // Keep view in sync with initialView if it changes from back/forward
+  React.useEffect(() => {
+    setView(initialView);
+  }, [initialView]);
+
+  // Sync URL when view changes via state (e.g. from buttons)
+  React.useEffect(() => {
+    const expectedPath = REVERSE_WELCOME_ROUTES[view] || '/';
+    if (window.location.pathname !== expectedPath) {
+        window.history.pushState({}, '', expectedPath);
+    }
+  }, [view]);
+
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [openFullFaq, setOpenFullFaq] = useState<number | null>(0);
   
@@ -451,7 +541,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
             <div className="flex-1 hidden md:block relative">
               <div 
                 className="absolute inset-0 bg-cover bg-center transition-transform duration-[2000ms] hover:scale-110" 
-                style={{backgroundImage: "url('https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?q=80&w=2070&auto=format&fit=crop')"}}
+                style={{backgroundImage: "url('https://i.ibb.co/zWN7ZHns/Airport-Pickup-1.jpg')"}}
               ></div>
               <div className="absolute inset-0 bg-gradient-to-r from-primary via-transparent to-transparent"></div>
               {/* Floating badge */}
@@ -561,7 +651,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                  {
                    title: "Ride Type FAQs",
                    desc: "Detailed information about Instant, Scheduled, and Rental Rides to help you choose the best fit.",
-                   img: "https://images.unsplash.com/photo-1549923746-c502d488b3ea?q=80&w=2071&auto=format&fit=crop",
+                   img: "https://i.ibb.co/0j6bZk7B/Airport-Pickup-2.jpg",
                    btn: "View Ride FAQs"
                  },
                  {
@@ -573,7 +663,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                  {
                    title: "Plan Your Trip",
                    desc: "Explore travel guides and destination inspiration for your next journey across the region.",
-                   img: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=2070&auto=format&fit=crop",
+                   img: "https://i.ibb.co/wh9yvPZb/Airport-Pickup-3.jpg",
                    btn: "See Inspirations"
                  }
                ].map((card, i) => (
@@ -619,21 +709,21 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                  {
                    title: "Fleet Categories",
                    desc: "Discover our full range of reliable vehicles, from compact sedans to executive SUVs.",
-                   img: "https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?q=80&w=2070&auto=format&fit=crop",
+                   img: "https://i.ibb.co/sv5GZPW4/Airport-Pickup-4.jpg",
                    btn: "View All Vehicles",
                    theme: "light"
                  },
                  {
                    title: "Service Locations",
                    desc: "XTASS operates across Ghana's major airports and cities with 24/7 support availability.",
-                   img: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=2070&auto=format&fit=crop",
+                   img: "https://i.ibb.co/HTVggwbD/Airport-Pickup-5.jpg",
                    btn: "See All Locations",
                    theme: "dark"
                  },
                  {
                    title: "Exclusive Deals",
                    desc: "Unlock corporate rates and early booking discounts across our entire network.",
-                   img: "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?q=80&w=2070&auto=format&fit=crop",
+                   img: "https://i.ibb.co/JRMzmm2x/Airport-Pickup-6.jpg",
                    btn: "Browse Offers",
                    theme: "light"
                  }
@@ -754,21 +844,21 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                    {
                      title: "Instant Pickup",
                      desc: "Seamless same-day reservations across our terminal hubs.",
-                     img: "https://images.unsplash.com/photo-1549923746-c502d488b3ea?q=80&w=2071&auto=format&fit=crop",
+                     img: "https://i.ibb.co/8g9MphYk/Airport-Pickup-7.jpg",
                      cta: "Explore Immediate Rides",
                      action: () => onRoleSelect('Customer')
                    },
                    {
                      title: "Corporate Hire",
                      desc: "Optimized for long-term work assignments and business mobility.",
-                     img: "https://images.unsplash.com/photo-1550355291-bbee04a92027?q=80&w=2072&auto=format&fit=crop",
+                     img: "https://i.ibb.co/5X2DH7NV/Airport-Pickup-8.jpg",
                      cta: "Business Solutions",
                      action: () => setView('long-term-rental')
                    },
                    {
                      title: "Weekend Escapes",
                      desc: "Premium transport for family getaways and special weekend travels.",
-                     img: "https://images.unsplash.com/photo-1464851707681-f9d5fdaccea8?q=80&w=2070&auto=format&fit=crop",
+                     img: "https://i.ibb.co/PsknGR3p/Airport-Pickup-9.jpg",
                      cta: "Start Your Escape",
                      action: () => onRoleSelect('Customer')
                    }
@@ -815,18 +905,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
   }> = ({ setView, onRoleSelect, commonFooter }) => {
     return (
       <main className="bg-[#f9fafb] min-h-screen font-sans text-left">
-        {/* Navigation / Breadcrumbs */}
-        <nav className="bg-white border-b border-gray-100 py-4">
-          <div className="max-w-6xl mx-auto px-6 flex items-center gap-2 text-sm text-gray-500 font-medium">
-            <button onClick={() => setView('home')} className="text-primary hover:underline border-b border-transparent hover:border-primary transition-all">Home</button>
-            <ChevronRightIcon className="w-3 h-3" />
-            <span className="text-primary font-medium">Car Rental</span>
-            <ChevronRightIcon className="w-3 h-3" />
-            <span className="text-gray-900 font-bold">Deals & Promotions</span>
-          </div>
-        </nav>
-
-        {/* PAGE CONTENT */}
+        {/* HERO / HEADER SECTION */}
         <div className="max-w-6xl mx-auto px-6 py-12 md:py-16">
           <h1 className="text-3xl md:text-5xl font-display font-medium text-gray-900 mb-10">Featured Deals</h1>
 
@@ -838,7 +917,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
           >
             <div className="h-64 md:h-96 overflow-hidden">
               <img 
-                src="https://images.unsplash.com/photo-1549923746-c502d488b3ea?q=80&w=2071&auto=format&fit=crop" 
+                src="https://i.ibb.co/zWN7ZHns/Airport-Pickup-1.jpg" 
                 alt="Happy family traveling" 
                 className="w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-105"
               />
@@ -900,7 +979,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
               <div className="bg-white rounded-none border border-gray-100 shadow-sm overflow-hidden flex flex-col group">
                 <div className="h-48 overflow-hidden">
                   <img 
-                    src="https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?q=80&w=2070&auto=format&fit=crop" 
+                    src="https://i.ibb.co/0j6bZk7B/Airport-Pickup-2.jpg" 
                     alt="Vehicle Deal" 
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
                   />
@@ -1469,17 +1548,6 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
   }> = ({ setView, commonFooter, onRoleSelect }) => {
     return (
       <main className="bg-[#f9fafb] min-h-screen font-sans text-left pb-10">
-        {/* Navigation / Breadcrumbs */}
-        <nav className="bg-white border-b border-gray-100 py-4">
-          <div className="max-w-6xl mx-auto px-6 flex items-center gap-2 text-sm text-gray-500 font-medium">
-            <button onClick={() => setView('home')} className="text-primary hover:underline border-b border-transparent hover:border-primary transition-all">Home</button>
-            <ChevronRightIcon className="w-3 h-3" />
-            <span className="text-primary font-medium">Car Rental</span>
-            <ChevronRightIcon className="w-3 h-3" />
-            <span className="text-gray-900 font-bold">Long-Term Car Rental</span>
-          </div>
-        </nav>
-
         {/* HERO / HEADER SECTION */}
         <div className="max-w-7xl mx-auto px-6 py-12 lg:py-20 flex flex-col lg:flex-row items-center justify-between gap-12">
           <motion.div 
@@ -1497,7 +1565,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
             className="flex-1 hidden lg:block"
           >
             <img 
-              src="https://images.unsplash.com/photo-1583121274602-3e2820c69888?q=80&w=2070&auto=format&fit=crop" 
+              src="https://i.ibb.co/wh9yvPZb/Airport-Pickup-3.jpg" 
               alt="Premium Car" 
               className="w-full h-auto drop-shadow-2xl"
             />
@@ -1638,17 +1706,17 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                 { 
                   type: 'Sedan', 
                   suitable: '1–3 passengers. Ideal for solo business travelers, couples, or point-to-point city transfers.',
-                  img: 'https://images.unsplash.com/photo-1550355291-bbee04a92027?q=80&w=2072&auto=format&fit=crop'
+                  img: 'https://i.ibb.co/sv5GZPW4/Airport-Pickup-4.jpg'
                 },
                 { 
                   type: 'SUV', 
                   suitable: '1–4 passengers with luggage. Well suited for airport transfers with large bags or small family groups.',
-                  img: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=2070&auto=format&fit=crop'
+                  img: 'https://i.ibb.co/HTVggwbD/Airport-Pickup-5.jpg'
                 },
                 { 
                   type: 'Van / Minivan', 
                   suitable: '5–8 passengers. Ideal for group travel, family trips, and corporate team transfers.',
-                  img: 'https://images.unsplash.com/photo-1549411223-28956903d3f9?q=80&w=2074&auto=format&fit=crop'
+                  img: 'https://i.ibb.co/JRMzmm2x/Airport-Pickup-6.jpg'
                 }
               ].map((v, i) => (
                 <div key={i} className="group cursor-pointer">
@@ -1711,7 +1779,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
             </div>
             <div className="flex-1 min-h-[400px]">
               <img 
-                src="https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?q=80&w=2070&auto=format&fit=crop" 
+                src="https://i.ibb.co/8g9MphYk/Airport-Pickup-7.jpg" 
                 alt="Long-term rental service" 
                 className="w-full h-full object-cover"
               />
@@ -1744,17 +1812,6 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
   }> = ({ setView, commonFooter, onRoleSelect }) => {
     return (
       <main className="bg-[#f9fafb] min-h-screen font-sans text-left pb-10">
-        {/* Navigation / Breadcrumbs */}
-        <nav className="bg-white border-b border-gray-100 py-4">
-          <div className="max-w-6xl mx-auto px-6 flex items-center gap-2 text-sm text-gray-500 font-medium">
-            <button onClick={() => setView('home')} className="text-primary hover:underline border-b border-transparent hover:border-primary transition-all">Home</button>
-            <ChevronRightIcon className="w-3 h-3" />
-            <span className="text-primary font-medium">Car Rental</span>
-            <ChevronRightIcon className="w-3 h-3" />
-            <span className="text-gray-900 font-bold">One Way Car Rental</span>
-          </div>
-        </nav>
-
         {/* HERO / HEADER SECTION */}
         <div className="max-w-7xl mx-auto px-6 py-12 lg:py-20 flex flex-col lg:flex-row items-center justify-between gap-12">
           <motion.div 
@@ -1775,7 +1832,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
             className="flex-1 hidden lg:block"
           >
             <img 
-              src="https://images.unsplash.com/photo-1464851707681-f9d5fdaccea8?q=80&w=2070&auto=format&fit=crop" 
+              src="https://i.ibb.co/5X2DH7NV/Airport-Pickup-8.jpg" 
               alt="Road Trip" 
               className="w-full h-auto drop-shadow-2xl grayscale hover:grayscale-0 transition-all duration-1000"
             />
@@ -1890,17 +1947,17 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                 { 
                   type: 'Sedan', 
                   suitable: '1–3 passengers. Ideal for solo business travelers, couples, or point-to-point city transfers.',
-                  img: 'https://images.unsplash.com/photo-1550355291-bbee04a92027?q=80&w=2072&auto=format&fit=crop'
+                  img: 'https://i.ibb.co/PsknGR3p/Airport-Pickup-9.jpg'
                 },
                 { 
                   type: 'SUV', 
                   suitable: '1–4 passengers with luggage. Well suited for airport transfers with large bags or small family groups.',
-                  img: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=2070&auto=format&fit=crop'
+                  img: 'https://i.ibb.co/zWN7ZHns/Airport-Pickup-1.jpg'
                 },
                 { 
                   type: 'Van / Minivan', 
                   suitable: '5–8 passengers. Ideal for group travel, family trips, and corporate team transfers.',
-                  img: 'https://images.unsplash.com/photo-1549411223-28956903d3f9?q=80&w=2074&auto=format&fit=crop'
+                  img: 'https://i.ibb.co/0j6bZk7B/Airport-Pickup-2.jpg'
                 }
               ].map((v, i) => (
                 <div key={i} className="group cursor-pointer">
@@ -1963,7 +2020,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
             </div>
             <div className="flex-1 min-h-[400px]">
               <img 
-                src="https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?q=80&w=2070&auto=format&fit=crop" 
+                src="https://i.ibb.co/wh9yvPZb/Airport-Pickup-3.jpg" 
                 alt="Long-term rental service" 
                 className="w-full h-full object-cover"
               />
@@ -2010,22 +2067,11 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
   }> = ({ setView, commonFooter, onRoleSelect }) => {
     return (
       <main className="bg-[#f9fafb] min-h-screen font-sans text-left">
-        {/* Navigation / Breadcrumbs */}
-        <nav className="bg-white border-b border-gray-100 py-4">
-          <div className="max-w-6xl mx-auto px-6 flex items-center gap-2 text-sm text-gray-500 font-medium">
-            <button onClick={() => setView('home')} className="text-primary hover:underline border-b border-transparent hover:border-primary transition-all">Home</button>
-            <ChevronRightIcon className="w-3 h-3" />
-            <span className="text-primary font-medium">Car Rental</span>
-            <ChevronRightIcon className="w-3 h-3" />
-            <span className="text-gray-900 font-bold">Solutions for Business</span>
-          </div>
-        </nav>
-
         {/* HERO SECTION */}
         <section className="relative h-[600px] overflow-hidden">
           <div className="absolute inset-0 z-0">
             <img 
-              src="https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069&auto=format&fit=crop" 
+              src="https://i.ibb.co/sv5GZPW4/Airport-Pickup-4.jpg" 
               alt="Business Transport" 
               className="w-full h-full object-cover"
             />
@@ -2234,22 +2280,22 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                 { 
                   title: 'Travel Management Tool', 
                   desc: "Book and manage vehicle hires on behalf of your company's travelers.",
-                  img: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2026&auto=format&fit=crop'
+                  img: 'https://i.ibb.co/HTVggwbD/Airport-Pickup-5.jpg'
                 },
                 { 
                   title: 'Trip Optimiser — Rent or Reimburse?', 
                   desc: 'Our complimentary tool allows you to quickly compare driving a rental versus a personal vehicle.',
-                  img: 'https://images.unsplash.com/photo-1554224155-1696413565d3?q=80&w=2070&auto=format&fit=crop'
+                  img: 'https://i.ibb.co/JRMzmm2x/Airport-Pickup-6.jpg'
                 },
                 { 
                   title: 'Entertainment & Production Rentals', 
                   desc: 'Vehicle and van rental for TV and film production, concerts, sporting events, and more.',
-                  img: 'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?q=80&w=2070&auto=format&fit=crop'
+                  img: 'https://i.ibb.co/8g9MphYk/Airport-Pickup-7.jpg'
                 },
                 { 
                   title: 'FBO Delivery Service', 
                   desc: 'Vehicle service waiting for you at Fixed Base Operators across Ghana.',
-                  img: 'https://images.unsplash.com/photo-1549411223-28956903d3f9?q=80&w=2074&auto=format&fit=crop'
+                  img: 'https://i.ibb.co/5X2DH7NV/Airport-Pickup-8.jpg'
                 },
               ].map((tool, i) => (
                 <div key={i} className="flex flex-col group cursor-pointer bg-gray-50 rounded-none overflow-hidden border border-gray-100 hover:shadow-2xl transition-all">
@@ -2283,17 +2329,6 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
   }> = ({ setView, commonFooter, onRoleSelect }) => {
     return (
       <main className="bg-[#f9fafb] min-h-screen font-sans text-left">
-        {/* Navigation / Breadcrumbs */}
-        <nav className="bg-white border-b border-gray-100 py-4">
-          <div className="max-w-6xl mx-auto px-6 flex items-center gap-2 text-sm text-gray-500 font-medium">
-            <button onClick={() => setView('home')} className="text-primary hover:underline border-b border-transparent hover:border-primary transition-all">Home</button>
-            <ChevronRightIcon className="w-3 h-3" />
-            <span className="text-primary font-medium">Business</span>
-            <ChevronRightIcon className="w-3 h-3" />
-            <span className="text-gray-900 font-bold">Corporate Services</span>
-          </div>
-        </nav>
-
         {/* HERO SECTION */}
         <section className="bg-primary text-white py-20 relative overflow-hidden">
           <div className="max-w-7xl mx-auto px-6 relative z-10">
@@ -2333,7 +2368,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
               </div>
               <div className="rounded-none overflow-hidden shadow-2xl relative">
                 <img 
-                  src="https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069&auto=format&fit=crop" 
+                  src="https://i.ibb.co/PsknGR3p/Airport-Pickup-9.jpg" 
                   alt="Corporate Office"
                   className="w-full h-96 object-cover"
                 />
@@ -2386,23 +2421,25 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
   }> = ({ setView, onRoleSelect, commonFooter }) => {
     return (
       <main className="bg-[#f9fafb] min-h-screen font-sans">
-        {/* Navigation / Breadcrumbs */}
-        <nav className="bg-white border-b border-gray-100 py-4">
-          <div className="max-w-6xl mx-auto px-6 flex items-center gap-2 text-sm text-gray-500 font-medium">
-            <button onClick={() => setView('home')} className="text-primary hover:underline border-b border-transparent hover:border-primary transition-all">Home</button>
-            <ChevronRightIcon className="w-3 h-3" />
-            <button onClick={() => setView('start-reservation')} className="text-primary hover:underline border-b border-transparent hover:border-primary transition-all">Reserve</button>
-            <ChevronRightIcon className="w-3 h-3" />
-            <span className="text-gray-900 font-bold">Modify a Car Rental Reservation</span>
-          </div>
-        </nav>
-
-        {/* Header Section */}
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-12 md:pt-20">
-          <div className="flex flex-col md:flex-row md:items-baseline gap-4 mb-4">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-display font-bold text-gray-900 leading-tight">
+        {/* Header Section with Hero Banner */}
+        <div className="w-full h-48 md:h-64 relative bg-gray-900 mb-8 overflow-hidden">
+          <img 
+            src="https://i.ibb.co/0j6bZk7B/Airport-Pickup-2.jpg" 
+            alt="Manage Reservation" 
+            className="w-full h-full object-cover opacity-60"
+          />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <h1 className="text-4xl md:text-6xl font-display font-bold text-white text-center shadow-sm">
               Manage Your Reservation
             </h1>
+          </div>
+        </div>
+
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-4 md:pt-8">
+          <div className="flex flex-col md:flex-row md:items-baseline gap-4 mb-4">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold text-gray-900 leading-tight">
+              Review or Modify
+            </h2>
             <div className="flex items-center gap-2">
               <span className="text-gray-500 text-sm italic">or</span>
               <button 
@@ -4650,30 +4687,21 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
         </main>
       )}
 
-      {view === 'start-reservation' && (
-        <StartCarReservationPage setView={setView} onRoleSelect={onRoleSelect} commonFooter={commonFooter} />
+      {['start-reservation', 'manage-reservation', 'deals-and-coupons', 'one-way-rental', 'long-term-rental'].includes(view) && (
+        <ReservationLayout view={view} setView={setView} category="Car Rental" commonFooter={commonFooter}>
+          {view === 'start-reservation' && <StartCarReservationPage setView={setView} onRoleSelect={onRoleSelect} commonFooter={null} />}
+          {view === 'manage-reservation' && <ManageReservationPage setView={setView} onRoleSelect={onRoleSelect} commonFooter={null} />}
+          {view === 'deals-and-coupons' && <DealsAndCouponsPage setView={setView} onRoleSelect={onRoleSelect} commonFooter={null} />}
+          {view === 'one-way-rental' && <OneWayRentalPage setView={setView} commonFooter={null} onRoleSelect={onRoleSelect} />}
+          {view === 'long-term-rental' && <LongTermRentalPage setView={setView} commonFooter={null} onRoleSelect={onRoleSelect} />}
+        </ReservationLayout>
       )}
 
-      {view === 'manage-reservation' && (
-        <ManageReservationPage setView={setView} onRoleSelect={onRoleSelect} commonFooter={commonFooter} />
-      )}
-
-      {view === 'deals-and-coupons' && (
-        <DealsAndCouponsPage setView={setView} onRoleSelect={onRoleSelect} commonFooter={commonFooter} />
-      )}
-
-
-
-      {view === 'one-way-rental' && (
-        <OneWayRentalPage setView={setView} commonFooter={commonFooter} onRoleSelect={onRoleSelect} />
-      )}
-
-      {view === 'long-term-rental' && (
-        <LongTermRentalPage setView={setView} commonFooter={commonFooter} onRoleSelect={onRoleSelect} />
-      )}
-
-      {view === 'business-solutions' && (
-        <BusinessSolutionsPage commonFooter={commonFooter} onRoleSelect={onRoleSelect} />
+      {['business-solutions', 'corporate-services'].includes(view) && (
+        <ReservationLayout view={view} setView={setView} category="Business" commonFooter={commonFooter}>
+          {view === 'business-solutions' && <BusinessSolutionsPage setView={setView} commonFooter={null} onRoleSelect={onRoleSelect} />}
+          {view === 'corporate-services' && <CorporateServicesPage setView={setView} commonFooter={null} onRoleSelect={onRoleSelect} />}
+        </ReservationLayout>
       )}
 
       {view === 'hospitality' && (
