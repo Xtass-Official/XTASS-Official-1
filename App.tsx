@@ -2,6 +2,7 @@ import React, { useState, useCallback, useRef } from 'react';
 import { CustomerApp } from './components/CustomerApp';
 import { DriverApp } from './components/DriverApp';
 import { AdminPanel } from './components/AdminPanel';
+import { AuthDropdown } from './components/shared/AuthDropdown';
 import type { Role, Screen } from './types';
 import { 
   SearchIcon, CheckCircleIcon, BookingIcon, CarIcon, ChevronDownIcon, MapPinIcon, 
@@ -2652,6 +2653,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
   const [activeCategory, setActiveCategory] = useState<'Car Rental' | 'Business'>('Car Rental');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobileReservationsOpen, setIsMobileReservationsOpen] = useState(false);
+  const [isAuthDropdownOpen, setIsAuthDropdownOpen] = useState(false);
 
   return (
     <div className="bg-white text-gray-800">
@@ -2659,17 +2661,17 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
       <header className="sticky top-0 z-50">
         {/* Top Header (White) */}
         <div className="bg-white border-b border-gray-100">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center py-4">
-            <div className="flex items-center">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center py-3 md:py-4">
+            <div className="flex items-center flex-shrink-0">
               <img 
                 src="https://i.ibb.co/6JVrf2Bt/XTASS-Logo.png" 
                 alt="XTASS Logo" 
-                className="h-10 md:h-12 cursor-pointer" 
+                className="h-8 sm:h-10 md:h-12 w-auto cursor-pointer transition-all" 
                 onClick={() => setView('home')} 
               />
             </div>
             
-            <div className="flex items-center space-x-4 md:space-x-10">
+            <div className="flex items-center space-x-2 sm:space-x-6 md:space-x-10">
               <div className="hidden md:flex items-center text-gray-800">
                 <div className="bg-primary/5 p-2 rounded-full mr-3">
                   <PhoneIcon className="w-5 h-5 text-primary" />
@@ -2680,16 +2682,24 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                 </div>
               </div>
               
-              <button 
-                onClick={() => onRoleSelect('Customer')} 
-                className="hidden sm:block text-sm font-bold text-gray-800 hover:text-primary transition-colors py-2"
-              >
-                Sign Up / Register
-              </button>
+              <div className="hidden md:block relative">
+                <button 
+                  onClick={() => setIsAuthDropdownOpen(!isAuthDropdownOpen)} 
+                  className="text-sm font-bold text-gray-800 hover:text-primary transition-colors py-2 flex items-center"
+                >
+                  Sign In | Register
+                  <ChevronDownIcon className={`w-4 h-4 ml-1 transition-transform ${isAuthDropdownOpen ? 'rotate-180': ''}`} />
+                </button>
+                <AuthDropdown 
+                  isOpen={isAuthDropdownOpen} 
+                  onClose={() => setIsAuthDropdownOpen(false)} 
+                  onLoginSuccess={() => onRoleSelect('Customer')}
+                />
+              </div>
               
               <button 
                 onClick={handleBookNow} 
-                className="bg-[#FFD100] text-primary font-bold py-2 md:py-3 px-4 md:px-8 rounded-sm hover:bg-[#FFC400] transition-colors shadow-sm text-sm md:text-base"
+                className="bg-[#FFD100] text-primary font-bold py-2 md:py-3 px-3 sm:px-6 md:px-8 rounded-sm hover:bg-[#FFC400] transition-colors shadow-sm text-xs sm:text-sm md:text-base whitespace-nowrap"
               >
                 Book Now
               </button>
@@ -2701,9 +2711,9 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                 aria-label="Toggle menu"
               >
                 <div className="w-6 h-6 flex flex-col justify-around">
-                  <span className={`block h-[2px] w-full bg-current transition-transform ${isMobileMenuOpen ? 'rotate-45 translate-y-[7.5px]' : ''}`} />
-                  <span className={`block h-[2px] w-full bg-current transition-opacity ${isMobileMenuOpen ? 'opacity-0' : ''}`} />
-                  <span className={`block h-[2px] w-full bg-current transition-transform ${isMobileMenuOpen ? '-rotate-45 -translate-y-[7.5px]' : ''}`} />
+                  <span className={`block h-[2px] w-full bg-current transition-transform duration-300 ${isMobileMenuOpen ? 'rotate-45 translate-y-[8px]' : ''}`} />
+                  <span className={`block h-[2px] w-full bg-current transition-opacity duration-300 ${isMobileMenuOpen ? 'opacity-0' : ''}`} />
+                  <span className={`block h-[2px] w-full bg-current transition-transform duration-300 ${isMobileMenuOpen ? '-rotate-45 -translate-y-[8px]' : ''}`} />
                 </div>
               </button>
             </div>
@@ -2815,11 +2825,11 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
         <AnimatePresence>
           {isMobileMenuOpen && (
             <motion.div
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
+              initial={{ x: '100%', opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: '100%', opacity: 0 }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="lg:hidden fixed inset-0 top-[73px] bg-white z-40 flex flex-col overflow-y-auto pb-10"
+              className="lg:hidden fixed inset-0 top-[60px] sm:top-[73px] md:top-[81px] bg-white z-40 flex flex-col overflow-y-auto pb-10"
             >
               <div className="flex flex-col p-6 space-y-4">
                 <MobileNavLink onClick={() => { setView('home'); setIsMobileMenuOpen(false); }}>Home</MobileNavLink>
@@ -2873,13 +2883,19 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                   <TwitterIcon className="w-6 h-6" />
                 </div>
 
-                <div className="pt-10">
+                <div className="pt-10 relative">
                   <button 
-                    onClick={() => onRoleSelect('Customer')} 
-                    className="w-full bg-primary text-white font-bold py-4 rounded-lg shadow-lg"
+                    onClick={() => setIsAuthDropdownOpen(!isAuthDropdownOpen)} 
+                    className="w-full bg-primary text-white font-bold py-4 rounded-lg shadow-lg flex justify-center items-center"
                   >
-                    Sign Up / Register
+                    Sign In | Register
+                    <ChevronDownIcon className={`w-4 h-4 ml-2 transition-transform ${isAuthDropdownOpen ? 'rotate-180': ''}`} />
                   </button>
+                  <AuthDropdown 
+                    isOpen={isAuthDropdownOpen} 
+                    onClose={() => setIsAuthDropdownOpen(false)} 
+                    onLoginSuccess={() => onRoleSelect('Customer')}
+                  />
                 </div>
               </div>
             </motion.div>
@@ -2903,7 +2919,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
               </div>
               <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 sm:pt-36 md:pt-52 pb-32 sm:pb-40 md:pb-52 text-center">
                 <p className="font-display text-sm md:text-base font-medium text-white/80 uppercase tracking-widest">Welcome to</p>
-                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-bold mt-4 leading-tight italic tracking-tight">XCELLENT TRANSPORT & <br className="hidden sm:block" /> SHUTTLE SERVICES</h1>
+                <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-bold mt-4 leading-tight italic tracking-tight">XCELLENT TRANSPORT & <br className="hidden sm:block" /> SHUTTLE SERVICES</h1>
                 <p className="text-base md:text-lg lg:text-xl mt-6 max-w-3xl mx-auto text-white/90 font-light leading-relaxed">Trusted Transport Services for Every Traveler</p>
               </div>
             </div>

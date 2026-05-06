@@ -398,7 +398,7 @@ const AuthScreen: React.FC<{ navigate: (s: Screen) => void, isLogin: boolean, lo
                         videoRef.current.srcObject = stream;
                     }
                 } catch (err) {
-                    console.error("Error accessing camera: ", err);
+                    // Ignore or handle silently
                     alert("Camera access is required for this step. Please grant permission and try again.");
                     setStep(3); // Go back to previous step
                 }
@@ -446,7 +446,7 @@ const AuthScreen: React.FC<{ navigate: (s: Screen) => void, isLogin: boolean, lo
 
 
     return (
-        <div className="relative flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
+        <div className="relative flex flex-col items-center justify-start md:justify-center min-h-screen bg-gray-100 p-4 md:p-8 overflow-x-hidden">
             <Modal isOpen={showTermsModal} onClose={() => setShowTermsModal(false)} title="Terms & Conditions">
                 <div className="space-y-4 text-sm text-gray-600">
                     <p>Welcome to XTASS. These terms and conditions outline the rules and regulations for the use of our services.</p>
@@ -463,7 +463,7 @@ const AuthScreen: React.FC<{ navigate: (s: Screen) => void, isLogin: boolean, lo
             <button onClick={() => isLogin && logout ? logout() : navigate('Login')} className="absolute top-4 left-4 text-primary p-2 rounded-full hover:bg-gray-200 z-10" aria-label="Go back">
                 <ChevronLeftIcon className="w-6 h-6" />
             </button>
-            <div className="w-full max-w-sm bg-white p-8 rounded-xl shadow-lg mt-12">
+            <div className="w-full max-w-[98%] sm:max-w-[90%] md:max-w-md lg:max-w-sm bg-white p-6 sm:p-8 md:p-10 lg:p-8 rounded-xl shadow-lg mt-12 md:mt-0 mb-8 md:mb-0 transition-all duration-500">
                 <h2 className="text-2xl font-bold font-display text-gray-900 text-center">{title}</h2>
                 <p className="text-center text-gray-500 mb-6">{subTitle}</p>
                 
@@ -482,11 +482,11 @@ const AuthScreen: React.FC<{ navigate: (s: Screen) => void, isLogin: boolean, lo
                             <div className="border-t border-gray-300 flex-grow"></div>
                         </div>
                         <div className="space-y-3">
-                            <button onClick={() => navigate('PostLoginVerification')} className="w-full flex items-center justify-center space-x-2 py-3 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                            <button onClick={() => navigate('PostLoginVerification')} className="w-full flex items-center justify-center space-x-2 py-3.5 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 min-h-[48px]">
                                 <GoogleIcon className="w-5 h-5"/>
                                 <span>Login with Gmail</span>
                             </button>
-                            <button onClick={() => navigate('LivePhotoLogin')} className="w-full flex items-center justify-center space-x-2 py-3 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                            <button onClick={() => navigate('LivePhotoLogin')} className="w-full flex items-center justify-center space-x-2 py-3.5 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 min-h-[48px]">
                                 <CameraIcon className="w-5 h-5 text-primary"/>
                                 <span>Login with Live Photo Capture</span>
                             </button>
@@ -613,11 +613,11 @@ const ForgotPasswordScreen: React.FC<NavigationProps & { setPhoneForOTP: (detail
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
     return (
-        <div className="relative flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
+        <div className="relative flex flex-col items-center justify-start md:justify-center min-h-screen bg-gray-100 p-4 md:p-8 overflow-x-hidden">
             <button onClick={() => navigate('Login')} className="absolute top-4 left-4 text-primary p-2 rounded-full hover:bg-gray-200 z-10" aria-label="Back to Login">
                 <ChevronLeftIcon className="w-6 h-6" />
             </button>
-            <div className="w-full max-w-sm bg-white p-8 rounded-xl shadow-lg text-center">
+            <div className="w-full max-w-[98%] sm:max-w-[90%] md:max-w-md lg:max-w-sm bg-white p-6 sm:p-8 md:p-10 lg:p-8 rounded-xl shadow-lg text-center mt-12 md:mt-0 mb-8 md:mb-0 transition-all duration-500">
                 <h2 className="text-2xl font-bold font-display text-gray-900">Forgot Password</h2>
                 <p className="text-gray-500 mt-2 mb-6">Enter your phone number to receive a reset code.</p>
                 <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); setPhoneForOTP({ phone, code: countryCode }); navigate('OTPVerification'); }}>
@@ -733,14 +733,14 @@ const OTPScreen: React.FC<{ navigate: (s: Screen) => void, onBack: () => void, s
     const messageColor = message?.type === 'error' ? 'text-red-600' : '';
 
     return (
-        <div className="relative flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4">
+        <div className="relative flex flex-col items-center justify-start md:justify-center min-h-screen bg-gray-50 p-4 md:p-8 overflow-x-hidden">
             <button onClick={onBack} className="absolute top-4 left-4 text-primary p-2 rounded-full hover:bg-gray-100 z-10" aria-label="Go back">
                 <ChevronLeftIcon className="w-6 h-6" />
             </button>
-             <div className="text-center mb-6">
+             <div className="text-center mb-6 mt-12 md:mt-0">
                 <h1 className="text-3xl font-display font-bold text-primary">XTASS</h1>
             </div>
-            <div className="w-full max-w-md bg-white p-6 sm:p-8 rounded-2xl shadow-xl text-center">
+            <div className="w-full max-w-[98%] sm:max-w-[90%] md:max-w-md lg:max-w-sm bg-white p-6 sm:p-8 md:p-10 lg:p-8 rounded-2xl shadow-xl text-center mb-8 md:mb-0 transition-all duration-500">
                 {isSuccess ? (
                     <div className="animate-fade-in">
                         <CheckCircleIcon className="w-24 h-24 text-green-500 mx-auto animate-pulse" />
@@ -816,7 +816,7 @@ const LivePhotoLoginScreen: React.FC<NavigationProps> = ({ navigate }) => {
                         videoRef.current.srcObject = stream;
                     }
                 } catch (err) {
-                    console.error("Error accessing camera: ", err);
+                    // Ignore or handle silently
                     alert("Could not access the camera. Please ensure permissions are granted.");
                     navigate('Login');
                 }
@@ -877,7 +877,7 @@ const PostLoginVerificationScreen: React.FC<NavigationProps> = ({ navigate, logo
                         videoRef.current.srcObject = stream;
                     }
                 } catch (err) {
-                    console.error("Error accessing camera: ", err);
+                    // Ignore or handle silently
                     if(logout) logout();
                 }
             }
@@ -991,7 +991,7 @@ const TripDetailsInputScreen: React.FC<TripDetailsInputScreenProps> = ({ navigat
                         videoRef.current.srcObject = stream;
                     }
                 } catch (err) {
-                    console.error("Error accessing camera: ", err);
+                    // Ignore or handle silently
                     alert("Camera access is required. Please grant permission.");
                     setIsCaptureModalOpen(false);
                 }

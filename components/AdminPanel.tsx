@@ -107,13 +107,13 @@ const NavItem: React.FC<{ screenName: Screen, currentScreen: Screen, navigate: (
 // --- Screen Components ---
 
 const AdminLoginScreen: React.FC<NavigationProps> = ({ navigate, logout }) => (
-  <div className="relative flex items-center justify-center min-h-screen bg-gray-200">
+  <div className="relative flex flex-col items-center justify-start md:justify-center min-h-screen bg-gray-200 p-4 md:p-8 overflow-x-hidden">
     {logout && (
         <button onClick={logout} className="absolute top-4 left-4 text-primary p-2 rounded-full hover:bg-gray-200 z-10" aria-label="Go back">
             <ChevronLeftIcon className="w-6 h-6" />
         </button>
     )}
-    <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg">
+    <div className="w-full max-w-[98%] sm:max-w-[90%] md:max-w-md lg:max-w-sm bg-white p-6 sm:p-8 md:p-10 lg:p-8 rounded-lg shadow-lg mt-12 md:mt-0 mb-8 md:mb-0 transition-all duration-500">
       <h2 className="text-3xl font-bold font-display text-primary text-center">Admin Panel</h2>
       <form className="mt-8 space-y-6" onSubmit={(e) => { e.preventDefault(); navigate('AdminDashboard'); }}>
         <Input id="email" label="Email" type="email" placeholder="admin@xtass.com" icon={<UserIcon className="w-5 h-5 text-gray-400" />} defaultValue="admin@xtass.com" />
@@ -127,11 +127,11 @@ const AdminLoginScreen: React.FC<NavigationProps> = ({ navigate, logout }) => (
 );
 
 const AdminPasswordRecoveryScreen: React.FC<NavigationProps> = ({ navigate }) => (
-  <div className="relative flex items-center justify-center min-h-screen bg-gray-200">
+  <div className="relative flex flex-col items-center justify-start md:justify-center min-h-screen bg-gray-200 p-4 md:p-8 overflow-x-hidden">
     <button onClick={() => navigate('AdminLogin')} className="absolute top-4 left-4 text-primary p-2 rounded-full hover:bg-gray-200 z-10" aria-label="Back to Login">
         <ChevronLeftIcon className="w-6 h-6" />
     </button>
-    <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg">
+    <div className="w-full max-w-[98%] sm:max-w-[90%] md:max-w-md lg:max-w-sm bg-white p-6 sm:p-8 md:p-10 lg:p-8 rounded-lg shadow-lg mt-12 md:mt-0 mb-8 md:mb-0 transition-all duration-500">
       <h2 className="text-3xl font-bold font-display text-primary text-center">Password Recovery</h2>
       <p className="text-gray-600 mt-4 mb-8 text-center">Enter your email to receive reset instructions.</p>
       <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); navigate('AdminLogin'); }}>

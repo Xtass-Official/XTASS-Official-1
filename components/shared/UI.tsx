@@ -8,7 +8,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
 }
 export const Button: React.FC<ButtonProps> = ({ variant = 'primary', children, className, ...props }) => {
-  const baseClasses = 'w-full font-bold py-3 px-4 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all duration-200 ease-in-out';
+  const baseClasses = 'w-full font-bold py-3.5 px-4 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all duration-200 ease-in-out min-h-[48px] flex items-center justify-center';
   const variantClasses = {
     primary: 'bg-primary text-white hover:bg-primary-hover active:bg-primary-active focus:ring-primary',
     secondary: 'bg-gray-200 text-gray-800 hover:bg-gray-300 focus:ring-gray-400',
@@ -28,13 +28,13 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 }
 export const Input: React.FC<InputProps> = ({ icon, label, id, ...props }) => {
   return (
-    <div>
-      <label htmlFor={id} className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
+    <div className="w-full">
+      <label htmlFor={id} className="block text-sm font-medium text-gray-700 mb-1.5">{label}</label>
       <div className="relative">
         {icon && <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">{icon}</div>}
         <input
           id={id}
-          className={`block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm ${icon ? 'pl-10' : ''}`}
+          className={`block w-full px-4 py-3.5 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary text-base sm:text-sm min-h-[48px] ${icon ? 'pl-10' : ''}`}
           {...props}
         />
       </div>

@@ -43,16 +43,16 @@ export const DriverApp: React.FC<DriverAppProps> = ({ screen, navigate, logout }
 
 const DriverAuthScreen: React.FC<{ navigate: (s: Screen) => void, isLogin: boolean, logout?: () => void }> = ({ navigate, isLogin, logout }) => {
     return (
-        <div className="relative flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
+        <div className="relative flex flex-col items-center justify-start md:justify-center min-h-screen bg-gray-100 p-4 md:p-8 overflow-x-hidden">
             {logout && (
                 <button onClick={logout} className="absolute top-4 left-4 text-primary p-2 rounded-full hover:bg-gray-200 z-10" aria-label="Go back">
                     <ChevronLeftIcon className="w-6 h-6" />
                 </button>
             )}
-            <div className="w-full max-w-sm text-center mb-8">
+            <div className="w-full max-w-[98%] sm:max-w-[90%] md:max-w-md text-center mb-8 mt-12 md:mt-0 px-4 transition-all duration-500">
                  <h1 className="text-4xl font-display font-bold text-primary">XTASS Driver</h1>
             </div>
-            <div className="w-full max-w-sm bg-white p-8 rounded-xl shadow-lg">
+            <div className="w-full max-w-[98%] sm:max-w-[90%] md:max-w-md lg:max-w-sm bg-white p-6 sm:p-8 md:p-10 lg:p-8 rounded-xl shadow-lg mb-8 md:mb-0 transition-all duration-500">
                 <h2 className="text-2xl font-bold font-display text-gray-900 text-center">{isLogin ? "Driver Login" : "Driver Registration"}</h2>
                 <form className="space-y-4 mt-6" onSubmit={(e) => { e.preventDefault(); navigate(isLogin ? 'DriverDashboard' : 'DocumentUpload'); }}>
                     <Input id="phone" label="Phone Number" type="tel" placeholder="024 123 4567" icon={<PhoneIcon className="w-5 h-5 text-gray-400" />} defaultValue="055 987 6543" />
@@ -77,11 +77,11 @@ const DriverAuthScreen: React.FC<{ navigate: (s: Screen) => void, isLogin: boole
 };
 
 const DriverForgotPasswordScreen: React.FC<NavigationProps> = ({ navigate }) => (
-    <div className="relative flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
+    <div className="relative flex flex-col items-center justify-start md:justify-center min-h-screen bg-gray-100 p-4 md:p-8 overflow-x-hidden">
         <button onClick={() => navigate('DriverLogin')} className="absolute top-4 left-4 text-primary p-2 rounded-full hover:bg-gray-200 z-10" aria-label="Back to Login">
             <ChevronLeftIcon className="w-6 h-6" />
         </button>
-        <div className="w-full max-w-sm bg-white p-8 rounded-xl shadow-lg text-center">
+        <div className="w-full max-w-[98%] sm:max-w-[90%] md:max-w-md lg:max-w-sm bg-white p-6 sm:p-8 md:p-10 lg:p-8 rounded-xl shadow-lg text-center mt-12 md:mt-0 mb-8 md:mb-0 transition-all duration-500">
             <h2 className="text-2xl font-bold font-display text-gray-900">Reset Password</h2>
             <p className="text-gray-500 mt-2 mb-6">Enter your phone number to receive a reset code.</p>
             <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); navigate('DriverLogin'); }}>
@@ -137,11 +137,11 @@ const DocumentUploadItem: React.FC<{title: string}> = ({ title }) => (
 );
 
 const ApplicationStatusScreen: React.FC<NavigationProps> = ({ navigate }) => (
-    <div className="relative flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4 text-center">
+    <div className="relative flex flex-col items-center justify-start md:justify-center min-h-screen bg-gray-100 p-4 md:p-8 overflow-x-hidden">
         <button onClick={() => navigate('DocumentUpload')} className="absolute top-4 left-4 text-primary p-2 rounded-full hover:bg-gray-200 z-10" aria-label="Go back">
             <ChevronLeftIcon className="w-6 h-6" />
         </button>
-        <div className="w-full max-w-sm bg-white p-8 rounded-xl shadow-lg">
+        <div className="w-full max-w-[98%] sm:max-w-[90%] md:max-w-md lg:max-w-sm bg-white p-6 sm:p-8 md:p-10 lg:p-8 rounded-xl shadow-lg mt-12 md:mt-0 mb-8 md:mb-0 transition-all duration-500">
             <div className="w-16 h-16 mx-auto border-4 border-t-accent border-gray-200 rounded-full animate-spin"></div>
             <h2 className="text-2xl font-bold font-display text-gray-900 mt-6">Application Submitted</h2>
             <p className="text-gray-600 mt-2">Your application is currently <span className="font-bold text-yellow-600">In Review</span>. We will notify you once it's approved.</p>
