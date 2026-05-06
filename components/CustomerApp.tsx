@@ -1131,7 +1131,7 @@ const ScheduleRideScreen: React.FC<ScheduleRideScreenProps> = ({ navigate, setVe
                 </div>
                 <Input id="pickup" label="Pick Up Location" type="text" placeholder="Kotoka International Airport" value={pickup} onChange={e => setPickup(e.target.value)} icon={<MapPinIcon className="w-5 h-5 text-gray-400" />} />
                 <Input id="destination" label="Drop Off Location" type="text" placeholder="Enter your destination" value={destination} onChange={e => setDestination(e.target.value)} icon={<MapPinIcon className="w-5 h-5 text-gray-400" />} />
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <Input id="date" label="Select Date (DD/MM/2025)" type="tel" placeholder="DD/MM/2025" value={date} onChange={handleDateChange} icon={<CalendarIcon className="w-5 h-5 text-gray-400" />} maxLength={10} />
                         {dateError && <p className="text-red-500 text-xs mt-1">{dateError}</p>}
@@ -1225,7 +1225,7 @@ const CarRentalScreen: React.FC<CarRentalScreenProps> = ({ navigate, setRentalDu
                 <Input id="pickupLocation" label="Pickup Location" value={details.pickupLocation} onChange={e => handleInputChange('pickupLocation', e.target.value)} icon={<MapPinIcon className="w-5 h-5 text-gray-400"/>} />
                 <Input id="dropoffLocation" label="Return Location" value={details.dropoffLocation} onChange={e => handleInputChange('dropoffLocation', e.target.value)} icon={<MapPinIcon className="w-5 h-5 text-gray-400"/>} />
                 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                          <Input id="pickupDate" label="Pickup Date" type="tel" placeholder="DD/MM/2025" value={details.pickupDate} onChange={handlePickupDateChange} icon={<CalendarIcon className="w-5 h-5 text-gray-400" />} maxLength={10} />
                          {pickupDateError && <p className="text-red-500 text-xs mt-1">{pickupDateError}</p>}
@@ -1233,7 +1233,7 @@ const CarRentalScreen: React.FC<CarRentalScreenProps> = ({ navigate, setRentalDu
                     <Input id="pickupTime" label="Pickup Time" type="time" value={details.pickupTime} onChange={e => handleInputChange('pickupTime', e.target.value)} icon={<ClockIcon className="w-5 h-5 text-gray-400" />} />
                 </div>
                 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <Input id="returnDate" label="Return Date" type="tel" placeholder="DD/MM/2025" value={details.returnDate} onChange={handleReturnDateChange} icon={<CalendarIcon className="w-5 h-5 text-gray-400" />} maxLength={10} />
                         {returnDateError && <p className="text-red-500 text-xs mt-1">{returnDateError}</p>}
@@ -1241,7 +1241,7 @@ const CarRentalScreen: React.FC<CarRentalScreenProps> = ({ navigate, setRentalDu
                     <Input id="returnTime" label="Return Time" type="time" value={details.returnTime} onChange={e => handleInputChange('returnTime', e.target.value)} icon={<ClockIcon className="w-5 h-5 text-gray-400" />} />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <Input id="passengersRental" label="Passengers" type="number" value={details.passengers} onChange={e => handleInputChange('passengers', e.target.value)} icon={<UsersIcon className="w-5 h-5 text-gray-400"/>} />
                     <Input id="luggageRental" label="Luggage" type="number" value={details.luggage} onChange={e => handleInputChange('luggage', e.target.value)} icon={<BriefcaseIcon className="w-5 h-5 text-gray-400"/>} />
                 </div>

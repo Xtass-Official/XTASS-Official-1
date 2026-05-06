@@ -1,20 +1,44 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# XTASS - Smart Airport Transport
 
-# Run and deploy your AI Studio app
+This is a modern React application built with TypeScript, Vite, and Tailwind CSS. It is fully ready to be opened, previewed, and run within a local VSCode environment.
 
-This contains everything you need to run your app locally.
+## Prerequisites
 
-View your app in AI Studio: https://ai.studio/apps/fdfe4c7b-4eb4-4783-8fa1-d7c1ffbf01b0
+- Ensure you have **Node.js** (v18+) installed and configured on your machine.
+- Install the required dependencies using npm.
 
-## Run Locally
+## Local Setup Instructions
 
-**Prerequisites:**  Node.js
+1. **Open the project folder** in VSCode.
+2. **Install dependencies:**  
+   Open the VSCode integrated terminal (`Ctrl + ~`) and run:
+   ```bash
+   npm install
+   ```
+3. **Start the development server:**  
+   Run the following command to spin up the local server:
+   ```bash
+   npm run dev
+   ```
+4. **Preview the app:**  
+   VSCode will display a local server URL (e.g. `http://localhost:3000`). Click this link to preview the web application in your browser.
 
+## Tech Stack
+- Frontend Framework: React 19
+- Build Tool: Vite
+- Language: TypeScript
+- Styling: Tailwind CSS
+- Iconography: Lucide-like custom SVG components
+- Animation: Motion (framer-motion updated module)
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## Key Commands
+- `npm run dev`: Starts the dev server for local preview
+- `npm run build`: Compiles the bundle for production mapping
+- `npm run lint`: Performs type checking without emitting files
+
+## Features Included
+- Complete multi-user application logic (Customer, Driver, Admin views)
+- Fully responsive UI using modern Tailwind utility spacing
+- Accessible SVG-based custom UI layouts
+
+Happy coding and safe travels with XTASS!

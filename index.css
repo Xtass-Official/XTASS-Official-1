@@ -10,3 +10,7 @@
   --color-primary-active: #4D0011;
   --color-accent: #FFD700;
 }
+
+* {
+  border-radius: 0px !important;
+}

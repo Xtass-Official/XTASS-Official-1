@@ -1,5 +1,4 @@
-// SCREEN 1 ONLY UPDATED — Recreated the "Airport Transportation" section to visually match the provided reference image, including the overlapping card layout, shadows, rounded corners, and typography. The rest of the page and app remain unchanged.
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { CustomerApp } from './components/CustomerApp';
 import { DriverApp } from './components/DriverApp';
 import { AdminPanel } from './components/AdminPanel';
@@ -8,7 +7,7 @@ import {
   SearchIcon, CheckCircleIcon, BookingIcon, CarIcon, ChevronDownIcon, MapPinIcon, 
   CalendarIcon, ClockIcon, ShieldIcon, StarIcon, DollarSignIcon, UploadCloudIcon,
   PhoneIcon, FacebookIcon, InstagramIcon, TikTokIcon, YoutubeIcon, PinterestIcon, 
-  TwitterIcon, ChevronRightIcon, BriefcaseIcon, BarChart2Icon, GraduationCapIcon,
+  TwitterIcon, ChevronRightIcon, BriefcaseIcon, BarChart2Icon, GraduationCapIcon, CompassIcon,
   UserIcon, MailIcon, ArrowRightIcon, FileTextIcon, MessageSquareIcon, TrophyIcon,
   GlobeIcon, AwardIcon, UserCheckIcon, TrendingDownIcon
 } from './components/Icons';
@@ -249,7 +248,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
   );
 
   const DropdownLink: React.FC<{children: React.ReactNode; onClick?: () => void}> = ({ children, onClick }) => (
-    <a href="#" onClick={(e) => { e.preventDefault(); onClick?.(); }} className="text-gray-600 hover:text-primary transition-colors text-sm font-medium py-2 px-6 rounded-sm whitespace-nowrap block">
+    <a href="#" onClick={(e) => { e.preventDefault(); onClick?.(); }} className="text-gray-600 hover:text-primary transition-colors text-sm font-medium py-2 px-6 rounded-none whitespace-nowrap block">
       {children}
     </a>
   );
@@ -431,7 +430,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6 }}
               >
-                <div className="inline-block bg-accent/20 border border-accent/30 text-accent text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-widest mb-6">
+                <div className="inline-block bg-accent/20 border border-accent/30 text-accent text-xs font-bold px-4 py-1.5 rounded-none uppercase tracking-widest mb-6">
                   Online Reservation
                 </div>
                 <h1 className="text-4xl md:text-5xl lg:text-7xl font-display font-bold text-white mb-8 leading-[1.1]">
@@ -455,9 +454,9 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
               ></div>
               <div className="absolute inset-0 bg-gradient-to-r from-primary via-transparent to-transparent"></div>
               {/* Floating badge */}
-              <div className="absolute bottom-12 right-12 bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-2xl shadow-2xl">
+              <div className="absolute bottom-12 right-12 bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-none shadow-2xl">
                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-accent rounded-full flex items-center justify-center text-primary">
+                    <div className="w-12 h-12 bg-accent rounded-none flex items-center justify-center text-primary">
                        <CheckCircleIcon className="w-7 h-7" />
                     </div>
                     <div className="text-white">
@@ -475,9 +474,9 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
            <motion.div 
              initial={{ opacity: 0, y: 10 }}
              animate={{ opacity: 1, y: 0 }}
-             className="bg-accent border border-primary/10 py-4 px-8 rounded-xl flex items-center justify-center gap-4 shadow-[0_10px_30px_rgba(255,215,0,0.3)]"
+             className="bg-accent border border-primary/10 py-4 px-8 rounded-none flex items-center justify-center gap-4 shadow-[0_10px_30px_rgba(255,215,0,0.3)]"
            >
-              <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary animate-pulse">
+              <div className="w-10 h-10 bg-primary/10 rounded-none flex items-center justify-center text-primary animate-pulse">
                 <ClockIcon className="w-5 h-5" />
               </div>
               <p className="text-sm md:text-base font-bold text-primary">
@@ -489,7 +488,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
         {/* RESERVATION SEARCH BOX */}
         <section className="py-16 md:py-24">
           <div className="max-w-5xl mx-auto px-4">
-            <div className="bg-white rounded-[2.5rem] shadow-[0_30px_80px_rgba(128,0,32,0.08)] border border-gray-100 p-8 md:p-14 text-center">
+            <div className="bg-white rounded-none shadow-[0_30px_80px_rgba(128,0,32,0.08)] border border-gray-100 p-8 md:p-14 text-center">
               <div className="flex flex-col md:flex-row items-center justify-center gap-4 mb-12">
                 <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900 leading-none tracking-tight">Reserve a Vehicle</h2>
                 <div className="flex items-center gap-4">
@@ -515,35 +514,35 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                     <span className="text-[10px] text-gray-300 font-normal italic uppercase tracking-tighter">* Required Field</span>
                   </div>
                   <div className="relative group">
-                    <div className="absolute left-1 top-1 bottom-1 w-14 bg-gray-50 rounded-l-xl flex items-center justify-center text-gray-400 group-focus-within:text-primary transition-colors">
-                      <SearchIcon className="w-5 h-5" />
+                    <div className="absolute left-0 top-0 bottom-0 w-16 bg-gray-50 flex items-center justify-center text-gray-400 group-focus-within:text-primary transition-colors border-r border-gray-100">
+                      <SearchIcon className="w-6 h-6" />
                     </div>
                     <input 
                       type="text" 
                       placeholder="e.g. Accra Mall or Kotoka International Airport"
-                      className="w-full pl-20 pr-8 py-6 bg-gray-50/30 border border-gray-100 rounded-2xl focus:bg-white focus:ring-8 focus:ring-primary/5 focus:border-primary/30 focus:outline-none text-xl font-medium transition-all placeholder:text-gray-300 shadow-sm"
+                      className="w-full pl-20 pr-8 py-7 bg-gray-50/20 border border-gray-200 rounded-none focus:bg-white focus:ring-0 focus:border-primary focus:outline-none text-xl font-medium transition-all placeholder:text-gray-300"
                     />
                   </div>
                 </div>
 
-                <div className="flex items-center gap-4 bg-gray-50/50 p-5 rounded-2xl border border-gray-50 text-left hover:border-accent/30 transition-colors cursor-pointer group">
+                <div className="flex items-center gap-4 bg-gray-50/30 p-6 rounded-none border border-gray-100 text-left hover:border-primary/30 transition-all cursor-pointer group">
                   <div className="relative flex items-center justify-center">
                     <input 
                       type="checkbox" 
                       id="different-location"
-                      className="peer w-6 h-6 rounded-lg border-2 border-gray-200 text-primary focus:ring-primary/20 cursor-pointer appearance-none checked:bg-primary checked:border-primary transition-all"
+                      className="peer w-6 h-6 rounded-none border-2 border-gray-200 text-primary focus:ring-0 cursor-pointer appearance-none checked:bg-primary checked:border-primary transition-all"
                     />
                     <CheckCircleIcon className="absolute w-4 h-4 text-white opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity" />
                   </div>
-                  <label htmlFor="different-location" className="text-sm md:text-base font-bold text-gray-600 cursor-pointer flex items-center gap-2 group-hover:text-primary transition-colors">
+                  <label htmlFor="different-location" className="text-base font-bold text-gray-600 cursor-pointer flex items-center gap-2 group-hover:text-primary transition-colors">
                     Return to a different location 
-                    <div className="w-5 h-5 rounded-full bg-gray-200 flex items-center justify-center text-[10px] text-gray-500 font-bold hover:bg-accent hover:text-primary transition-all">?</div>
+                    <div className="w-5 h-5 rounded-none bg-gray-200 flex items-center justify-center text-[10px] text-gray-500 font-bold hover:bg-accent hover:text-primary transition-all">?</div>
                   </label>
                 </div>
 
                 <button 
                   onClick={() => onRoleSelect('Customer')}
-                  className="w-full py-6 bg-primary hover:bg-primary-hover text-white font-bold rounded-2xl shadow-2xl shadow-primary/20 hover:shadow-primary/30 active:scale-[0.98] transition-all text-xl md:text-2xl flex items-center justify-center gap-4 group"
+                  className="w-full py-6 bg-primary hover:bg-primary-hover text-white font-bold rounded-none shadow-2xl shadow-primary/20 hover:shadow-primary/30 active:scale-[0.98] transition-all text-xl md:text-2xl flex items-center justify-center gap-4 group"
                 >
                   Search Available Vehicles
                   <ArrowRightIcon className="w-6 h-6 group-hover:translate-x-3 transition-transform" />
@@ -580,19 +579,19 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                  <motion.div 
                    key={i}
                    whileHover={{ y: -8 }}
-                   className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden flex flex-col h-full group hover:shadow-2xl hover:shadow-primary/5 transition-all"
+                   className="bg-white rounded-none border border-gray-100 shadow-sm overflow-hidden flex flex-col h-full group hover:shadow-2xl hover:shadow-primary/5 transition-all"
                  >
                    {card.type === 'special' ? (
                      <div className="h-60 bg-primary flex items-center justify-center p-8 relative overflow-hidden">
                         {/* Abstract background pattern */}
                         <div className="absolute inset-0 opacity-10">
-                           <div className="absolute top-0 right-0 w-40 h-40 bg-accent rounded-full -mr-20 -mt-20"></div>
-                           <div className="absolute bottom-0 left-0 w-32 h-32 bg-accent rounded-full -ml-16 -mb-16"></div>
+                           <div className="absolute top-0 right-0 w-40 h-40 bg-accent rounded-none -mr-20 -mt-20"></div>
+                           <div className="absolute bottom-0 left-0 w-32 h-32 bg-accent rounded-none -ml-16 -mb-16"></div>
                         </div>
                         <div className="border-4 border-accent p-8 text-white text-center relative z-10 transform -rotate-1 group-hover:rotate-0 transition-transform duration-500">
                            <p className="text-[10px] font-black tracking-[0.4em] uppercase mb-1 text-accent">Standard of</p>
                            <p className="text-5xl font-black italic tracking-tighter mb-2">CARE</p>
-                           <div className="w-16 h-1.5 bg-accent mx-auto mb-4 rounded-full"></div>
+                           <div className="w-16 h-1.5 bg-accent mx-auto mb-4 rounded-none"></div>
                            <CheckCircleIcon className="w-10 h-10 mx-auto text-accent" />
                         </div>
                      </div>
@@ -605,7 +604,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                    <div className="p-10 flex-1 flex flex-col">
                      <h3 className="text-2xl font-display font-bold text-gray-900 mb-4 group-hover:text-primary transition-colors">{card.title}</h3>
                      <p className="text-gray-500 leading-relaxed mb-10 flex-1 font-light">{card.desc}</p>
-                     <button className="w-full py-4 bg-gray-900 text-white font-bold rounded-2xl hover:bg-primary active:scale-95 transition-all text-xs uppercase tracking-[0.2em]">
+                     <button className="w-full py-4 bg-gray-900 text-white font-bold rounded-none hover:bg-primary active:scale-95 transition-all text-xs uppercase tracking-[0.2em]">
                        {card.btn}
                      </button>
                    </div>
@@ -638,7 +637,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                    theme: "light"
                  }
                ].map((card, i) => (
-                 <div key={i} className={`rounded-[2.5rem] overflow-hidden flex flex-col border shadow-sm transition-all duration-700 hover:shadow-2xl hover:-translate-y-2 ${card.theme === 'dark' ? 'bg-primary text-white border-primary-active' : 'bg-white border-gray-100'}`}>
+                 <div key={i} className={`rounded-none overflow-hidden flex flex-col border shadow-sm transition-all duration-700 hover:shadow-2xl hover:-translate-y-2 ${card.theme === 'dark' ? 'bg-primary text-white border-primary-active' : 'bg-white border-gray-100'}`}>
                    <div className="h-64 overflow-hidden relative">
                      <img src={card.img} alt={card.title} className="w-full h-full object-cover" />
                      {card.theme === 'dark' && <div className="absolute inset-0 bg-primary/40 mix-blend-multiply"></div>}
@@ -646,7 +645,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                    <div className="p-10 flex-1 flex flex-col">
                      <h3 className={`text-2xl font-display font-bold mb-4 ${card.theme === 'dark' ? 'text-accent' : 'text-gray-900'}`}>{card.title}</h3>
                      <p className={`leading-relaxed mb-10 flex-1 ${card.theme === 'dark' ? 'text-white/70 font-light italic' : 'text-gray-500 font-light'}`}>{card.desc}</p>
-                     <button className={`py-4 px-10 rounded-2xl font-black transition-all border-2 text-sm uppercase tracking-widest ${card.theme === 'dark' ? 'bg-accent text-primary border-accent hover:bg-white hover:border-white shadow-lg shadow-accent/10' : 'bg-primary text-white border-primary hover:bg-primary-hover hover:border-primary-hover shadow-lg shadow-primary/10'}`}>
+                     <button className={`py-4 px-10 rounded-none font-black transition-all border-2 text-sm uppercase tracking-widest ${card.theme === 'dark' ? 'bg-accent text-primary border-accent hover:bg-white hover:border-white shadow-lg shadow-accent/10' : 'bg-primary text-white border-primary hover:bg-primary-hover hover:border-primary-hover shadow-lg shadow-primary/10'}`}>
                        {card.btn}
                      </button>
                    </div>
@@ -669,11 +668,11 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                        <h4 className="text-4xl lg:text-5xl font-display font-bold text-gray-900 mb-6 tracking-tighter">
                           Popular Hubs <br className="hidden lg:block"/> & Cities
                        </h4>
-                       <div className="w-20 h-2 bg-accent mb-8 rounded-full"></div>
+                       <div className="w-20 h-2 bg-accent mb-8 rounded-none"></div>
                        <p className="text-gray-500 text-lg leading-relaxed mb-10 font-light italic">
                           "Operating across Ghana's transport arteries, connecting people to progress."
                        </p>
-                       <div className="bg-gray-50 border border-gray-100 p-8 rounded-3xl">
+                       <div className="bg-gray-50 border border-gray-100 p-8 rounded-none">
                           <p className="text-sm font-bold text-primary uppercase tracking-[0.2em] mb-4">24/7 Availability</p>
                           <p className="text-gray-600 text-sm leading-relaxed">
                              Our airport hubs are open around the clock to ensure you have a ride regardless of your arrival time.
@@ -684,12 +683,12 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                  
                  <div className="md:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-12">
                     {/* Cities Card */}
-                    <div className="bg-white p-10 rounded-[2.5rem] border border-gray-100 shadow-xl shadow-gray-200/40">
+                    <div className="bg-white p-10 rounded-none border border-gray-100 shadow-xl shadow-gray-200/40">
                        <h5 className="text-2xl font-display font-bold text-gray-900 mb-8 border-b-2 border-accent pb-4 inline-block">Key Metropolitan Areas</h5>
                        <ul className="space-y-6">
                           {['Accra', 'Kumasi', 'Tamale', 'Takoradi', 'Wa', 'Sunyani'].map(city => (
                              <li key={city} className="flex items-center group cursor-pointer">
-                                <div className="w-10 h-10 rounded-xl bg-primary/5 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all mr-4 transform -rotate-3 group-hover:rotate-0">
+                                <div className="w-10 h-10 rounded-none bg-primary/5 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all mr-4 transform -rotate-3 group-hover:rotate-0">
                                    <MapPinIcon className="w-5 h-5" />
                                 </div>
                                 <div>
@@ -710,20 +709,20 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                           { code: 'TML', name: 'Tamale Airport', city: 'Tamale', status: 'Domestic' },
                           { code: 'TKD', name: 'Takoradi Airport', city: 'Takoradi', status: 'Domestic' }
                        ].map(airport => (
-                          <div key={airport.code} className="flex gap-6 p-6 rounded-[2rem] bg-gray-50 border border-transparent hover:border-accent hover:bg-white transition-all group cursor-pointer shadow-sm hover:shadow-2xl">
-                             <div className="bg-primary text-accent text-sm font-black w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                          <div key={airport.code} className="flex gap-6 p-6 rounded-none bg-gray-50 border border-transparent hover:border-accent hover:bg-white transition-all group cursor-pointer shadow-sm hover:shadow-2xl">
+                             <div className="bg-primary text-accent text-sm font-black w-14 h-14 rounded-none flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
                                 {airport.code}
                              </div>
                              <div>
                                 <div className="flex items-center gap-2 mb-1">
                                    <p className="font-bold text-gray-900 group-hover:text-primary transition-colors underline decoration-accent/30 decoration-2 underline-offset-4">{airport.name}</p>
-                                   <span className="text-[10px] bg-accent/20 text-primary px-2 py-0.5 rounded-full font-black uppercase">{airport.status}</span>
+                                   <span className="text-[10px] bg-accent/20 text-primary px-2 py-0.5 rounded-none font-black uppercase">{airport.status}</span>
                                 </div>
                                 <p className="text-sm text-gray-500 font-medium">{airport.city}, Ghana</p>
                              </div>
                           </div>
                        ))}
-                       <button className="w-full py-5 border-2 border-primary text-primary font-black rounded-2xl hover:bg-primary hover:text-white transition-all text-xs uppercase tracking-widest shadow-xl shadow-primary/5">
+                       <button className="w-full py-5 border-2 border-primary text-primary font-black rounded-none hover:bg-primary hover:text-white transition-all text-xs uppercase tracking-widest shadow-xl shadow-primary/5">
                           See All XTASS Locations
                        </button>
                     </div>
@@ -743,7 +742,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                     <h2 className="text-5xl md:text-6xl font-display font-bold mb-6 tracking-tighter">Your Journey, <br className="hidden md:block"/> <span className="text-accent underline decoration-accent/20 decoration-8 underline-offset-8">Your Choice</span></h2>
                     <p className="text-white/40 text-lg max-w-xl font-light italic">"From the moment of booking to the final destination, we prioritise your comfort and convenience."</p>
                  </div>
-                 <div className="bg-white/5 border border-white/10 px-8 py-6 rounded-3xl backdrop-blur-sm self-start">
+                 <div className="bg-white/5 border border-white/10 px-8 py-6 rounded-none backdrop-blur-sm self-start">
                     <p className="text-xs font-black uppercase tracking-[0.3em] text-accent mb-2">Available 24/7</p>
                     <p className="text-3xl font-display font-bold">128+ <span className="text-sm text-white/50 font-sans tracking-normal uppercase">Active Vehicles</span></p>
                  </div>
@@ -776,14 +775,14 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                    <motion.div 
                      key={i} 
                      whileHover={{ scale: 1.02 }}
-                     className="flex flex-col bg-white/5 border border-white/10 rounded-[3rem] overflow-hidden group hover:border-accent transition-all duration-700 shadow-2xl"
+                     className="flex flex-col bg-white/5 border border-white/10 rounded-none overflow-hidden group hover:border-accent transition-all duration-700 shadow-2xl"
                    >
                       <div className="h-80 overflow-hidden relative">
                          <img src={opt.img} alt={opt.title} className="w-full h-full object-cover grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-[1500ms]" />
                          <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/20 to-transparent"></div>
                          <div className="absolute bottom-10 left-10 right-10">
                             <h4 className="text-3xl font-display font-bold text-white group-hover:text-accent transition-colors tracking-tight">{opt.title}</h4>
-                            <div className="w-12 h-1.5 bg-accent mt-3 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+                            <div className="w-12 h-1.5 bg-accent mt-3 rounded-none opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
                          </div>
                       </div>
                       <div className="p-12 flex-1 flex flex-col text-center">
@@ -792,7 +791,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                          </p>
                          <button 
                            onClick={opt.action}
-                           className="py-5 px-10 bg-accent text-primary font-black rounded-2xl hover:bg-white transition-all shadow-xl shadow-accent/10 text-xs uppercase tracking-[0.2em]"
+                           className="py-5 px-10 bg-accent text-primary font-black rounded-none hover:bg-white transition-all shadow-xl shadow-accent/10 text-xs uppercase tracking-[0.2em]"
                          >
                             {opt.cta}
                          </button>
@@ -834,7 +833,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden mb-24 group"
+            className="bg-white rounded-none shadow-sm border border-gray-100 overflow-hidden mb-24 group"
           >
             <div className="h-64 md:h-96 overflow-hidden">
               <img 
@@ -850,7 +849,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
               </p>
               <button 
                 onClick={() => setView('start-reservation')}
-                className="bg-primary text-white font-bold py-4 px-12 rounded-full hover:bg-primary-hover transition-all shadow-xl shadow-primary/20 uppercase tracking-widest text-sm"
+                className="bg-primary text-white font-bold py-4 px-12 rounded-none hover:bg-primary-hover transition-all shadow-xl shadow-primary/20 uppercase tracking-widest text-sm"
               >
                 Learn More
               </button>
@@ -867,8 +866,8 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-24">
             {/* Specials Card */}
-            <div className="bg-white rounded-3xl border border-gray-100 p-10 flex flex-col items-center text-center shadow-sm hover:shadow-xl transition-all cursor-pointer group">
-              <div className="w-16 h-16 bg-primary/5 rounded-2xl flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-all transform -rotate-3 group-hover:rotate-0">
+            <div className="bg-white rounded-none border border-gray-100 p-10 flex flex-col items-center text-center shadow-sm hover:shadow-xl transition-all cursor-pointer group">
+              <div className="w-16 h-16 bg-primary/5 rounded-none flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-all transform -rotate-3 group-hover:rotate-0">
                 <MailIcon className="w-8 h-8" />
               </div>
               <h3 className="text-xl font-display font-bold text-gray-900 decoration-accent decoration-2 underline-offset-4 group-hover:underline mb-4">
@@ -880,8 +879,8 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
             </div>
 
             {/* Loyalty Card */}
-            <div className="bg-white rounded-3xl border border-gray-100 p-10 flex flex-col items-center text-center shadow-sm hover:shadow-xl transition-all cursor-pointer group">
-              <div className="w-16 h-16 bg-primary/5 rounded-2xl flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-all transform rotate-3 group-hover:rotate-0">
+            <div className="bg-white rounded-none border border-gray-100 p-10 flex flex-col items-center text-center shadow-sm hover:shadow-xl transition-all cursor-pointer group">
+              <div className="w-16 h-16 bg-primary/5 rounded-none flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-all transform rotate-3 group-hover:rotate-0">
                 <StarIcon className="w-8 h-8" />
               </div>
               <h3 className="text-xl font-display font-bold text-gray-900 decoration-accent decoration-2 underline-offset-4 group-hover:underline mb-4">
@@ -897,7 +896,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
           <div className="mb-24">
             <h2 className="text-2xl font-display font-bold text-gray-900 mb-10 border-b border-gray-200 pb-4 inline-block">More Deals</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden flex flex-col group">
+              <div className="bg-white rounded-none border border-gray-100 shadow-sm overflow-hidden flex flex-col group">
                 <div className="h-48 overflow-hidden">
                   <img 
                     src="https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?q=80&w=2070&auto=format&fit=crop" 
@@ -912,7 +911,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                   </p>
                   <button 
                     onClick={() => setView('start-reservation')}
-                    className="w-full py-4 bg-primary text-white font-bold rounded-xl hover:bg-primary-hover transition-all text-xs uppercase tracking-widest shadow-lg shadow-primary/20"
+                    className="w-full py-4 bg-primary text-white font-bold rounded-none hover:bg-primary-hover transition-all text-xs uppercase tracking-widest shadow-lg shadow-primary/20"
                   >
                     Learn More
                   </button>
@@ -940,7 +939,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
             </div>
 
             {/* Form */}
-            <div className="bg-white rounded-b-[2.5rem] shadow-2xl border border-gray-100 p-8 md:p-14 text-center">
+            <div className="bg-white rounded-none shadow-2xl border border-gray-100 p-8 md:p-14 text-center">
               <div className="flex flex-col md:flex-row items-baseline justify-center gap-4 mb-10">
                 <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900">Reserve a Vehicle</h2>
                 <div className="flex items-center gap-2">
@@ -954,39 +953,42 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                 </div>
               </div>
 
-              <div className="space-y-8 max-w-2xl mx-auto">
+              <div className="space-y-10 max-w-2xl mx-auto">
                 <div className="text-left">
-                  <div className="flex justify-between items-end mb-3">
-                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] flex items-center gap-2">
+                  <div className="flex justify-between items-end mb-4 px-1">
+                    <label className="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
                        <MapPinIcon className="w-4 h-4 text-primary" />
                        Pick-Up & Return Location (City or Airport)*
                     </label>
                     <span className="text-[10px] text-gray-300 font-normal italic uppercase tracking-tighter">* Required Field</span>
                   </div>
-                  <div className="relative">
+                  <div className="relative group">
+                    <div className="absolute left-0 top-0 bottom-0 w-14 bg-gray-50 flex items-center justify-center text-gray-400 group-focus-within:text-primary transition-colors border-r border-gray-100">
+                      <SearchIcon className="w-5 h-5" />
+                    </div>
                     <input 
                       type="text" 
-                      placeholder="Provide a Location"
-                      className="w-full pl-6 pr-6 py-5 bg-gray-50/50 border border-gray-200 rounded-2xl focus:bg-white focus:ring-4 focus:ring-primary/5 focus:border-primary focus:outline-none text-xl font-medium transition-all shadow-sm"
+                      placeholder="e.g. Accra Mall or Kotoka"
+                      className="w-full pl-16 pr-6 py-6 bg-gray-50/20 border border-gray-200 rounded-none focus:bg-white focus:ring-0 focus:border-primary focus:outline-none text-xl font-medium transition-all placeholder:text-gray-300 shadow-sm"
                     />
                   </div>
                 </div>
 
-                <div className="flex items-center gap-4 text-left p-2">
+                <div className="flex items-center gap-4 text-left p-4 bg-gray-50/30 border border-gray-100 rounded-none group">
                   <input 
                     type="checkbox" 
                     id="different-location-low-rates"
-                    className="w-6 h-6 rounded border-gray-300 text-primary focus:ring-primary/20 cursor-pointer"
+                    className="w-6 h-6 rounded-none border-gray-300 text-primary focus:ring-0 cursor-pointer"
                   />
-                  <label htmlFor="different-location-low-rates" className="text-sm md:text-base font-bold text-gray-600 cursor-pointer flex items-center gap-2 group hover:text-primary transition-colors">
+                  <label htmlFor="different-location-low-rates" className="text-base font-bold text-gray-600 cursor-pointer flex items-center gap-2 group-hover:text-primary transition-colors">
                     Return to a different location 
-                    <div className="w-5 h-5 rounded-full bg-gray-200 flex items-center justify-center text-[10px] text-gray-500 font-bold">i</div>
+                    <div className="w-5 h-5 rounded-none bg-gray-200 flex items-center justify-center text-[10px] text-gray-500 font-bold">i</div>
                   </label>
                 </div>
 
                 <button 
                   onClick={() => onRoleSelect('Customer')}
-                  className="w-full py-6 bg-primary hover:bg-primary-hover text-white font-bold rounded-2xl shadow-2xl shadow-primary/20 transition-all text-xl md:text-2xl flex items-center justify-center gap-4 group"
+                  className="w-full py-6 bg-primary hover:bg-primary-hover text-white font-bold rounded-none shadow-2xl shadow-primary/20 transition-all text-xl md:text-2xl flex items-center justify-center gap-4 group"
                 >
                   Search / Book Now
                   <ArrowRightIcon className="w-6 h-6 group-hover:translate-x-3 transition-transform" />
@@ -1459,263 +1461,6 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
     );
   };
 
-  const GetReceiptPage: React.FC<{
-    commonFooter: React.ReactNode;
-    onRoleSelect: (role: Role) => void;
-  }> = ({ commonFooter, onRoleSelect }) => {
-    const [searchType, setSearchType] = useState<'id' | 'email'>('id');
-    const [searchValue, setSearchValue] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
-    const [receipt, setReceipt] = useState<any>(null);
-    const [error, setError] = useState('');
-
-    const handleLookup = (e: React.FormEvent) => {
-      e.preventDefault();
-      setIsLoading(true);
-      setError('');
-      
-      // Simulate API lookup
-      setTimeout(() => {
-        if (searchValue.length < 5) {
-          setError('No record found with the provided details. Please check your input and try again.');
-          setIsLoading(false);
-          return;
-        }
-
-        setReceipt({
-          transactionId: 'TXN-998822-ABC',
-          refNo: 'REC-2025-06-15-01',
-          date: 'June 15, 2025',
-          time: '10:45 AM',
-          customer: {
-            name: 'John Doe',
-            email: 'john.doe@example.com',
-            phone: '+233 24 123 4567'
-          },
-          service: 'Luxury SUV Rental',
-          bookingId: 'XT-8829-GH',
-          paymentMethod: 'Credit Card (Visa ending in 4455)',
-          status: 'Paid',
-          breakdown: {
-            subtotal: 'GHS 2,100.00',
-            tax: 'GHS 252.00',
-            fees: 'GHS 98.00',
-            discount: '-GHS 0.00'
-          },
-          total: 'GHS 2,450.00'
-        });
-        setIsLoading(false);
-      }, 1500);
-    };
-
-    const handleDownload = () => {
-      alert('Generating PDF receipt for download...');
-    };
-
-    const handleEmail = () => {
-      alert('Proof of payment has been sent to ' + receipt.customer.email);
-    };
-
-    const handlePrint = () => {
-      window.print();
-    };
-
-    return (
-      <main className="bg-gray-50 min-h-screen">
-        {/* HERO */}
-        <section className="bg-primary text-white py-16">
-          <div className="max-w-7xl mx-auto px-4 text-center">
-            <h1 className="text-3xl md:text-4xl font-display font-bold">Get A Receipt</h1>
-            <p className="text-white/70 mt-2">Access and download your official payment records instantly.</p>
-          </div>
-        </section>
-
-        <section className="py-12 -mt-8 relative z-10">
-          <div className="max-w-4xl mx-auto px-4">
-            {!receipt ? (
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="bg-white rounded-2xl shadow-xl p-8 md:p-12"
-              >
-                <div className="flex items-center space-x-4 mb-10">
-                  <div className="bg-primary/5 p-4 rounded-full">
-                    <DollarSignIcon className="w-8 h-8 text-primary" />
-                  </div>
-                  <div className="text-left">
-                    <h2 className="text-2xl font-bold text-gray-800">Receipt Lookup</h2>
-                    <p className="text-gray-500">Provide your transaction or booking details to retrieve your receipt.</p>
-                  </div>
-                </div>
-
-                <form onSubmit={handleLookup} className="space-y-8">
-                  <div className="flex gap-4 p-1 bg-gray-100 rounded-xl max-w-sm">
-                    <button 
-                      type="button"
-                      onClick={() => setSearchType('id')}
-                      className={`flex-1 py-3 text-sm font-bold rounded-lg transition-all ${searchType === 'id' ? 'bg-white text-primary shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
-                    >
-                      Transaction/Booking ID
-                    </button>
-                    <button 
-                      type="button"
-                      onClick={() => setSearchType('email')}
-                      className={`flex-1 py-3 text-sm font-bold rounded-lg transition-all ${searchType === 'email' ? 'bg-white text-primary shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
-                    >
-                      Email Address
-                    </button>
-                  </div>
-
-                  <div className="text-left">
-                    <label className="block text-sm font-bold text-gray-700 mb-2">
-                      {searchType === 'id' ? 'Enter Confirmation or Transaction ID' : 'Enter Registered Email Address'}
-                    </label>
-                    <input 
-                      type={searchType === 'id' ? 'text' : 'email'} 
-                      placeholder={searchType === 'id' ? 'e.g. XT-8829-GH' : 'example@domain.com'}
-                      className={`w-full p-5 bg-gray-50 border ${error ? 'border-red-500' : 'border-gray-200'} rounded-xl focus:ring-2 focus:ring-primary/20 focus:outline-none text-lg font-medium`}
-                      value={searchValue}
-                      onChange={(e) => setSearchValue(e.target.value)}
-                      required
-                    />
-                    {error && <p className="text-red-500 text-sm mt-3 font-medium flex items-center">
-                      <ShieldIcon className="w-4 h-4 mr-2" />
-                      {error}
-                    </p>}
-                  </div>
-
-                  <button 
-                    disabled={isLoading}
-                    className="w-full bg-primary text-white font-bold py-5 rounded-2xl shadow-xl hover:bg-primary-hover transition-all flex items-center justify-center text-lg disabled:opacity-70"
-                  >
-                    {isLoading ? (
-                      <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                    ) : 'Retrieve Receipt'}
-                  </button>
-                </form>
-
-                <div className="mt-12 pt-8 border-t border-gray-100 flex flex-col md:flex-row items-center justify-between gap-6">
-                  <div className="flex items-center text-gray-500 text-sm">
-                    <ShieldIcon className="w-5 h-5 mr-3 text-primary animate-pulse" />
-                    <p>Financial records are encrypted and secure.</p>
-                  </div>
-                  <button onClick={() => onRoleSelect('Customer')} className="text-primary font-bold hover:underline text-sm uppercase tracking-wider">
-                    Sign in to view full history
-                  </button>
-                </div>
-              </motion.div>
-            ) : (
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="bg-white rounded-2xl shadow-2xl overflow-hidden print:shadow-none"
-              >
-                {/* ACTIONS BAR (Sticky or Floating) */}
-                <div className="bg-gray-100 p-4 border-b border-gray-200 flex flex-wrap justify-center gap-4 print:hidden">
-                  <button onClick={handleDownload} className="flex items-center px-6 py-2 bg-white text-primary font-bold rounded-lg border border-gray-200 hover:shadow-md transition-all">
-                    <UploadCloudIcon className="w-4 h-4 mr-2" />
-                    Download PDF
-                  </button>
-                  <button onClick={handleEmail} className="flex items-center px-6 py-2 bg-white text-primary font-bold rounded-lg border border-gray-200 hover:shadow-md transition-all">
-                    <CheckCircleIcon className="w-4 h-4 mr-2" />
-                    Email to Me
-                  </button>
-                  <button onClick={handlePrint} className="flex items-center px-6 py-2 bg-white text-primary font-bold rounded-lg border border-gray-200 hover:shadow-md transition-all">
-                    <StarIcon className="w-4 h-4 mr-2" />
-                    Print
-                  </button>
-                  <button onClick={() => setReceipt(null)} className="flex items-center px-6 py-2 text-gray-500 hover:text-primary transition-all">
-                    Search Again
-                  </button>
-                </div>
-
-                {/* RECEIPT DOCUMENT */}
-                <div className="p-12 text-left" id="printable-receipt">
-                  <div className="flex flex-col md:flex-row justify-between items-start mb-12 gap-8">
-                    <div>
-                      <div className="flex items-center space-x-2 text-primary font-black text-4xl mb-4 italic tracking-tighter">
-                        <span className="bg-primary text-white px-2 py-1 rounded not-italic">X</span>
-                        TASS
-                      </div>
-                      <div className="text-xs text-gray-500 uppercase font-black tracking-widest">
-                        Official Payment Receipt
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="inline-block px-4 py-1.5 bg-green-100 text-green-700 rounded-full font-black text-xs uppercase tracking-widest mb-4">
-                        {receipt.status}
-                      </div>
-                      <p className="text-sm font-bold text-gray-800">Date: {receipt.date}</p>
-                      <p className="text-xs text-gray-500">Ref: {receipt.refNo}</p>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12 pb-12 border-b border-gray-100">
-                    <div>
-                      <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-4">Billed To</h4>
-                      <p className="font-bold text-gray-800 text-lg">{receipt.customer.name}</p>
-                      <p className="text-gray-600 font-medium">{receipt.customer.email}</p>
-                      <p className="text-gray-600 font-medium">{receipt.customer.phone}</p>
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-4">Transaction Details</h4>
-                      <div className="space-y-1">
-                        <p className="text-gray-600 font-medium"><span className="text-gray-400">ID:</span> {receipt.transactionId}</p>
-                        <p className="text-gray-600 font-medium"><span className="text-gray-400">Booking:</span> {receipt.bookingId}</p>
-                        <p className="text-gray-600 font-medium"><span className="text-gray-400">Method:</span> {receipt.paymentMethod}</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="mb-12">
-                     <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-4">Service Summary</h4>
-                     <div className="bg-gray-50 p-6 rounded-2xl flex justify-between items-center">
-                        <div>
-                          <p className="font-bold text-gray-800 text-lg">{receipt.service}</p>
-                          <p className="text-gray-500 text-sm">Professional Transportation Service</p>
-                        </div>
-                        <p className="text-xl font-black text-primary">{receipt.total}</p>
-                     </div>
-                  </div>
-
-                  <div className="max-w-xs ml-auto">
-                    <div className="space-y-4 mb-8">
-                       <div className="flex justify-between text-gray-500 font-medium">
-                         <span>Subtotal</span>
-                         <span>{receipt.breakdown.subtotal}</span>
-                       </div>
-                       <div className="flex justify-between text-gray-500 font-medium">
-                         <span>Taxes (VAT 12%)</span>
-                         <span>{receipt.breakdown.tax}</span>
-                       </div>
-                       <div className="flex justify-between text-gray-500 font-medium">
-                         <span>Service Fees</span>
-                         <span>{receipt.breakdown.fees}</span>
-                       </div>
-                       <div className="pt-4 border-t border-gray-100 flex justify-between text-primary font-black text-2xl">
-                         <span>Total</span>
-                         <span>{receipt.total}</span>
-                       </div>
-                    </div>
-                  </div>
-
-                  <div className="mt-16 pt-8 border-t border-gray-100 text-center">
-                    <p className="text-[10px] text-gray-400 uppercase font-bold tracking-widest mb-2">Automated Document - Legal for reimbursement</p>
-                    <p className="text-[10px] text-gray-400 leading-relaxed uppercase tracking-tighter">
-                      XTASS Car Rental & Transportation Services | Accra, Ghana | TIN: GHA-0029381-01
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-          </div>
-        </section>
-
-        {commonFooter}
-      </main>
-    );
-  };
-  
   const LongTermRentalPage: React.FC<{
     setView: (v: string) => void;
     commonFooter: React.ReactNode;
@@ -1760,22 +1505,20 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
 
         {/* BOOKING FORM SECTION */}
         <section className="max-w-5xl mx-auto px-6 mb-24">
-          <div className="bg-white rounded-[2.5rem] shadow-2xl border border-gray-100 overflow-hidden">
+          <div className="bg-white rounded-none shadow-2xl border border-gray-100 overflow-hidden">
             {/* Urgency Banner */}
-            <div className="bg-[#e6f4f1] border-b border-[#c2e2dc] py-4 px-8 flex items-center justify-center gap-3">
-              <span className="text-primary">⌛</span>
+            <div className="bg-[#f0f9ff] border-b border-[#bae6fd] py-4 px-8 flex items-center justify-center gap-3">
+              <ClockIcon className="w-5 h-5 text-primary" />
               <p className="text-sm font-bold text-gray-800">
-                Hurry! Availability is limited during peak season. Reserve now to lock in your rate.
+                Plan ahead! Long-term rentals require advance verification for guaranteed availability.
               </p>
             </div>
 
             <div className="p-8 md:p-14">
-              <div className="flex flex-col md:flex-row items-baseline justify-between gap-4 mb-10">
-                <div className="flex flex-col gap-1 items-start">
-                  <h2 className="text-3xl md:text-4xl font-display font-medium text-gray-900">Start a Long-Term Reservation</h2>
-                  <p className="text-sm font-medium text-gray-500">
-                    Renting for less than 28 days? <button onClick={() => setView('start-reservation')} className="text-primary hover:underline">Book at everyday low rates &rsaquo;</button>
-                  </p>
+              <div className="flex flex-col md:flex-row items-baseline justify-between gap-4 mb-12">
+                <div className="flex flex-col gap-2 items-start">
+                  <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900">Start Your Long-Term Rental</h2>
+                  <div className="h-1.5 w-24 bg-accent mt-2"></div>
                 </div>
                 <button 
                   onClick={() => setView('manage-reservation')}
@@ -1785,41 +1528,53 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                 </button>
               </div>
 
-              <div className="space-y-8">
-                <div className="text-left">
-                  <div className="flex justify-between items-end mb-3">
-                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] flex items-center gap-2">
+              <div className="space-y-12 max-w-3xl">
+                <div className="text-left space-y-4">
+                  <div className="flex justify-between items-end">
+                    <label className="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                       <MapPinIcon className="w-4 h-4 text-primary" />
                        Pick-Up & Return Location (City or Airport)*
                     </label>
                     <span className="text-[10px] text-gray-300 font-normal italic uppercase tracking-tighter">* Required Field</span>
                   </div>
-                  <div className="relative">
+                  <div className="relative group">
+                    <div className="absolute left-0 top-0 bottom-0 w-14 bg-gray-50 flex items-center justify-center text-gray-400 group-focus-within:text-primary transition-colors border-r border-gray-100">
+                      <SearchIcon className="w-5 h-5" />
+                    </div>
                     <input 
                       type="text" 
-                      placeholder="Provide a Location"
-                      className="w-full pl-6 pr-6 py-5 bg-gray-50/50 border border-gray-200 rounded-2xl focus:bg-white focus:ring-4 focus:ring-primary/5 focus:border-primary focus:outline-none text-xl font-medium transition-all shadow-sm"
+                      placeholder="e.g. Accra Mall or City Center"
+                      className="w-full pl-16 pr-6 py-6 bg-gray-50/30 border border-gray-200 rounded-none focus:bg-white focus:ring-0 focus:border-primary focus:outline-none text-xl font-medium transition-all placeholder:text-gray-300"
                     />
                   </div>
                 </div>
 
-                <div className="flex items-center gap-4 text-left px-2">
-                  <input 
-                    type="checkbox" 
-                    id="different-location-long-term"
-                    className="w-6 h-6 rounded border-gray-300 text-primary focus:ring-primary/20 cursor-pointer"
-                  />
-                  <label htmlFor="different-location-long-term" className="text-sm md:text-base font-bold text-gray-600 cursor-pointer flex items-center gap-2 group hover:text-primary transition-colors">
+                <div className="flex items-center gap-4 text-left p-4 bg-gray-50/30 border border-gray-100 rounded-none group hover:border-primary/20 transition-all cursor-pointer">
+                  <div className="relative flex items-center justify-center">
+                    <input 
+                      type="checkbox" 
+                      id="different-location-long-term"
+                      className="peer w-6 h-6 rounded-none border-2 border-gray-200 text-primary focus:ring-0 cursor-pointer appearance-none checked:bg-primary checked:border-primary transition-all"
+                    />
+                    <CheckCircleIcon className="absolute w-4 h-4 text-white opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity" />
+                  </div>
+                  <label htmlFor="different-location-long-term" className="text-base font-bold text-gray-600 cursor-pointer flex items-center gap-2 group-hover:text-primary transition-colors">
                     Return to a different location 
-                    <div className="w-5 h-5 rounded-full bg-gray-200 flex items-center justify-center text-[10px] text-gray-500 font-bold">i</div>
+                    <div className="w-5 h-5 rounded-none bg-gray-200 flex items-center justify-center text-[10px] text-gray-500 font-bold hover:bg-accent hover:text-primary transition-all">?</div>
                   </label>
                 </div>
 
                 <button 
                   onClick={() => onRoleSelect('Customer')}
-                  className="w-full md:w-auto px-16 py-6 bg-primary hover:bg-primary-hover text-white font-bold rounded-2xl shadow-2xl shadow-primary/20 transition-all text-xl"
+                  className="w-full md:w-auto px-16 py-6 bg-primary hover:bg-primary-hover text-white font-bold rounded-none shadow-2xl shadow-primary/20 transition-all text-xl md:text-2xl flex items-center justify-center gap-4 group"
                 >
-                  Search / Book Now
+                  Search Available Vehicles
+                  <ArrowRightIcon className="w-6 h-6 group-hover:translate-x-3 transition-transform" />
                 </button>
+
+                <p className="text-sm font-medium text-gray-400 mt-8">
+                  Renting for less than 28 days? <button onClick={() => setView('start-reservation')} className="text-primary hover:underline underline-offset-4 decoration-accent decoration-2">Book at everyday low rates &rsaquo;</button>
+                </p>
               </div>
             </div>
           </div>
@@ -1829,8 +1584,8 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
         <section className="max-w-7xl mx-auto px-6 mb-24">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* 28 Day Hire Rates */}
-            <div className="bg-white p-10 rounded-3xl border border-gray-100 shadow-sm flex flex-col items-center text-center group hover:shadow-xl transition-all">
-              <div className="w-16 h-16 bg-primary/5 rounded-2xl flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-all transform -rotate-3 group-hover:rotate-0">
+            <div className="bg-white p-10 rounded-none border border-gray-100 shadow-sm flex flex-col items-center text-center group hover:shadow-xl transition-all">
+              <div className="w-16 h-16 bg-primary/5 rounded-none flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-all transform -rotate-3 group-hover:rotate-0">
                 <CalendarIcon className="w-8 h-8" />
               </div>
               <h3 className="text-xl font-display font-bold text-gray-900 mb-4">28 Day Hire Rates</h3>
@@ -1840,8 +1595,8 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
             </div>
 
             {/* Unlimited Mileage */}
-            <div className="bg-white p-10 rounded-3xl border border-gray-100 shadow-sm flex flex-col items-center text-center group hover:shadow-xl transition-all">
-              <div className="w-16 h-16 bg-primary/5 rounded-2xl flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-all transform rotate-3 group-hover:rotate-0">
+            <div className="bg-white p-10 rounded-none border border-gray-100 shadow-sm flex flex-col items-center text-center group hover:shadow-xl transition-all">
+              <div className="w-16 h-16 bg-primary/5 rounded-none flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-all transform rotate-3 group-hover:rotate-0">
                 <TrophyIcon className="w-8 h-8" />
               </div>
               <h3 className="text-xl font-display font-bold text-gray-900 mb-4">Unlimited Mileage</h3>
@@ -1851,8 +1606,8 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
             </div>
 
             {/* Multiple Locations */}
-            <div className="bg-white p-10 rounded-3xl border border-gray-100 shadow-sm flex flex-col items-center text-center group hover:shadow-xl transition-all">
-              <div className="w-16 h-16 bg-primary/5 rounded-2xl flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-all transform -rotate-3 group-hover:rotate-0">
+            <div className="bg-white p-10 rounded-none border border-gray-100 shadow-sm flex flex-col items-center text-center group hover:shadow-xl transition-all">
+              <div className="w-16 h-16 bg-primary/5 rounded-none flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-all transform -rotate-3 group-hover:rotate-0">
                 <MapPinIcon className="w-8 h-8" />
               </div>
               <h3 className="text-xl font-display font-bold text-gray-900 mb-4">Multiple Locations</h3>
@@ -1872,7 +1627,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
             </p>
             <button 
               onClick={() => onRoleSelect('Customer')}
-              className="py-4 px-10 border-2 border-primary text-primary font-bold rounded-full hover:bg-primary hover:text-white transition-all uppercase tracking-widest text-xs mb-16"
+              className="py-4 px-10 border-2 border-primary text-primary font-bold rounded-none hover:bg-primary hover:text-white transition-all uppercase tracking-widest text-xs mb-16"
             >
               View All Hire Vehicles
             </button>
@@ -1896,7 +1651,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                 }
               ].map((v, i) => (
                 <div key={i} className="group cursor-pointer">
-                  <div className="h-48 overflow-hidden rounded-2xl mb-6">
+                  <div className="h-48 overflow-hidden rounded-none mb-6">
                     <img src={v.img} alt={v.type} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                   </div>
                   <h3 className="text-2xl font-display font-bold text-gray-900 mb-2">{v.type}</h3>
@@ -1909,14 +1664,14 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
 
         {/* REASONS TO HIRE SECTION */}
         <section className="max-w-7xl mx-auto px-6 mb-24">
-          <div className="bg-white rounded-[3rem] border border-gray-100 shadow-xl overflow-hidden flex flex-col lg:flex-row">
+          <div className="bg-white rounded-none border border-gray-100 shadow-xl overflow-hidden flex flex-col lg:flex-row">
             <div className="flex-1 p-10 md:p-20 text-left">
               <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-8">Reasons to Hire a Vehicle Long-Term</h2>
               <p className="text-gray-500 mb-10 font-light text-lg">There are several common reasons for hiring a vehicle long term:</p>
               
               <div className="space-y-10">
                 <div className="flex gap-6">
-                  <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2.5 shrink-0"></div>
+                  <div className="w-1.5 h-1.5 bg-primary rounded-none mt-2.5 shrink-0"></div>
                   <div>
                     <h4 className="font-bold text-gray-900 text-lg mb-2">Preserve the value of your personal vehicle</h4>
                     <p className="text-gray-500 text-sm font-light leading-relaxed">
@@ -1926,7 +1681,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                 </div>
 
                 <div className="flex gap-6">
-                  <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2.5 shrink-0"></div>
+                  <div className="w-1.5 h-1.5 bg-primary rounded-none mt-2.5 shrink-0"></div>
                   <div>
                     <h4 className="font-bold text-gray-900 text-lg mb-2">Hire a van for larger, long-term work projects</h4>
                     <p className="text-gray-500 text-sm font-light leading-relaxed">
@@ -1936,7 +1691,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                 </div>
 
                 <div className="flex gap-6">
-                  <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2.5 shrink-0"></div>
+                  <div className="w-1.5 h-1.5 bg-primary rounded-none mt-2.5 shrink-0"></div>
                   <div>
                     <h4 className="font-bold text-gray-900 text-lg mb-2">Transportation solution while your vehicle is in the shop</h4>
                     <p className="text-gray-500 text-sm font-light leading-relaxed">
@@ -1948,7 +1703,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
 
               <button 
                 onClick={() => onRoleSelect('Customer')}
-                className="mt-16 bg-primary text-white font-bold py-5 px-12 rounded-2xl hover:bg-primary-hover transition-all shadow-2xl shadow-primary/20 text-lg"
+                className="mt-16 bg-primary text-white font-bold py-5 px-12 rounded-none hover:bg-primary-hover transition-all shadow-2xl shadow-primary/20 text-lg"
               >
                 Reserve Now
               </button>
@@ -2007,8 +1762,11 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
             className="flex-1 lg:max-w-2xl"
           >
             <h1 className="text-4xl md:text-6xl font-display font-medium text-gray-900 leading-tight">
-              Take Advantage of Weekly & Monthly Rates
+              Flexible One Way <br/> Car Rentals
             </h1>
+            <p className="mt-8 text-lg text-gray-600 font-light leading-relaxed">
+              Experience the ultimate freedom with XTASS's one-way car rental services. Pick up your vehicle at one location and drop it off at another, perfect for road trips or changing plans.
+            </p>
           </motion.div>
           <motion.div 
             initial={{ opacity: 0, x: 30 }}
@@ -2016,130 +1774,114 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
             className="flex-1 hidden lg:block"
           >
             <img 
-              src="https://images.unsplash.com/photo-1583121274602-3e2820c69888?q=80&w=2070&auto=format&fit=crop" 
-              alt="Premium Car" 
-              className="w-full h-auto drop-shadow-2xl"
+              src="https://images.unsplash.com/photo-1464851707681-f9d5fdaccea8?q=80&w=2070&auto=format&fit=crop" 
+              alt="Road Trip" 
+              className="w-full h-auto drop-shadow-2xl grayscale hover:grayscale-0 transition-all duration-1000"
             />
           </motion.div>
         </div>
 
         {/* BOOKING FORM SECTION */}
         <section className="max-w-5xl mx-auto px-6 mb-24">
-          <div className="bg-white rounded-[2.5rem] shadow-2xl border border-gray-100 overflow-hidden">
+          <div className="bg-white rounded-none shadow-2xl border border-gray-100 overflow-hidden">
             {/* Urgency Banner */}
-            <div className="bg-[#e6f4f1] border-b border-[#c2e2dc] py-4 px-8 flex items-center justify-center gap-3">
-              <span className="text-primary">⌛</span>
+            <div className="bg-[#fffbeb] border-b border-[#fef3c7] py-4 px-8 flex items-center justify-center gap-3">
+              <ClockIcon className="w-5 h-5 text-accent" />
               <p className="text-sm font-bold text-gray-800">
-                Hurry! Availability is limited during peak season. Reserve now to lock in your rate.
+                Adventure awaits! One-way availability is filling up fast for the upcoming season.
               </p>
             </div>
 
             <div className="p-8 md:p-14">
-              <div className="flex flex-col md:flex-row items-baseline justify-between gap-4 mb-10">
-                <div className="flex flex-col gap-1 items-start">
-                  <h2 className="text-3xl md:text-4xl font-display font-medium text-gray-900">Start a Long-Term Reservation</h2>
-                  <p className="text-sm font-medium text-gray-500">
-                    Renting for less than 28 days? <button onClick={() => setView('start-reservation')} className="text-primary hover:underline">Book at everyday low rates &rsaquo;</button>
-                  </p>
+              <div className="flex flex-col md:flex-row items-baseline justify-between gap-4 mb-12">
+                <div className="flex flex-col gap-2 items-start">
+                  <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900">Book Your One Way Trip</h2>
+                  <div className="h-1.5 w-24 bg-accent mt-2"></div>
                 </div>
-                <button 
-                  onClick={() => setView('manage-reservation')}
-                  className="text-primary font-bold hover:underline underline-offset-4 decoration-accent decoration-2 text-sm"
-                >
-                  or View / Modify / Cancel Reservation
-                </button>
               </div>
 
-              <div className="space-y-8">
-                <div className="text-left">
-                  <div className="flex justify-between items-end mb-3">
-                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] flex items-center gap-2">
-                       Pick-Up & Return Location (City or Airport)*
+              <div className="space-y-12 max-w-3xl">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="text-left space-y-4">
+                    <label className="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                       <MapPinIcon className="w-4 h-4 text-primary" />
+                       Pick-Up Location*
                     </label>
-                    <span className="text-[10px] text-gray-300 font-normal italic uppercase tracking-tighter">* Required Field</span>
+                    <div className="relative group">
+                      <input 
+                        type="text" 
+                        placeholder="City or Airport"
+                        className="w-full px-6 py-5 bg-gray-50/30 border border-gray-200 rounded-none focus:bg-white focus:ring-0 focus:border-primary focus:outline-none text-xl font-medium transition-all placeholder:text-gray-300"
+                      />
+                    </div>
                   </div>
-                  <div className="relative">
-                    <input 
-                      type="text" 
-                      placeholder="Provide a Location"
-                      className="w-full pl-6 pr-6 py-5 bg-gray-50/50 border border-gray-200 rounded-2xl focus:bg-white focus:ring-4 focus:ring-primary/5 focus:border-primary focus:outline-none text-xl font-medium transition-all shadow-sm"
-                    />
+                  <div className="text-left space-y-4">
+                    <label className="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                       <MapPinIcon className="w-4 h-4 text-accent" />
+                       Drop-Off Location*
+                    </label>
+                    <div className="relative group">
+                      <input 
+                        type="text" 
+                        placeholder="Different City or Airport"
+                        className="w-full px-6 py-5 bg-gray-50/30 border border-gray-200 rounded-none focus:bg-white focus:ring-0 focus:border-primary focus:outline-none text-xl font-medium transition-all placeholder:text-gray-300"
+                      />
+                    </div>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-4 text-left px-2">
-                  <input 
-                    type="checkbox" 
-                    id="different-location-one-way"
-                    className="w-6 h-6 rounded border-gray-300 text-primary focus:ring-primary/20 cursor-pointer"
-                  />
-                  <label htmlFor="different-location-one-way" className="text-sm md:text-base font-bold text-gray-600 cursor-pointer flex items-center gap-2 group hover:text-primary transition-colors">
-                    Return to a different location 
-                    <div className="w-5 h-5 rounded-full bg-gray-200 flex items-center justify-center text-[10px] text-gray-500 font-bold">i</div>
-                  </label>
+                <div className="flex flex-col md:flex-row gap-6">
+                  <button 
+                    onClick={() => onRoleSelect('Customer')}
+                    className="flex-1 py-6 bg-primary hover:bg-primary-hover text-white font-bold rounded-none shadow-2xl shadow-primary/20 transition-all text-xl flex items-center justify-center gap-4 group"
+                  >
+                    Search Vehicles
+                    <ArrowRightIcon className="w-6 h-6 group-hover:translate-x-2 transition-transform" />
+                  </button>
+                  <button 
+                    onClick={() => setView('manage-reservation')}
+                    className="py-6 px-10 border-2 border-gray-200 text-gray-600 font-bold rounded-none hover:border-primary hover:text-primary transition-all text-sm uppercase tracking-widest"
+                  >
+                    Manage Existing
+                  </button>
                 </div>
-
-                <button 
-                  onClick={() => onRoleSelect('Customer')}
-                  className="w-full md:w-auto px-16 py-6 bg-primary hover:bg-primary-hover text-white font-bold rounded-2xl shadow-2xl shadow-primary/20 transition-all text-xl"
-                >
-                  Search / Book Now
-                </button>
               </div>
             </div>
           </div>
         </section>
 
-        {/* KEY FEATURES SECTION */}
-        <section className="max-w-7xl mx-auto px-6 mb-24">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* 28 Day Hire Rates */}
-            <div className="bg-white p-10 rounded-3xl border border-gray-100 shadow-sm flex flex-col items-center text-center group hover:shadow-xl transition-all">
-              <div className="w-16 h-16 bg-primary/5 rounded-2xl flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-all transform -rotate-3 group-hover:rotate-0">
-                <CalendarIcon className="w-8 h-8" />
+        {/* ONE WAY BENEFITS */}
+        <section className="max-w-7xl mx-auto px-6 mb-32">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {[
+              { title: 'Airport to City', icon: MapPinIcon, desc: 'Pick up at the airport and drop off at your hotel or city office.' },
+              { title: 'City to City', icon: GlobeIcon, desc: 'Travel between Accra, Kumasi and other major metropolises with ease.' },
+              { title: 'No Backtracking', icon: CompassIcon, desc: 'Save time and fuel by not having to return to your starting point.' },
+              { title: 'Ultimate Freedom', icon: TrophyIcon, desc: 'Design your own itinerary without geographical constraints.' }
+            ].map((benefit, i) => (
+              <div key={i} className="bg-white p-10 border border-gray-100 rounded-none shadow-sm hover:shadow-xl transition-all group">
+                <div className="w-14 h-14 bg-primary/5 text-primary flex items-center justify-center mb-8 rounded-none group-hover:bg-primary group-hover:text-white transition-all transform -rotate-3 group-hover:rotate-0">
+                  <benefit.icon className="w-7 h-7" />
+                </div>
+                <h3 className="text-xl font-display font-bold text-gray-900 mb-4">{benefit.title}</h3>
+                <p className="text-gray-500 text-sm font-light leading-relaxed">{benefit.desc}</p>
               </div>
-              <h3 className="text-xl font-display font-bold text-gray-900 mb-4">28 Day Hire Rates</h3>
-              <p className="text-gray-500 text-sm leading-relaxed font-light">
-                Long-term hire rates begin with rental amounting to more than 28 days.
-              </p>
-            </div>
-
-            {/* Unlimited Mileage */}
-            <div className="bg-white p-10 rounded-3xl border border-gray-100 shadow-sm flex flex-col items-center text-center group hover:shadow-xl transition-all">
-              <div className="w-16 h-16 bg-primary/5 rounded-2xl flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-all transform rotate-3 group-hover:rotate-0">
-                <TrophyIcon className="w-8 h-8" />
-              </div>
-              <h3 className="text-xl font-display font-bold text-gray-900 mb-4">Unlimited Mileage</h3>
-              <p className="text-gray-500 text-sm leading-relaxed font-light">
-                While some providers may limit you on mileage, there is no mileage limit for most vehicle classes on our long-term hires.
-              </p>
-            </div>
-
-            {/* Multiple Locations */}
-            <div className="bg-white p-10 rounded-3xl border border-gray-100 shadow-sm flex flex-col items-center text-center group hover:shadow-xl transition-all">
-              <div className="w-16 h-16 bg-primary/5 rounded-2xl flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-all transform -rotate-3 group-hover:rotate-0">
-                <MapPinIcon className="w-8 h-8" />
-              </div>
-              <h3 className="text-xl font-display font-bold text-gray-900 mb-4">Multiple Locations</h3>
-              <p className="text-gray-500 text-sm leading-relaxed font-light">
-                With operations across Ghana's major airports and cities, you're sure to find a branch near you.
-              </p>
-            </div>
+            ))}
           </div>
         </section>
 
         {/* POPULAR VEHICLE TYPES */}
         <section className="bg-white py-24 mb-24">
           <div className="max-w-7xl mx-auto px-6 text-center">
-            <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-4">Popular Long-Term Hire Vehicle Types</h2>
+            <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-4">Popular One Way Trip Vehicle Types</h2>
             <p className="text-gray-500 max-w-2xl mx-auto font-light text-lg mb-10">
-              From compact sedans to spacious SUVs and vans, we offer a large range of reliable vehicles to suit your long-term hire needs.
+              Pick the perfect ride for your cross-country journey from our extensive one-way fleet.
             </p>
             <button 
               onClick={() => onRoleSelect('Customer')}
-              className="py-4 px-10 border-2 border-primary text-primary font-bold rounded-full hover:bg-primary hover:text-white transition-all uppercase tracking-widest text-xs mb-16"
+              className="py-4 px-10 border-2 border-primary text-primary font-bold rounded-none hover:bg-primary hover:text-white transition-all uppercase tracking-widest text-xs mb-16"
             >
-              View All Hire Vehicles
+              View Available Vehicles
             </button>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-left">
@@ -2161,7 +1903,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                 }
               ].map((v, i) => (
                 <div key={i} className="group cursor-pointer">
-                  <div className="h-48 overflow-hidden rounded-2xl mb-6">
+                  <div className="h-48 overflow-hidden rounded-none mb-6">
                     <img src={v.img} alt={v.type} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                   </div>
                   <h3 className="text-2xl font-display font-bold text-gray-900 mb-2">{v.type}</h3>
@@ -2172,40 +1914,40 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
           </div>
         </section>
 
-        {/* REASONS TO HIRE SECTION */}
+        {/* ONE WAY TRIP BENEFITS SECTION */}
         <section className="max-w-7xl mx-auto px-6 mb-24">
-          <div className="bg-white rounded-[3rem] border border-gray-100 shadow-xl overflow-hidden flex flex-col lg:flex-row">
+          <div className="bg-white rounded-none border border-gray-100 shadow-xl overflow-hidden flex flex-col lg:flex-row">
             <div className="flex-1 p-10 md:p-20 text-left">
-              <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-8">Reasons to Hire a Vehicle Long-Term</h2>
-              <p className="text-gray-500 mb-10 font-light text-lg">There are several common reasons for hiring a vehicle long term:</p>
+              <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-8">One Way Trip Benefits</h2>
+              <p className="text-gray-500 mb-10 font-light text-lg">Experience these advantages when booking one-way with XTASS:</p>
               
               <div className="space-y-10">
                 <div className="flex gap-6">
-                  <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2.5 shrink-0"></div>
+                  <div className="w-1.5 h-1.5 bg-primary rounded-none mt-2.5 shrink-0"></div>
                   <div>
-                    <h4 className="font-bold text-gray-900 text-lg mb-2">Preserve the value of your personal vehicle</h4>
+                    <h4 className="font-bold text-gray-900 text-lg mb-2">Total Flexibility</h4>
                     <p className="text-gray-500 text-sm font-light leading-relaxed">
-                      Taking an extended trip or heading to a secondary residence for the season? Hiring a vehicle for the duration of your trip prevents you from having to put mileage on your personal vehicle and reduces wear and tear.
+                      Plan your journey around your needs, not your return trip.
                     </p>
                   </div>
                 </div>
 
                 <div className="flex gap-6">
-                  <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2.5 shrink-0"></div>
+                  <div className="w-1.5 h-1.5 bg-primary rounded-none mt-2.5 shrink-0"></div>
                   <div>
-                    <h4 className="font-bold text-gray-900 text-lg mb-2">Hire a van for larger, long-term work projects</h4>
+                    <h4 className="font-bold text-gray-900 text-lg mb-2">Time Saving</h4>
                     <p className="text-gray-500 text-sm font-light leading-relaxed">
-                      Renting a vehicle by the month for work projects as needed is a great option. XTASS's range of vans and SUVs is well suited for extended professional engagements.
+                      Optimized routes for multi-city business trips or one-way regional travels.
                     </p>
                   </div>
                 </div>
 
                 <div className="flex gap-6">
-                  <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2.5 shrink-0"></div>
+                  <div className="w-1.5 h-1.5 bg-primary rounded-none mt-2.5 shrink-0"></div>
                   <div>
-                    <h4 className="font-bold text-gray-900 text-lg mb-2">Transportation solution while your vehicle is in the shop</h4>
+                    <h4 className="font-bold text-gray-900 text-lg mb-2">Airport to City Transitions</h4>
                     <p className="text-gray-500 text-sm font-light leading-relaxed">
-                      Whether you've had an accident or have a major repair on your personal vehicle, a long-term hire is a great way to get back on the road without missing a beat.
+                      Arrive at an airport and drop off at your city destination without returning to the hub.
                     </p>
                   </div>
                 </div>
@@ -2213,7 +1955,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
 
               <button 
                 onClick={() => onRoleSelect('Customer')}
-                className="mt-16 bg-primary text-white font-bold py-5 px-12 rounded-2xl hover:bg-primary-hover transition-all shadow-2xl shadow-primary/20 text-lg"
+                className="mt-16 bg-primary text-white font-bold py-5 px-12 rounded-none hover:bg-primary-hover transition-all shadow-2xl shadow-primary/20 text-lg"
               >
                 Reserve Now
               </button>
@@ -2249,7 +1991,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
           </p>
           <button 
             onClick={() => setView('start-reservation')}
-            className="bg-primary text-white font-bold py-5 px-14 rounded-2xl hover:bg-primary-hover transition-all shadow-xl shadow-primary/20"
+            className="bg-primary text-white font-bold py-5 px-14 rounded-none hover:bg-primary-hover transition-all shadow-xl shadow-primary/20"
           >
             Start a New Reservation
           </button>
@@ -2293,7 +2035,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="inline-block px-4 py-1.5 bg-primary text-white text-[10px] font-black uppercase tracking-widest rounded mb-6"
+                className="inline-block px-4 py-1.5 bg-primary text-white text-[10px] font-black uppercase tracking-widest rounded-none mb-6"
               >
                 Business Transport
               </motion.div>
@@ -2318,7 +2060,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
                 onClick={() => onRoleSelect('Customer')}
-                className="bg-primary hover:bg-primary-hover text-white font-bold py-5 px-12 rounded-2xl shadow-2xl transition-all text-lg"
+                className="bg-primary hover:bg-primary-hover text-white font-bold py-5 px-12 rounded-none shadow-2xl transition-all text-lg"
               >
                 Sign Up Now
               </motion.button>
@@ -2337,7 +2079,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                 { step: '3. Start Saving Now', detail: 'Get up to 20% off base rates with unlimited mileage on most vehicle classes.' },
               ].map((s, i) => (
                 <div key={i} className="flex flex-col items-center text-center">
-                  <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center text-primary font-display font-black text-2xl mb-8 border border-gray-100 shadow-sm">
+                  <div className="w-16 h-16 bg-gray-50 rounded-none flex items-center justify-center text-primary font-display font-black text-2xl mb-8 border border-gray-100 shadow-sm">
                     {i + 1}
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 mb-4">{s.step}</h3>
@@ -2350,7 +2092,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
 
         {/* RESERVE WITH CORPORATE ACCOUNT FORM */}
         <section className="py-24 max-w-5xl mx-auto px-6">
-          <div className="bg-white rounded-[2.5rem] shadow-2xl border border-gray-100 overflow-hidden text-left">
+          <div className="bg-white rounded-none shadow-2xl border border-gray-100 overflow-hidden text-left">
             <div className="p-8 md:p-14">
               <div className="flex flex-col md:flex-row items-baseline justify-between gap-4 mb-4">
                 <h2 className="text-3xl md:text-4xl font-display font-medium text-gray-900">Reserve a Vehicle with Your Corporate Account</h2>
@@ -2374,7 +2116,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                     <input 
                       type="text" 
                       placeholder="Provide a Location"
-                      className="w-full pl-6 pr-6 py-5 bg-gray-50/50 border border-gray-200 rounded-2xl focus:bg-white focus:ring-4 focus:ring-primary/5 focus:border-primary focus:outline-none text-xl font-medium transition-all shadow-sm"
+                      className="w-full pl-6 pr-6 py-5 bg-gray-50/50 border border-gray-200 rounded-none focus:bg-white focus:ring-4 focus:ring-primary/5 focus:border-primary focus:outline-none text-xl font-medium transition-all shadow-sm"
                     />
                   </div>
                 </div>
@@ -2387,13 +2129,13 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                   />
                   <label htmlFor="different-location-corporate" className="text-sm md:text-base font-bold text-gray-600 cursor-pointer flex items-center gap-2 group hover:text-primary transition-colors">
                     Return to a different location 
-                    <div className="w-5 h-5 rounded-full bg-gray-200 flex items-center justify-center text-[10px] text-gray-500 font-bold">i</div>
+                    <div className="w-5 h-5 rounded-none bg-gray-200 flex items-center justify-center text-[10px] text-gray-500 font-bold">i</div>
                   </label>
                 </div>
 
                 <button 
                   onClick={() => onRoleSelect('Customer')}
-                  className="w-full md:w-auto px-16 py-6 bg-primary hover:bg-primary-hover text-white font-bold rounded-2xl shadow-2xl shadow-primary/20 transition-all text-xl"
+                  className="w-full md:w-auto px-16 py-6 bg-primary hover:bg-primary-hover text-white font-bold rounded-none shadow-2xl shadow-primary/20 transition-all text-xl"
                 >
                   Search / Book Now
                 </button>
@@ -2424,7 +2166,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                 { icon: <TrendingDownIcon className="w-8 h-8" />, title: 'Cost-Effective', detail: 'A cost-effective alternative to mileage reimbursement that offers significant savings per trip.' },
               ].map((b, i) => (
                 <div key={i} className="flex flex-col items-center group">
-                  <div className="w-16 h-16 bg-primary/5 rounded-2xl flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-all transform rotate-3 group-hover:rotate-0">
+                  <div className="w-16 h-16 bg-primary/5 rounded-none flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-all transform rotate-3 group-hover:rotate-0">
                     {b.icon}
                   </div>
                   <h4 className="text-lg font-bold text-gray-900 mb-3">{b.title}</h4>
@@ -2441,40 +2183,40 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
             <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-16">Industry-Leading Programme</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
               {/* Comprehensive Mobility Offerings */}
-              <div className="bg-white p-10 rounded-[2.5rem] border border-gray-100 shadow-sm flex flex-col justify-between group hover:shadow-xl transition-all text-left">
+              <div className="bg-white p-10 rounded-none border border-gray-100 shadow-sm flex flex-col justify-between group hover:shadow-xl transition-all text-left">
                 <div>
                   <h3 className="text-xl font-bold text-gray-900 mb-6 font-display">Comprehensive Mobility Offerings</h3>
                   <p className="text-gray-500 text-sm font-light leading-relaxed mb-8">
                     We're more than just transport. Our portfolio of solutions includes Truck Rental, Fleet Management, Carsharing, and Vanpooling. We'll listen to your business challenges, then customise a solution that meets your needs.
                   </p>
                 </div>
-                <button className="w-fit bg-primary text-white font-bold py-3 px-8 rounded-xl hover:bg-primary-hover transition-all text-sm">
+                <button className="w-fit bg-primary text-white font-bold py-3 px-8 rounded-none hover:bg-primary-hover transition-all text-sm">
                   Learn More
                 </button>
               </div>
 
               {/* Duty of Care */}
-              <div className="bg-white p-10 rounded-[2.5rem] border border-gray-100 shadow-sm flex flex-col justify-between group hover:shadow-xl transition-all text-left">
+              <div className="bg-white p-10 rounded-none border border-gray-100 shadow-sm flex flex-col justify-between group hover:shadow-xl transition-all text-left">
                 <div>
                   <h3 className="text-xl font-bold text-gray-900 mb-6 font-display">Duty of Care</h3>
                   <p className="text-gray-500 text-sm font-light leading-relaxed mb-8">
                     Customer safety is our top priority, and we want both you and your employees to feel confident when they travel. From our corporate infrastructure to our customer-first policies, we've got you covered.
                   </p>
                 </div>
-                <button className="w-fit bg-primary text-white font-bold py-3 px-8 rounded-xl hover:bg-primary-hover transition-all text-sm">
+                <button className="w-fit bg-primary text-white font-bold py-3 px-8 rounded-none hover:bg-primary-hover transition-all text-sm">
                   Learn More
                 </button>
               </div>
 
               {/* Business Transport Resource Centre */}
-              <div className="bg-white p-10 rounded-[2.5rem] border border-gray-100 shadow-sm flex flex-col justify-between group hover:shadow-xl transition-all text-left">
+              <div className="bg-white p-10 rounded-none border border-gray-100 shadow-sm flex flex-col justify-between group hover:shadow-xl transition-all text-left">
                 <div>
                   <h3 className="text-xl font-bold text-gray-900 mb-6 font-display">Business Transport Resource Centre</h3>
                   <p className="text-gray-500 text-sm font-light leading-relaxed mb-8">
                     Find a variety of articles, white papers and more to reference as you develop, rethink, and possibly revise your company's travel policies and programmes.
                   </p>
                 </div>
-                <button className="w-fit bg-primary text-white font-bold py-3 px-8 rounded-xl hover:bg-primary-hover transition-all text-sm">
+                <button className="w-fit bg-primary text-white font-bold py-3 px-8 rounded-none hover:bg-primary-hover transition-all text-sm">
                   Go Now
                 </button>
               </div>
@@ -2509,7 +2251,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                   img: 'https://images.unsplash.com/photo-1549411223-28956903d3f9?q=80&w=2074&auto=format&fit=crop'
                 },
               ].map((tool, i) => (
-                <div key={i} className="flex flex-col group cursor-pointer bg-gray-50 rounded-3xl overflow-hidden border border-gray-100 hover:shadow-2xl transition-all">
+                <div key={i} className="flex flex-col group cursor-pointer bg-gray-50 rounded-none overflow-hidden border border-gray-100 hover:shadow-2xl transition-all">
                   <div className="h-48 overflow-hidden">
                     <img src={tool.img} alt={tool.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                   </div>
@@ -2533,6 +2275,109 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
     );
   };
 
+  const CorporateServicesPage: React.FC<{
+    setView: (v: string) => void;
+    commonFooter: React.ReactNode;
+    onRoleSelect: (role: Role) => void;
+  }> = ({ setView, commonFooter, onRoleSelect }) => {
+    return (
+      <main className="bg-[#f9fafb] min-h-screen font-sans text-left">
+        {/* Navigation / Breadcrumbs */}
+        <nav className="bg-white border-b border-gray-100 py-4">
+          <div className="max-w-6xl mx-auto px-6 flex items-center gap-2 text-sm text-gray-500 font-medium">
+            <button onClick={() => setView('home')} className="text-primary hover:underline border-b border-transparent hover:border-primary transition-all">Home</button>
+            <ChevronRightIcon className="w-3 h-3" />
+            <span className="text-primary font-medium">Business</span>
+            <ChevronRightIcon className="w-3 h-3" />
+            <span className="text-gray-900 font-bold">Corporate Services</span>
+          </div>
+        </nav>
+
+        {/* HERO SECTION */}
+        <section className="bg-primary text-white py-20 relative overflow-hidden">
+          <div className="max-w-7xl mx-auto px-6 relative z-10">
+            <motion.h1 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-4xl md:text-6xl font-display font-bold mb-6"
+            >
+              Corporate Services
+            </motion.h1>
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="text-lg md:text-xl text-white/80 font-light max-w-3xl leading-relaxed"
+            >
+              XTASS understands the specific demands of corporate travel. Business travelers need transport that is punctual, professional, and hassle-free. XTASS's Business and Premium service levels are designed precisely for this purpose, offering executive-grade vehicles and professionally presented drivers who prioritise punctuality and discretion.
+            </motion.p>
+          </div>
+        </section>
+
+        {/* CORPORATE BOOKING MANAGEMENT */}
+        <section className="py-20 bg-white">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+              <div>
+                <h2 className="text-3xl font-display font-bold text-gray-900 mb-8 border-b-2 border-accent pb-4 inline-block">Managed Transport Solutions</h2>
+                <p className="text-gray-600 text-lg leading-relaxed mb-8 font-light">
+                  Companies looking to manage transport for their teams, clients, or visiting executives can work with XTASS to set up dedicated booking arrangements. Group bookings, recurring transfers, and event transport can all be coordinated through a single point of contact.
+                </p>
+                <button 
+                  onClick={() => onRoleSelect('Customer')}
+                  className="bg-primary text-white font-bold py-4 px-10 rounded-none hover:bg-primary-hover shadow-xl shadow-primary/10 transition-all font-sans"
+                >
+                  Contact Business Team
+                </button>
+              </div>
+              <div className="rounded-none overflow-hidden shadow-2xl relative">
+                <img 
+                  src="https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069&auto=format&fit=crop" 
+                  alt="Corporate Office"
+                  className="w-full h-96 object-cover"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* TOURISM & SIGHTSEEING */}
+        <section className="py-20 bg-gray-50 border-t border-gray-100">
+          <div className="max-w-7xl mx-auto px-6">
+            <h2 className="text-3xl font-display font-bold text-gray-900 mb-12 text-center uppercase tracking-tight">Tourism & Sightseeing</h2>
+            <div className="bg-white rounded-none p-10 md:p-16 border border-gray-100 shadow-xl flex flex-col md:flex-row gap-12 items-center">
+              <div className="w-full md:w-1/3">
+                 <div className="bg-primary/5 rounded-none p-8 border border-primary/10 text-center">
+                    <GlobeIcon className="w-16 h-16 text-primary mx-auto mb-6" />
+                    <h3 className="text-2xl font-bold text-primary italic mb-2">Rental Ride</h3>
+                    <p className="text-gray-500 font-medium">Multi-destination options</p>
+                 </div>
+              </div>
+              <div className="flex-1 space-y-6">
+                <p className="text-gray-600 leading-relaxed text-lg font-light">
+                  For visitors exploring Ghana, XTASS's Rental Ride option provides a dedicated vehicle and driver for the duration of a sightseeing tour or multi-destination day trip. 
+                </p>
+                <p className="text-gray-600 leading-relaxed text-lg font-light">
+                  Drivers are knowledgeable about key tourist destinations, cultural sites, and local areas of interest, providing a comfortable and informative transport experience for both domestic and international visitors.
+                </p>
+                <button 
+                  onClick={() => setView('start-reservation')}
+                  className="inline-flex items-center gap-3 text-primary font-bold hover:underline"
+                >
+                  Explore Sightseeing Options <ArrowRightIcon className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {commonFooter}
+      </main>
+    );
+  };
+
+
+
   const ManageReservationPage: React.FC<{
     setView: (v: string) => void;
     onRoleSelect: (role: Role) => void;
@@ -2552,10 +2397,10 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
         </nav>
 
         {/* Header Section */}
-        <div className="max-w-6xl mx-auto px-6 pt-12 md:pt-20">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-12 md:pt-20">
           <div className="flex flex-col md:flex-row md:items-baseline gap-4 mb-4">
-            <h1 className="text-3xl md:text-5xl font-display font-medium text-gray-900">
-              View / Modify / Cancel Reservation
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-display font-bold text-gray-900 leading-tight">
+              Manage Your Reservation
             </h1>
             <div className="flex items-center gap-2">
               <span className="text-gray-500 text-sm italic">or</span>
@@ -2567,51 +2412,97 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
               </button>
             </div>
           </div>
-          <p className="text-lg text-gray-600 font-light mt-8 mb-10">
-            First, which of these describes your rental?
+          <p className="text-lg text-gray-600 font-light mt-4 mb-12 max-w-2xl leading-relaxed">
+            Quickly view, modify, or cancel your upcoming XTASS journey. Please provide your booking details below.
+          </p>
+
+          <div className="bg-white p-6 sm:p-8 md:p-12 border border-gray-100 shadow-2xl rounded-none mb-24 max-w-4xl">
+            <form className="space-y-8 sm:space-y-10" onSubmit={(e) => e.preventDefault()}>
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-10">
+                  <div className="space-y-4">
+                    <label className="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                       <ShieldIcon className="w-4 h-4 text-primary" />
+                       Confirmation Number*
+                    </label>
+                    <input 
+                      type="text" 
+                      placeholder="e.g. XT-998822"
+                      className="w-full px-6 py-5 bg-gray-50/30 border border-gray-200 rounded-none focus:bg-white focus:ring-0 focus:border-primary focus:outline-none text-xl font-medium transition-all placeholder:text-gray-300"
+                    />
+                  </div>
+                  <div className="space-y-4">
+                    <label className="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                       <UserIcon className="w-4 h-4 text-primary" />
+                       Last Name*
+                    </label>
+                    <input 
+                      type="text" 
+                      placeholder="As listed on booking"
+                      className="w-full px-6 py-5 bg-gray-50/30 border border-gray-200 rounded-none focus:bg-white focus:ring-0 focus:border-primary focus:outline-none text-xl font-medium transition-all placeholder:text-gray-300"
+                    />
+                  </div>
+               </div>
+               
+               <div className="pt-4">
+                  <button 
+                    onClick={() => onRoleSelect('Customer')}
+                    className="bg-primary text-white font-bold py-5 px-16 rounded-none hover:bg-primary-hover transition-all shadow-xl shadow-primary/20 text-lg flex items-center justify-center gap-4 group"
+                  >
+                    Look Up Reservation
+                    <SearchIcon className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                  </button>
+                  <p className="mt-6 text-xs text-gray-400 font-medium">* Required components are verified against our secure database.</p>
+               </div>
+            </form>
+          </div>
+
+          <p className="text-lg text-gray-600 font-light mb-10">
+            More reservation options:
           </p>
 
           {/* Option Cards */}
-          <div className="grid grid-cols-1 gap-6 max-w-4xl">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl">
             {/* Option 1 */}
             <motion.div 
-              whileHover={{ scale: 1.01, backgroundColor: '#ffffff' }}
-              className="bg-white border border-gray-100 p-8 rounded-2xl flex flex-col md:flex-row md:items-center justify-between shadow-sm hover:shadow-xl transition-all cursor-pointer group"
+              whileHover={{ y: -4 }}
+              className="bg-white border border-gray-100 p-8 rounded-none flex flex-col justify-between shadow-sm hover:shadow-xl transition-all cursor-pointer group"
             >
-              <div className="flex items-center gap-6 mb-4 md:mb-0">
-                <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center text-gray-900 group-hover:bg-primary group-hover:text-white transition-all transform -rotate-3 group-hover:rotate-0">
+              <div className="mb-8">
+                <div className="w-16 h-16 bg-gray-50 rounded-none flex items-center justify-center text-gray-900 group-hover:bg-primary group-hover:text-white transition-all transform -rotate-3 group-hover:rotate-0 mb-6">
                   <CarIcon className="w-8 h-8" />
                 </div>
-                <h3 className="text-xl md:text-2xl font-display font-bold text-gray-900">I have picked up my vehicle.</h3>
+                <h3 className="text-xl md:text-2xl font-display font-bold text-gray-900">Active Rentals</h3>
+                <p className="mt-3 text-gray-500 text-sm font-light leading-relaxed">View details for vehicles you have already picked up.</p>
               </div>
-              <button className="bg-primary text-white font-bold py-3 px-10 rounded-full hover:bg-primary-hover transition-all text-sm shadow-lg shadow-primary/20">
-                Select →
+              <button className="bg-gray-900 text-white font-bold py-3 px-8 rounded-none hover:bg-primary transition-all text-sm uppercase tracking-widest">
+                Manage Active →
               </button>
             </motion.div>
 
             {/* Option 2 */}
             <motion.div 
-              whileHover={{ scale: 1.01, backgroundColor: '#ffffff' }}
-              className="bg-white border border-gray-100 p-8 rounded-2xl flex flex-col md:flex-row md:items-center justify-between shadow-sm hover:shadow-xl transition-all cursor-pointer group"
+              whileHover={{ y: -4 }}
+              className="bg-white border border-gray-100 p-8 rounded-none flex flex-col justify-between shadow-sm hover:shadow-xl transition-all cursor-pointer group"
             >
-              <div className="flex items-center gap-6 mb-4 md:mb-0">
-                <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center text-gray-900 group-hover:bg-primary group-hover:text-white transition-all transform -rotate-3 group-hover:rotate-0">
+              <div className="mb-8">
+                <div className="w-16 h-16 bg-gray-50 rounded-none flex items-center justify-center text-gray-900 group-hover:bg-primary group-hover:text-white transition-all transform rotate-3 group-hover:rotate-0 mb-6">
                   <ClockIcon className="w-8 h-8" />
                 </div>
-                <h3 className="text-xl md:text-2xl font-display font-bold text-gray-900">I have an upcoming reservation.</h3>
+                <h3 className="text-xl md:text-2xl font-display font-bold text-gray-900">Upcoming Trips</h3>
+                <p className="mt-3 text-gray-500 text-sm font-light leading-relaxed">Modify or cancel reservations scheduled for a future date.</p>
               </div>
-              <button className="bg-primary text-white font-bold py-3 px-10 rounded-full hover:bg-primary-hover transition-all text-sm shadow-lg shadow-primary/20">
-                Select →
+              <button className="bg-gray-900 text-white font-bold py-3 px-8 rounded-none hover:bg-primary transition-all text-sm uppercase tracking-widest">
+                Manage Upcoming →
               </button>
             </motion.div>
           </div>
         </div>
 
         {/* Page Usage Notes Section */}
-        <section className="max-w-6xl mx-auto px-6 py-20 mt-12 grid grid-cols-1 lg:grid-cols-2 gap-16 border-t border-gray-200">
+        <section className="max-w-6xl mx-auto px-4 sm:px-6 py-16 sm:py-20 mt-12 grid grid-cols-1 lg:grid-cols-2 gap-12 sm:gap-16 border-t border-gray-200">
           <div className="space-y-8">
             <h4 className="text-xs font-black uppercase tracking-[0.2em] text-primary mb-6">Reservation Management</h4>
-            <div className="space-y-6 text-gray-600 leading-relaxed font-light text-lg">
+            <div className="space-y-6 text-gray-600 leading-relaxed font-light text-base sm:text-lg">
               <p>
                 Customers who have an active ride or an upcoming reservation can use this page to view full trip details, make modifications such as changing pickup time, location, or vehicle type, or cancel the reservation entirely. All modifications and cancellations are subject to XTASS's booking terms and conditions, which are clearly communicated during the booking process.
               </p>
@@ -2622,17 +2513,17 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
           </div>
 
           {/* Support Section */}
-          <div className="bg-white p-10 rounded-[2.5rem] border border-gray-100 shadow-2xl relative overflow-hidden h-fit">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-accent/10 rounded-full -mr-16 -mt-16 blur-2xl"></div>
+          <div className="bg-white p-6 sm:p-10 rounded-none border border-gray-100 shadow-2xl relative overflow-hidden h-fit">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-accent/10 rounded-none -mr-16 -mt-16 blur-2xl"></div>
             <h4 className="text-xl font-display font-bold text-gray-900 mb-8 border-b-2 border-accent pb-4 inline-block">Need Support?</h4>
             <div className="space-y-6">
-              <p className="text-gray-500 font-light mb-8">
+              <p className="text-gray-500 font-light text-sm sm:text-base mb-8 leading-relaxed font-sans">
                 Customers requiring assistance with modifying or cancelling a booking can also contact the XTASS customer support team directly via phone, email, or WhatsApp.
               </p>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
                 <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 bg-primary/5 rounded-xl flex items-center justify-center text-primary shrink-0">
+                  <div className="w-10 h-10 bg-primary/5 rounded-none flex items-center justify-center text-primary shrink-0">
                     <PhoneIcon className="w-5 h-5" />
                   </div>
                   <div>
@@ -2642,7 +2533,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                 </div>
 
                 <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 bg-primary/5 rounded-xl flex items-center justify-center text-primary shrink-0">
+                  <div className="w-10 h-10 bg-primary/5 rounded-none flex items-center justify-center text-primary shrink-0">
                     <MailIcon className="w-5 h-5" />
                   </div>
                   <div>
@@ -2652,7 +2543,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                 </div>
 
                 <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 bg-primary/5 rounded-xl flex items-center justify-center text-primary shrink-0">
+                  <div className="w-10 h-10 bg-primary/5 rounded-none flex items-center justify-center text-primary shrink-0">
                     <MessageSquareIcon className="w-5 h-5" />
                   </div>
                   <div>
@@ -2662,7 +2553,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                 </div>
 
                 <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 bg-primary/5 rounded-xl flex items-center justify-center text-primary shrink-0">
+                  <div className="w-10 h-10 bg-primary/5 rounded-none flex items-center justify-center text-primary shrink-0">
                     <ClockIcon className="w-5 h-5" />
                   </div>
                   <div>
@@ -2683,11 +2574,11 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
   const commonFooter = (
       <footer className="text-white" style={{ backgroundColor: '#1A0006' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
             
             {/* About Us Column */}
-            <div>
-              <h4 className="font-bold text-lg mb-4">About Us</h4>
+            <div className="col-span-1">
+              <h4 className="font-bold text-lg mb-6 border-b border-white/10 pb-2">About Us</h4>
               <ul className="space-y-3 text-gray-300">
                 <li><a href="#" className="hover:text-white transition-colors">Why Choose XTASS</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Our Story</a></li>
@@ -2757,6 +2648,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
   );
 
   const [isReservationsOpen, setIsReservationsOpen] = useState(false);
+  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [activeCategory, setActiveCategory] = useState<'Car Rental' | 'Business'>('Car Rental');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobileReservationsOpen, setIsMobileReservationsOpen] = useState(false);
@@ -2767,7 +2659,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
       <header className="sticky top-0 z-50">
         {/* Top Header (White) */}
         <div className="bg-white border-b border-gray-100">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-[15px] flex justify-between items-center py-4">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center py-4">
             <div className="flex items-center">
               <img 
                 src="https://i.ibb.co/6JVrf2Bt/XTASS-Logo.png" 
@@ -2820,7 +2712,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
 
         {/* Main Navbar (Red Bar) - Desktop */}
         <div className="bg-primary text-white shadow-md hidden lg:block">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-[15px] flex justify-between items-center h-[50px]">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-[50px]">
             <nav className="flex items-center h-full">
               <div className="flex items-center space-x-0 h-full">
                 <NavLinkRed active={view === 'home'} onClick={() => setView('home')}>Home</NavLinkRed>
@@ -2831,12 +2723,19 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                 {/* Reservations Dropdown Trigger */}
                 <div 
                   className="relative h-full flex items-center"
-                  onMouseEnter={() => setIsReservationsOpen(true)}
-                  onMouseLeave={() => setIsReservationsOpen(false)}
+                  onMouseEnter={() => {
+                    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+                    setIsReservationsOpen(true);
+                  }}
+                  onMouseLeave={() => {
+                    hoverTimeoutRef.current = setTimeout(() => {
+                      setIsReservationsOpen(false);
+                    }, 150);
+                  }}
                 >
-                  <button className={`h-full px-6 text-sm font-bold transition-all flex items-center group ${isReservationsOpen ? 'text-accent' : 'text-white hover:text-accent'}`}>
+                  <button className={`h-full px-6 text-sm font-bold transition-all flex items-center group outline-none ${isReservationsOpen ? 'text-accent' : 'text-white hover:text-accent'}`}>
                     Reservations
-                    <ChevronDownIcon className={`ml-2 w-4 h-4 transition-transform ${isReservationsOpen ? 'rotate-180' : ''}`} />
+                    <ChevronDownIcon className={`ml-2 w-4 h-4 transition-transform duration-300 ${isReservationsOpen ? 'rotate-180' : ''}`} />
                   </button>
 
                   {/* Mega Dropdown */}
@@ -2846,7 +2745,10 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 10 }}
-                        transition={{ duration: 0.2 }}
+                        transition={{ duration: 0.2, ease: "easeOut" }}
+                        onMouseEnter={() => {
+                          if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+                        }}
                         className="absolute top-full left-0 w-max bg-white text-gray-800 shadow-2xl border-t-2 border-primary overflow-hidden z-50 flex"
                       >
                         {/* Left Column (Main Sub-Categories) */}
@@ -2874,7 +2776,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                               <DropdownLink onClick={() => { setView('start-reservation'); setIsReservationsOpen(false); }}>Start A Car Reservation</DropdownLink>
                               <DropdownLink onClick={() => { setView('manage-reservation'); setIsReservationsOpen(false); }}>View / Modify / Cancel</DropdownLink>
                               <DropdownLink onClick={() => { setView('deals-and-coupons'); setIsReservationsOpen(false); }}>All Deals And Coupons</DropdownLink>
-                              <DropdownLink onClick={() => { setView('get-receipt'); setIsReservationsOpen(false); }}>Get A Receipt</DropdownLink>
+
                               <DropdownLink onClick={() => { setView('one-way-rental'); setIsReservationsOpen(false); }}>One Way Car Rental</DropdownLink>
                               <DropdownLink onClick={() => { setView('long-term-rental'); setIsReservationsOpen(false); }}>Long-Term Car Rental</DropdownLink>
                             </>
@@ -2882,8 +2784,8 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                           {activeCategory === 'Business' && (
                             <>
                               <DropdownLink onClick={() => { setView('business-solutions'); setIsReservationsOpen(false); }}>Solutions for Business</DropdownLink>
-                              <DropdownLink onClick={() => { setView('services'); setIsReservationsOpen(false); }}>Corporate Services</DropdownLink>
-                              <DropdownLink onClick={() => { setView('about'); setIsReservationsOpen(false); }}>Partner With Us</DropdownLink>
+                              <DropdownLink onClick={() => { setView('corporate-services'); setIsReservationsOpen(false); }}>Corporate Services</DropdownLink>
+
                             </>
                           )}
                         </div>
@@ -2917,7 +2819,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="lg:hidden fixed inset-0 top-[73px] bg-white z-40 flex flex-col overflow-y-auto"
+              className="lg:hidden fixed inset-0 top-[73px] bg-white z-40 flex flex-col overflow-y-auto pb-10"
             >
               <div className="flex flex-col p-6 space-y-4">
                 <MobileNavLink onClick={() => { setView('home'); setIsMobileMenuOpen(false); }}>Home</MobileNavLink>
@@ -2949,10 +2851,12 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                           <DropdownLinkMobile onClick={() => { setView('deals-and-coupons'); setIsMobileMenuOpen(false); }}>All Deals And Coupons</DropdownLinkMobile>
                           
                           <p className="text-primary font-bold text-sm uppercase tracking-wider pt-2 border-t border-gray-200">Business</p>
-                          <DropdownLinkMobile onClick={() => { setView('get-receipt'); setIsMobileMenuOpen(false); }}>Get A Receipt</DropdownLinkMobile>
+
                           <DropdownLinkMobile onClick={() => { setView('one-way-rental'); setIsMobileMenuOpen(false); }}>One Way Car Rental</DropdownLinkMobile>
                           <DropdownLinkMobile onClick={() => { setView('long-term-rental'); setIsMobileMenuOpen(false); }}>Long-Term Car Rental</DropdownLinkMobile>
                           <DropdownLinkMobile onClick={() => { setView('business-solutions'); setIsMobileMenuOpen(false); }}>Solutions for Business</DropdownLinkMobile>
+                          <DropdownLinkMobile onClick={() => { setView('corporate-services'); setIsMobileMenuOpen(false); }}>Corporate Services</DropdownLinkMobile>
+
                         </div>
                       </motion.div>
                     )}
@@ -2983,6 +2887,11 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
         </AnimatePresence>
       </header>
 
+      {view === 'corporate-services' && (
+        <CorporateServicesPage setView={setView} commonFooter={commonFooter} onRoleSelect={onRoleSelect} />
+      )}
+
+
       {view === 'home' && (
          <main>
           <div className="relative">
@@ -2992,16 +2901,16 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                 className="absolute inset-0 bg-cover bg-center opacity-[.85]" 
                 style={{backgroundImage: "url('https://i.ibb.co/svMbtFfn/XTASS-Hero-Banner-2.jpg')"}}>
               </div>
-              <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-36 md:pt-52 pb-52 text-center">
-                <p className="font-display">Welcome to</p>
-                <h1 className="text-2xl md:text-3xl font-display font-semibold mt-2">XCELLENT TRANSPORT & SHUTTLE SERVICES</h1>
-                <p className="text-sm md:text-base mt-4 max-w-3xl mx-auto">Trusted Transport Services for Every Traveler</p>
+              <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 sm:pt-36 md:pt-52 pb-32 sm:pb-40 md:pb-52 text-center">
+                <p className="font-display text-sm md:text-base font-medium text-white/80 uppercase tracking-widest">Welcome to</p>
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-bold mt-4 leading-tight italic tracking-tight">XCELLENT TRANSPORT & <br className="hidden sm:block" /> SHUTTLE SERVICES</h1>
+                <p className="text-base md:text-lg lg:text-xl mt-6 max-w-3xl mx-auto text-white/90 font-light leading-relaxed">Trusted Transport Services for Every Traveler</p>
               </div>
             </div>
 
             {/* Form - positioned to overlap */}
-            <div className="relative z-10 -mt-28 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="bg-white p-8 shadow-lg text-left text-gray-800">
+            <div className="relative z-10 -mt-20 sm:-mt-24 md:-mt-28 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="bg-white p-6 sm:p-8 shadow-2xl text-left text-gray-800 border border-gray-100">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {/* Types of Ride */}
                     <div>
@@ -3109,13 +3018,13 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="relative flex flex-col md:flex-row items-center">
                 <div className="md:w-3/5 w-full">
-                  <img src="https://i.ibb.co/S7HBYCvk/Airport-Transportation.jpg" alt="Airport Transportation" className="shadow-xl w-full h-auto object-cover"/>
+                  <img src="https://i.ibb.co/S7HBYCvk/Airport-Transportation.jpg" alt="Airport Transportation" className="shadow-2xl w-full h-auto object-cover border border-gray-100"/>
                 </div>
-                <div className="md:w-1/2 w-full bg-white p-8 md:p-12 shadow-xl md:-ml-24 mt-8 md:mt-0 relative">
-                  <h2 className="text-4xl font-display font-bold text-gray-800 leading-tight">Airport Transportation</h2>
+                <div className="md:w-1/2 w-full bg-white p-6 sm:p-10 md:p-12 shadow-2xl md:-ml-24 mt-[-2rem] md:mt-0 relative z-10">
+                  <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-800 leading-tight italic tracking-tight">Airport Transportation</h2>
                   <hr className="my-6 border-gray-800 w-24 border-t-2" />
-                  <p className="mt-4 text-lg text-gray-600">Reserve shared ride or private airport transportation in your departure and destination city. Vans, sedans, or SUVs.</p>
-                  <button onClick={() => onRoleSelect('Customer')} className="mt-8 bg-primary text-white font-bold py-3 px-8 hover:bg-primary-hover transition-colors">AIRPORT RIDES</button>
+                  <p className="mt-4 text-base sm:text-lg text-gray-600 font-light">Reserve shared ride or private airport transportation in your departure and destination city. Vans, sedans, or SUVs.</p>
+                  <button onClick={() => onRoleSelect('Customer')} className="mt-8 bg-primary text-white font-bold py-4 px-10 hover:bg-primary-hover transition-all shadow-xl shadow-primary/10">AIRPORT RIDES</button>
                 </div>
               </div>
             </div>
@@ -3125,22 +3034,22 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
             <section className="py-16" style={{ backgroundColor: '#660032' }}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="relative flex flex-col-reverse md:flex-row items-center">
-                    <div className="md:w-1/2 w-full bg-white p-8 md:p-12 shadow-xl relative z-10 md:mt-0 mt-8">
-                        <h2 className="text-4xl font-display font-bold text-gray-800 leading-tight">Private Car Service</h2>
+                    <div className="md:w-1/2 w-full bg-white p-6 sm:p-10 md:p-12 shadow-2xl relative z-10 md:mt-0 mt-[-2rem] border border-gray-50">
+                        <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-800 leading-tight italic tracking-tight">Private Car Service</h2>
                         <hr className="my-6 border-gray-800 w-24 border-t-2" />
-                        <p className="mt-4 text-lg text-gray-600">Travel on your schedule with a private driver. Book by the hour or choose point-to-point transfers.</p>
-                        <button onClick={() => onRoleSelect('Customer')} className="mt-8 bg-primary text-white font-bold py-3 px-8 hover:bg-primary-hover transition-colors">PRIVATE CAR SERVICE</button>
+                        <p className="mt-4 text-base sm:text-lg text-gray-600 font-light">Travel on your schedule with a private driver. Book by the hour or choose point-to-point transfers.</p>
+                        <button onClick={() => onRoleSelect('Customer')} className="mt-8 bg-primary text-white font-bold py-4 px-10 hover:bg-primary-hover transition-all shadow-xl shadow-primary/10 uppercase tracking-widest text-sm">PRIVATE CAR SERVICE</button>
                     </div>
                     <div className="md:w-3/5 w-full md:-ml-24 md:p-0">
-                        <img src="https://i.ibb.co/99HNcLqx/Private-Car-Service.png" alt="Private Car Service" className="shadow-xl w-full h-auto object-cover"/>
+                        <img src="https://i.ibb.co/99HNcLqx/Private-Car-Service.png" alt="Private Car Service" className="shadow-2xl w-full h-auto object-cover border border-gray-100"/>
                     </div>
                     </div>
                 </div>
             </section>
 
           {/* Features Section */}
-          <section className="py-16" style={{ backgroundColor: '#EEE3E9' }}>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+          <section className="py-12 sm:py-16" style={{ backgroundColor: '#EEE3E9' }}>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16 items-center">
               <div>
                 <h3 className="text-2xl font-display font-bold text-primary">Door-to-Door Airport Transportation</h3>
                 <p className="mt-4">XTASS has been providing affordable, convenient, and safe shared ride and private airport transfers. We pioneered the shared ride concept with specialization in grouping and routing passengers traveling in the same direction together in an airport shuttle. Since then, we’ve expanded our ground transportation services beyond shared ride vans to include: airport car service, point to point transfers, and group transportation for special events. We’re not just about getting from point A to point B, but about enhancing your entire travel experience.</p>
@@ -3170,7 +3079,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
           </section>
 
           {/* How It Works */}
-          <section className="relative py-16 text-white">
+          <section className="relative py-12 sm:py-16 text-white overflow-hidden">
             <div 
               className="absolute inset-0 bg-cover bg-center" 
               style={{backgroundImage: "url('https://i.ibb.co/wFXkyNhy/How-it-works-background-section-image.png')"}}>
@@ -3204,11 +3113,11 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
           </section>
 
           {/* Where We Go */}
-          <section className="py-16">
+          <section className="py-12 sm:py-16">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-              <h2 className="text-4xl font-display font-bold text-primary">Where We Go</h2>
-              <p className="mt-4 text-lg max-w-2xl mx-auto">Connecting you to major airports across Ghana. Your journey, our priority.</p>
-              <div className="mt-8 grid grid-cols-2 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
+              <h2 className="text-3xl sm:text-4xl font-display font-bold text-primary italic tracking-tight">Where We Go</h2>
+              <p className="mt-4 text-base sm:text-lg max-w-2xl mx-auto text-gray-600 font-light">Connecting you to major airports across Ghana. Your journey, our priority.</p>
+              <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
                 <button className="text-white p-4 hover:bg-primary-hover" style={{ backgroundColor: '#660032' }}>Kotoka Int'l Airport</button>
                 <button className="text-white p-4 hover:bg-primary-hover" style={{ backgroundColor: '#660032' }}>Tamale Airport</button>
                 <button className="text-white p-4 hover:bg-primary-hover" style={{ backgroundColor: '#660032' }}>Takoradi Airport</button>
@@ -4476,42 +4385,44 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                   <div className="not-prose mt-12 p-8 bg-gray-50 rounded-lg border border-gray-200">
                       <h3 className="text-2xl font-bold font-display text-gray-800 mb-6 text-center">Report an Issue Form</h3>
                       <form onSubmit={handleReportSubmit} className="space-y-6">
-                          <div>
-                              <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">Full Name</label>
-                              <input type="text" name="fullName" id="fullName" value={reportIssueData.fullName} onChange={handleReportIssueChange} className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary" required />
-                          </div>
-                          <div>
-                              <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email Address</label>
-                              <input type="email" name="email" id="email" value={reportIssueData.email} onChange={handleReportIssueChange} className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary" required />
-                          </div>
-                          <div>
-                              <label htmlFor="phone" className="block text-sm font-medium text-gray-700">Phone Number</label>
-                              <input type="tel" name="phone" id="phone" value={reportIssueData.phone} onChange={handleReportIssueChange} className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary" required />
-                          </div>
-                          <div>
-                              <label htmlFor="tripDate" className="block text-sm font-medium text-gray-700">Trip Date</label>
-                              <input type="date" name="tripDate" id="tripDate" value={reportIssueData.tripDate} onChange={handleReportIssueChange} className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary" required />
-                          </div>
-                          <div>
-                              <label htmlFor="tripType" className="block text-sm font-medium text-gray-700">Trip Type</label>
-                              <select name="tripType" id="tripType" value={reportIssueData.tripType} onChange={handleReportIssueChange} className="mt-1 block w-full px-4 py-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary" required>
-                                  <option value="">Select Trip Type</option>
-                                  <option>Instant Ride</option>
-                                  <option>Scheduled Ride</option>
-                                  <option>Car Rental</option>
-                              </select>
-                          </div>
-                          <div>
-                              <label htmlFor="issueType" className="block text-sm font-medium text-gray-700">Issue Type</label>
-                              <select name="issueType" id="issueType" value={reportIssueData.issueType} onChange={handleReportIssueChange} className="mt-1 block w-full px-4 py-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary" required>
-                                  <option value="">Select Issue Type</option>
-                                  <option>Ride Issue</option>
-                                  <option>Payment</option>
-                                  <option>Safety</option>
-                                  <option>App</option>
-                                  <option>Lost Item</option>
-                                  <option>Other</option>
-                              </select>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                              <div>
+                                  <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">Full Name</label>
+                                  <input type="text" name="fullName" id="fullName" value={reportIssueData.fullName} onChange={handleReportIssueChange} className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary" required />
+                              </div>
+                              <div>
+                                  <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email Address</label>
+                                  <input type="email" name="email" id="email" value={reportIssueData.email} onChange={handleReportIssueChange} className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary" required />
+                              </div>
+                              <div>
+                                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700">Phone Number</label>
+                                  <input type="tel" name="phone" id="phone" value={reportIssueData.phone} onChange={handleReportIssueChange} className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary" required />
+                              </div>
+                              <div>
+                                  <label htmlFor="tripDate" className="block text-sm font-medium text-gray-700">Trip Date</label>
+                                  <input type="date" name="tripDate" id="tripDate" value={reportIssueData.tripDate} onChange={handleReportIssueChange} className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary" required />
+                              </div>
+                              <div>
+                                  <label htmlFor="tripType" className="block text-sm font-medium text-gray-700">Trip Type</label>
+                                  <select name="tripType" id="tripType" value={reportIssueData.tripType} onChange={handleReportIssueChange} className="mt-1 block w-full px-4 py-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary" required>
+                                      <option value="">Select Trip Type</option>
+                                      <option>Instant Ride</option>
+                                      <option>Scheduled Ride</option>
+                                      <option>Car Rental</option>
+                                  </select>
+                              </div>
+                              <div>
+                                  <label htmlFor="issueType" className="block text-sm font-medium text-gray-700">Issue Type</label>
+                                  <select name="issueType" id="issueType" value={reportIssueData.issueType} onChange={handleReportIssueChange} className="mt-1 block w-full px-4 py-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary" required>
+                                      <option value="">Select Issue Type</option>
+                                      <option>Ride Issue</option>
+                                      <option>Payment</option>
+                                      <option>Safety</option>
+                                      <option>App</option>
+                                      <option>Lost Item</option>
+                                      <option>Other</option>
+                                  </select>
+                              </div>
                           </div>
                           <div>
                               <label htmlFor="description" className="block text-sm font-medium text-gray-700">Description</label>
@@ -4627,30 +4538,32 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                   <div className="not-prose mt-12 p-8 bg-gray-50 rounded-lg border border-gray-200">
                       <h3 className="text-2xl font-bold font-display text-gray-800 mb-6 text-center">Lost & Found Form</h3>
                       <form onSubmit={handleLostAndFoundSubmit} className="space-y-6">
-                          <div>
-                              <label htmlFor="lostFullName" className="block text-sm font-medium text-gray-700">Full Name</label>
-                              <input type="text" name="fullName" id="lostFullName" value={lostAndFoundData.fullName} onChange={handleLostAndFoundChange} className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary" required />
-                          </div>
-                          <div>
-                              <label htmlFor="lostEmail" className="block text-sm font-medium text-gray-700">Email Address</label>
-                              <input type="email" name="email" id="lostEmail" value={lostAndFoundData.email} onChange={handleLostAndFoundChange} className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary" required />
-                          </div>
-                          <div>
-                              <label htmlFor="lostPhone" className="block text-sm font-medium text-gray-700">Phone Number</label>
-                              <input type="tel" name="phone" id="lostPhone" value={lostAndFoundData.phone} onChange={handleLostAndFoundChange} className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary" required />
-                          </div>
-                          <div>
-                              <label htmlFor="lostTripDate" className="block text-sm font-medium text-gray-700">Trip Date</label>
-                              <input type="date" name="tripDate" id="lostTripDate" value={lostAndFoundData.tripDate} onChange={handleLostAndFoundChange} className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary" required />
-                          </div>
-                          <div>
-                              <label htmlFor="lostTripType" className="block text-sm font-medium text-gray-700">Trip Type</label>
-                              <select name="tripType" id="lostTripType" value={lostAndFoundData.tripType} onChange={handleLostAndFoundChange} className="mt-1 block w-full px-4 py-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary" required>
-                                  <option value="">Select Trip Type</option>
-                                  <option>Instant Ride</option>
-                                  <option>Scheduled Ride</option>
-                                  <option>Car Rental</option>
-                              </select>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                              <div>
+                                  <label htmlFor="lostFullName" className="block text-sm font-medium text-gray-700">Full Name</label>
+                                  <input type="text" name="fullName" id="lostFullName" value={lostAndFoundData.fullName} onChange={handleLostAndFoundChange} className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary" required />
+                              </div>
+                              <div>
+                                  <label htmlFor="lostEmail" className="block text-sm font-medium text-gray-700">Email Address</label>
+                                  <input type="email" name="email" id="lostEmail" value={lostAndFoundData.email} onChange={handleLostAndFoundChange} className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary" required />
+                              </div>
+                              <div>
+                                  <label htmlFor="lostPhone" className="block text-sm font-medium text-gray-700">Phone Number</label>
+                                  <input type="tel" name="phone" id="lostPhone" value={lostAndFoundData.phone} onChange={handleLostAndFoundChange} className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary" required />
+                              </div>
+                              <div>
+                                  <label htmlFor="lostTripDate" className="block text-sm font-medium text-gray-700">Trip Date</label>
+                                  <input type="date" name="tripDate" id="lostTripDate" value={lostAndFoundData.tripDate} onChange={handleLostAndFoundChange} className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary" required />
+                              </div>
+                              <div>
+                                  <label htmlFor="lostTripType" className="block text-sm font-medium text-gray-700">Trip Type</label>
+                                  <select name="tripType" id="lostTripType" value={lostAndFoundData.tripType} onChange={handleLostAndFoundChange} className="mt-1 block w-full px-4 py-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary" required>
+                                      <option value="">Select Trip Type</option>
+                                      <option>Instant Ride</option>
+                                      <option>Scheduled Ride</option>
+                                      <option>Car Rental</option>
+                                  </select>
+                              </div>
                           </div>
                           <div>
                               <label htmlFor="lostDescription" className="block text-sm font-medium text-gray-700">Description of Lost Item</label>
@@ -4733,9 +4646,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
         <DealsAndCouponsPage setView={setView} onRoleSelect={onRoleSelect} commonFooter={commonFooter} />
       )}
 
-      {view === 'get-receipt' && (
-        <GetReceiptPage commonFooter={commonFooter} onRoleSelect={onRoleSelect} />
-      )}
+
 
       {view === 'one-way-rental' && (
         <OneWayRentalPage setView={setView} commonFooter={commonFooter} onRoleSelect={onRoleSelect} />
