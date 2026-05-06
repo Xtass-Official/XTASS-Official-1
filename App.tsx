@@ -8,7 +8,9 @@ import {
   SearchIcon, CheckCircleIcon, BookingIcon, CarIcon, ChevronDownIcon, MapPinIcon, 
   CalendarIcon, ClockIcon, ShieldIcon, StarIcon, DollarSignIcon, UploadCloudIcon,
   PhoneIcon, FacebookIcon, InstagramIcon, TikTokIcon, YoutubeIcon, PinterestIcon, 
-  TwitterIcon, ChevronRightIcon, BriefcaseIcon, BarChart2Icon
+  TwitterIcon, ChevronRightIcon, BriefcaseIcon, BarChart2Icon, GraduationCapIcon,
+  UserIcon, MailIcon, ArrowRightIcon, FileTextIcon, MessageSquareIcon, TrophyIcon,
+  GlobeIcon, AwardIcon, UserCheckIcon, TrendingDownIcon
 } from './components/Icons';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -416,419 +418,389 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
     onRoleSelect: (role: Role) => void;
     commonFooter: React.ReactNode;
   }> = ({ setView, onRoleSelect, commonFooter }) => {
-    const [formData, setFormData] = useState({
-      pickupLocation: '',
-      dropoffLocation: '',
-      pickupDate: '',
-      pickupTime: '',
-      returnDate: '',
-      returnTime: '',
-      vehicleType: 'Economy',
-      extras: [] as string[],
-    });
-
-    const [errors, setErrors] = useState<Record<string, string>>({});
-
-    const handleInputChange = (field: string, value: any) => {
-      setFormData(prev => ({ ...prev, [field]: value }));
-      if (errors[field]) {
-        setErrors(prev => {
-          const newErrors = { ...prev };
-          delete newErrors[field];
-          return newErrors;
-        });
-      }
-    };
-
-    const validateForm = () => {
-      const newErrors: Record<string, string> = {};
-      if (!formData.pickupLocation) newErrors.pickupLocation = 'Pickup location is required';
-      if (!formData.pickupDate) newErrors.pickupDate = 'Pickup date is required';
-      if (!formData.pickupTime) newErrors.pickupTime = 'Pickup time is required';
-      if (!formData.returnDate) newErrors.returnDate = 'Return date is required';
-      if (!formData.returnTime) newErrors.returnTime = 'Return time is required';
-      
-      setErrors(newErrors);
-      return Object.keys(newErrors).length === 0;
-    };
-
-    const handleSubmit = (e: React.FormEvent) => {
-      e.preventDefault();
-      if (validateForm()) {
-        // Redirect to register/login to complete booking
-        onRoleSelect('Customer');
-      }
-    };
-
-    const vehicleTypes = [
-      { id: 'Economy', name: 'Economy', desc: 'Affordable & Fuel-Efficient', features: '4 Seats, 2 Bags, AC', icon: <CarIcon className="w-8 h-8" /> },
-      { id: 'SUV', name: 'SUV', desc: 'Spacious & Powerful', features: '5-7 Seats, 4 Bags, AC', icon: <SearchIcon className="w-8 h-8" /> },
-      { id: 'Luxury', name: 'Luxury', desc: 'Premium Experience', features: '4 Seats, Premium Interior, AC', icon: <StarIcon className="w-8 h-8" /> },
-      { id: 'Business', name: 'Business', desc: 'Professional & Modern', features: '4 Seats, WiFi, Water, AC', icon: <BriefcaseIcon className="w-8 h-8" /> },
-    ];
-
-    const generateTimeOptions = (): string[] => {
-      const times: string[] = [];
-      for (let hour = 0; hour < 24; hour++) {
-        for (let minute = 0; minute < 60; minute += 30) {
-          const h = hour % 12 === 0 ? 12 : hour % 12;
-          const m = minute.toString().padStart(2, '0');
-          const ampm = hour < 12 ? 'AM' : 'PM';
-          times.push(`${h}:${m} ${ampm}`);
-        }
-      }
-      return times;
-    };
-    const timeOptions = generateTimeOptions();
-
-    const faqs = [
-      { q: 'How do I modify a reservation?', a: 'You can modify your reservation through the "View / Modify / Cancel" link in the Reservations menu or by logging into your account.' },
-      { q: 'What documents are required?', a: 'A valid driver’s license, a form of ID (Ghana Card or Passport), and a payment method are required at pickup.' },
-      { q: 'Can I cancel my booking?', a: 'Yes, free cancellation is available up to 24 hours before your pickup time. Last-minute cancellations may incur a small fee.' },
-      { q: 'Payment methods available?', a: 'We accept major Credit/Debit cards, Mobile Money (MTN, Telecel, AT), and cash payments at select locations.' },
-    ];
-
     return (
-      <main className="bg-gray-50">
-        {/* HERO SECTION */}
-        <section className="relative bg-primary text-white py-24 overflow-hidden">
-          <div className="absolute inset-0 opacity-20 bg-cover bg-center" style={{backgroundImage: "url('https://i.ibb.co/svMbtFfn/XTASS-Hero-Banner-2.jpg')"}}></div>
-          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <motion.h1 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-6"
-            >
-              Start Your Car Reservation
-            </motion.h1>
-            <motion.p 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto mb-10"
-            >
-              Experience seamless, reliable, and professional car rental services across Ghana. Book your perfect ride in just a few clicks.
-            </motion.p>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-            >
-              <a href="#booking-form" className="bg-accent text-primary font-bold py-4 px-10 rounded-lg shadow-xl hover:bg-accent/90 transition-all inline-block">
-                Start Booking Now
-              </a>
-            </motion.div>
+      <main className="bg-white min-h-screen font-sans">
+        {/* HERO SECTION - Premium Split Layout */}
+        <section className="bg-primary overflow-hidden relative">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(128,0,32,1)_0%,rgba(77,0,17,1)_100%)]"></div>
+          <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-stretch relative z-10">
+            {/* Left Content Box */}
+            <div className="flex-1 p-8 md:p-16 lg:p-24 flex flex-col justify-center text-left">
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6 }}
+              >
+                <div className="inline-block bg-accent/20 border border-accent/30 text-accent text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-widest mb-6">
+                  Online Reservation
+                </div>
+                <h1 className="text-4xl md:text-5xl lg:text-7xl font-display font-bold text-white mb-8 leading-[1.1]">
+                  Renting a Ride <br className="hidden lg:block"/> with <span className="text-accent">XTASS</span>
+                </h1>
+                <div className="space-y-6 text-white/90 text-base md:text-lg leading-relaxed max-w-2xl font-light">
+                  <p>
+                    With operations across Ghana's airports and major cities, XTASS makes hiring a vehicle seamless so you can get right on your way. Make a vehicle reservation online or through the XTASS booking platform with access to professional drivers and a well-maintained fleet.
+                  </p>
+                  <p>
+                    Hire a vehicle that fits your travel needs with a selection of sedans, SUVs, and vans. Start your reservation online and only pay when you travel. We offer a flexible <span className="text-accent font-medium">no-cancellation fee</span> guarantee.
+                  </p>
+                </div>
+              </motion.div>
+            </div>
+            {/* Right Image Container */}
+            <div className="flex-1 hidden md:block relative">
+              <div 
+                className="absolute inset-0 bg-cover bg-center transition-transform duration-[2000ms] hover:scale-110" 
+                style={{backgroundImage: "url('https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?q=80&w=2070&auto=format&fit=crop')"}}
+              ></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-primary via-transparent to-transparent"></div>
+              {/* Floating badge */}
+              <div className="absolute bottom-12 right-12 bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-2xl shadow-2xl">
+                 <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-accent rounded-full flex items-center justify-center text-primary">
+                       <CheckCircleIcon className="w-7 h-7" />
+                    </div>
+                    <div className="text-white">
+                       <p className="text-xs font-bold uppercase tracking-wider text-accent">Verified Fleet</p>
+                       <p className="font-display font-bold">Safe & Clean Rides</p>
+                    </div>
+                 </div>
+              </div>
+            </div>
           </div>
         </section>
 
-        {/* BOOKING FORM SECTION */}
-        <section id="booking-form" className="py-16 -mt-12 relative z-10">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-2xl p-8 md:p-12">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                {/* Locations */}
-                <div className="space-y-6">
-                  <h3 className="text-xl font-bold text-gray-800 flex items-center">
-                    <MapPinIcon className="w-5 h-5 text-primary mr-2" />
-                    Where & When
-                  </h3>
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-2">Pickup Location</label>
-                      <input 
-                        type="text" 
-                        placeholder="City, Airport or Street Address"
-                        className={`w-full p-4 bg-gray-50 border ${errors.pickupLocation ? 'border-red-500' : 'border-gray-200'} rounded-lg focus:ring-2 focus:ring-primary/20 focus:outline-none`}
-                        value={formData.pickupLocation}
-                        onChange={(e) => handleInputChange('pickupLocation', e.target.value)}
-                      />
-                      {errors.pickupLocation && <p className="text-red-500 text-xs mt-1">{errors.pickupLocation}</p>}
-                    </div>
-                    <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-2">Drop-off Location (Optional)</label>
-                      <input 
-                        type="text" 
-                        placeholder="Same as pickup"
-                        className="w-full p-4 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary/20 focus:outline-none"
-                        value={formData.dropoffLocation}
-                        onChange={(e) => handleInputChange('dropoffLocation', e.target.value)}
-                      />
-                    </div>
-                  </div>
-                </div>
+        {/* URGENCY BANNER - Using theme Gold */}
+        <div className="max-w-5xl mx-auto px-4 -mt-6 relative z-20">
+           <motion.div 
+             initial={{ opacity: 0, y: 10 }}
+             animate={{ opacity: 1, y: 0 }}
+             className="bg-accent border border-primary/10 py-4 px-8 rounded-xl flex items-center justify-center gap-4 shadow-[0_10px_30px_rgba(255,215,0,0.3)]"
+           >
+              <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary animate-pulse">
+                <ClockIcon className="w-5 h-5" />
+              </div>
+              <p className="text-sm md:text-base font-bold text-primary">
+                Hurry! High-demand dates are approaching. <span className="hidden sm:inline font-normal text-primary/70 ml-2">Secure your vehicle today to guarantee availability.</span>
+              </p>
+           </motion.div>
+        </div>
 
-                {/* Dates & Times */}
-                <div className="space-y-6">
-                   <h3 className="text-xl font-bold text-gray-800 flex items-center">
-                    <CalendarIcon className="w-5 h-5 text-primary mr-2" />
-                    Reservation Schedule
-                  </h3>
-                  <div className="grid grid-cols-2 gap-4 text-left">
-                    <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-2">Pickup Date</label>
-                      <input 
-                        type="date" 
-                        className={`w-full p-4 bg-gray-50 border ${errors.pickupDate ? 'border-red-500' : 'border-gray-200'} rounded-lg focus:ring-2 focus:ring-primary/20 focus:outline-none`}
-                        value={formData.pickupDate}
-                        onChange={(e) => handleInputChange('pickupDate', e.target.value)}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-2">Pickup Time</label>
-                      <select 
-                        className={`w-full p-4 bg-gray-50 border ${errors.pickupTime ? 'border-red-500' : 'border-gray-200'} rounded-lg focus:ring-2 focus:ring-primary/20 focus:outline-none`}
-                        value={formData.pickupTime}
-                        onChange={(e) => handleInputChange('pickupTime', e.target.value)}
-                      >
-                        <option value="">Time</option>
-                        {timeOptions.map(t => <option key={t} value={t}>{t}</option>)}
-                      </select>
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4 text-left">
-                    <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-2">Return Date</label>
-                      <input 
-                        type="date" 
-                        className={`w-full p-4 bg-gray-50 border ${errors.returnDate ? 'border-red-500' : 'border-gray-200'} rounded-lg focus:ring-2 focus:ring-primary/20 focus:outline-none`}
-                        value={formData.returnDate}
-                        onChange={(e) => handleInputChange('returnDate', e.target.value)}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-2">Return Time</label>
-                      <select 
-                        className={`w-full p-4 bg-gray-50 border ${errors.returnTime ? 'border-red-500' : 'border-gray-200'} rounded-lg focus:ring-2 focus:ring-primary/20 focus:outline-none`}
-                        value={formData.returnTime}
-                        onChange={(e) => handleInputChange('returnTime', e.target.value)}
-                      >
-                        <option value="">Time</option>
-                        {timeOptions.map(t => <option key={t} value={t}>{t}</option>)}
-                      </select>
-                    </div>
-                  </div>
+        {/* RESERVATION SEARCH BOX */}
+        <section className="py-16 md:py-24">
+          <div className="max-w-5xl mx-auto px-4">
+            <div className="bg-white rounded-[2.5rem] shadow-[0_30px_80px_rgba(128,0,32,0.08)] border border-gray-100 p-8 md:p-14 text-center">
+              <div className="flex flex-col md:flex-row items-center justify-center gap-4 mb-12">
+                <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900 leading-none tracking-tight">Reserve a Vehicle</h2>
+                <div className="flex items-center gap-4">
+                  <span className="text-gray-300 text-xs font-black uppercase tracking-[0.2em] hidden md:block">OR</span>
+                  <button 
+                    onClick={() => setView('manage-reservation')}
+                    className="text-primary font-bold hover:text-primary-hover transition-colors flex items-center group relative"
+                  >
+                    View / Modify / Cancel Reservation
+                    <ChevronRightIcon className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+                    <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-accent group-hover:w-full transition-all duration-300"></div>
+                  </button>
                 </div>
               </div>
 
-              {/* Vehicle Selection */}
-              <div className="mb-8">
-                <h3 className="text-xl font-bold text-gray-800 mb-4">Select Vehicle Type</h3>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-left">
-                  {vehicleTypes.map(v => (
-                    <button
-                      key={v.id}
-                      type="button"
-                      onClick={() => handleInputChange('vehicleType', v.id)}
-                      className={`p-6 border-2 rounded-xl transition-all flex flex-col items-center text-center ${formData.vehicleType === v.id ? 'border-primary bg-primary/5 text-primary' : 'border-gray-100 hover:border-primary/30'}`}
-                    >
-                      {v.icon}
-                      <span className="font-bold mt-2">{v.name}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Extras */}
-              <div className="mb-8">
-                <h3 className="text-xl font-bold text-gray-800 mb-4">Optional Extras</h3>
-                <div className="flex flex-wrap gap-4 text-left">
-                  {['GPS Navigation', 'Child Safety Seat', 'Additional Driver', 'Full Insurance'].map(extra => (
-                    <label key={extra} className="flex items-center space-x-2 bg-gray-50 p-3 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors">
-                      <input 
-                        type="checkbox" 
-                        className="w-5 h-5 text-primary rounded"
-                        checked={formData.extras.includes(extra)}
-                        onChange={(e) => {
-                          const newExtras = e.target.checked 
-                            ? [...formData.extras, extra]
-                            : formData.extras.filter(x => x !== extra);
-                          handleInputChange('extras', newExtras);
-                        }}
-                      />
-                      <span className="text-sm font-medium text-gray-700">{extra}</span>
+              <div className="max-w-3xl mx-auto space-y-10">
+                <div className="text-left">
+                  <div className="flex justify-between items-end mb-4 px-1">
+                    <label className="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                       <MapPinIcon className="w-4 h-4 text-primary" />
+                       Pick-Up & Return Location (City or Airport)*
                     </label>
-                  ))}
+                    <span className="text-[10px] text-gray-300 font-normal italic uppercase tracking-tighter">* Required Field</span>
+                  </div>
+                  <div className="relative group">
+                    <div className="absolute left-1 top-1 bottom-1 w-14 bg-gray-50 rounded-l-xl flex items-center justify-center text-gray-400 group-focus-within:text-primary transition-colors">
+                      <SearchIcon className="w-5 h-5" />
+                    </div>
+                    <input 
+                      type="text" 
+                      placeholder="e.g. Accra Mall or Kotoka International Airport"
+                      className="w-full pl-20 pr-8 py-6 bg-gray-50/30 border border-gray-100 rounded-2xl focus:bg-white focus:ring-8 focus:ring-primary/5 focus:border-primary/30 focus:outline-none text-xl font-medium transition-all placeholder:text-gray-300 shadow-sm"
+                    />
+                  </div>
                 </div>
-              </div>
 
-              <div className="flex flex-col items-center">
-                <button type="submit" className="w-full md:w-auto bg-primary text-white font-bold py-5 px-16 rounded-xl text-lg shadow-xl hover:bg-primary-hover transition-all">
-                  Confirm & View Available Vehicles
+                <div className="flex items-center gap-4 bg-gray-50/50 p-5 rounded-2xl border border-gray-50 text-left hover:border-accent/30 transition-colors cursor-pointer group">
+                  <div className="relative flex items-center justify-center">
+                    <input 
+                      type="checkbox" 
+                      id="different-location"
+                      className="peer w-6 h-6 rounded-lg border-2 border-gray-200 text-primary focus:ring-primary/20 cursor-pointer appearance-none checked:bg-primary checked:border-primary transition-all"
+                    />
+                    <CheckCircleIcon className="absolute w-4 h-4 text-white opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity" />
+                  </div>
+                  <label htmlFor="different-location" className="text-sm md:text-base font-bold text-gray-600 cursor-pointer flex items-center gap-2 group-hover:text-primary transition-colors">
+                    Return to a different location 
+                    <div className="w-5 h-5 rounded-full bg-gray-200 flex items-center justify-center text-[10px] text-gray-500 font-bold hover:bg-accent hover:text-primary transition-all">?</div>
+                  </label>
+                </div>
+
+                <button 
+                  onClick={() => onRoleSelect('Customer')}
+                  className="w-full py-6 bg-primary hover:bg-primary-hover text-white font-bold rounded-2xl shadow-2xl shadow-primary/20 hover:shadow-primary/30 active:scale-[0.98] transition-all text-xl md:text-2xl flex items-center justify-center gap-4 group"
+                >
+                  Search Available Vehicles
+                  <ArrowRightIcon className="w-6 h-6 group-hover:translate-x-3 transition-transform" />
                 </button>
-                <p className="mt-4 text-sm text-gray-500">Secure booking. No payment required today.</p>
-              </div>
-            </form>
-          </div>
-        </section>
-
-        {/* BOOKING PROCESS EXPLANATION */}
-        <section className="py-20 bg-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl font-display font-bold text-gray-800">Your Booking Journey</h2>
-              <div className="w-20 h-1.5 bg-accent mx-auto mt-4 rounded-full"></div>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-12 text-left">
-              {[
-                { step: '01', title: 'Details', desc: 'Choose your location, dates, and vehicle preferences above.' },
-                { step: '02', title: 'Vehicle Selection', desc: 'Browse our real-time fleet and pick the one that fits your style.' },
-                { step: '03', title: 'Confirmation', desc: 'Review your selection and provide passenger details.' },
-                { step: '04', title: 'Finish', desc: 'Secure your booking instantly. Pay online or offline as needed.' },
-              ].map((item, idx) => (
-                <div key={idx} className="relative">
-                  <span className="text-6xl font-display font-black text-gray-50 opacity-10 absolute -top-4 -left-2">{item.step}</span>
-                  <div className="relative pt-6">
-                    <h4 className="text-xl font-bold text-gray-800 mb-2">{item.title}</h4>
-                    <p className="text-gray-600 leading-relaxed">{item.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* VEHICLE OPTIONS PREVIEW */}
-        <section className="py-20 bg-gray-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl font-display font-bold text-gray-800">Our Premium Fleet</h2>
-              <p className="text-gray-600 mt-2">Quality vehicles maintained to the highest standards.</p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-left">
-              {vehicleTypes.map((v, idx) => (
-                <div key={idx} className="bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100 group hover:shadow-2xl transition-all">
-                  <div className="h-48 bg-gray-100 flex items-center justify-center">
-                    {/* Placeholder for Car Visualization */}
-                    <div className="text-primary/20 group-hover:scale-110 transition-transform duration-500">
-                      {v.icon}
-                    </div>
-                  </div>
-                  <div className="p-6">
-                    <h4 className="text-xl font-bold text-gray-800 mb-1">{v.name}</h4>
-                    <p className="text-primary text-sm font-bold mb-4">{v.desc}</p>
-                    <ul className="space-y-2 mb-6 text-sm text-gray-600 font-medium">
-                      {v.features.split(', ').map((f, i) => (
-                        <li key={i} className="flex items-center">
-                          <CheckCircleIcon className="w-4 h-4 text-green-500 mr-2" />
-                          {f}
-                        </li>
-                      ))}
-                    </ul>
-                    <button className="w-full py-3 border-2 border-primary text-primary font-bold rounded-lg hover:bg-primary hover:text-white transition-all">
-                      View Fleet Details
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* WHY BOOK WITH US */}
-        <section className="py-20 bg-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center gap-16">
-            <div className="w-full md:w-1/2">
-              <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-800 mb-8">Why Renters Choose XTASS</h2>
-              <div className="space-y-8">
-                {[
-                  { title: 'Extreme Ease of Booking', desc: 'Our intuitive interface ensures you spend more time driving and less time booking.' },
-                  { title: 'Transparent Pricing', desc: 'No hidden fees. What you see is what you pay, from fuel to tax.' },
-                  { title: 'Unmatched Reliability', desc: 'Every vehicle in our fleet is newer than 2021 and rigorously inspected.' },
-                  { title: '24/7 Roadside Assistance', desc: 'We are with you on every mile. Local support available in all regions.' },
-                ].map((item, idx) => (
-                  <div key={idx} className="flex items-start text-left">
-                    <div className="bg-primary/10 p-3 rounded-lg mr-4 mt-1">
-                      <ShieldIcon className="w-6 h-6 text-primary" />
-                    </div>
-                    <div>
-                      <h4 className="text-lg font-bold text-gray-800 mb-1">{item.title}</h4>
-                      <p className="text-gray-600">{item.desc}</p>
-                    </div>
-                  </div>
-                ))}
               </div>
             </div>
-            <div className="w-full md:w-1/2">
-               <div className="relative">
-                  <img 
-                    src="https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?q=80&w=2070&auto=format&fit=crop" 
-                    alt="Happy Renter" 
-                    className="rounded-2xl shadow-2xl"
-                  />
-                  <div className="absolute -bottom-8 -left-8 bg-accent p-8 rounded-2xl shadow-xl hidden lg:block">
-                    <div className="flex items-center space-x-4 mb-4">
-                      <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center font-bold text-primary">GH</div>
-                      <div className="text-left">
-                        <p className="font-bold text-primary">Licensed Partner</p>
-                        <p className="text-primary/70 text-xs">Certified by Ghana Tourism Authority</p>
+          </div>
+        </section>
+
+        {/* INFO CARDS SECTION */}
+        <section className="py-24 bg-gray-50/50 border-t border-gray-100">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 mb-16">
+               {[
+                 {
+                   title: "Ride Type FAQs",
+                   desc: "Detailed information about Instant, Scheduled, and Rental Rides to help you choose the best fit.",
+                   img: "https://images.unsplash.com/photo-1549923746-c502d488b3ea?q=80&w=2071&auto=format&fit=crop",
+                   btn: "View Ride FAQs"
+                 },
+                 {
+                   type: "special",
+                   title: "Our Standard of Care",
+                   desc: "The XTASS promise: every vehicle is sanitised, safety-checked, and meticulously maintained.",
+                   btn: "Learn More"
+                 },
+                 {
+                   title: "Plan Your Trip",
+                   desc: "Explore travel guides and destination inspiration for your next journey across the region.",
+                   img: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=2070&auto=format&fit=crop",
+                   btn: "See Inspirations"
+                 }
+               ].map((card, i) => (
+                 <motion.div 
+                   key={i}
+                   whileHover={{ y: -8 }}
+                   className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden flex flex-col h-full group hover:shadow-2xl hover:shadow-primary/5 transition-all"
+                 >
+                   {card.type === 'special' ? (
+                     <div className="h-60 bg-primary flex items-center justify-center p-8 relative overflow-hidden">
+                        {/* Abstract background pattern */}
+                        <div className="absolute inset-0 opacity-10">
+                           <div className="absolute top-0 right-0 w-40 h-40 bg-accent rounded-full -mr-20 -mt-20"></div>
+                           <div className="absolute bottom-0 left-0 w-32 h-32 bg-accent rounded-full -ml-16 -mb-16"></div>
+                        </div>
+                        <div className="border-4 border-accent p-8 text-white text-center relative z-10 transform -rotate-1 group-hover:rotate-0 transition-transform duration-500">
+                           <p className="text-[10px] font-black tracking-[0.4em] uppercase mb-1 text-accent">Standard of</p>
+                           <p className="text-5xl font-black italic tracking-tighter mb-2">CARE</p>
+                           <div className="w-16 h-1.5 bg-accent mx-auto mb-4 rounded-full"></div>
+                           <CheckCircleIcon className="w-10 h-10 mx-auto text-accent" />
+                        </div>
+                     </div>
+                   ) : (
+                     <div className="h-60 bg-cover bg-center overflow-hidden relative">
+                       <img src={card.img} alt={card.title} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
+                       <div className="absolute inset-0 bg-gradient-to-t from-gray-900/40 via-transparent to-transparent"></div>
+                     </div>
+                   )}
+                   <div className="p-10 flex-1 flex flex-col">
+                     <h3 className="text-2xl font-display font-bold text-gray-900 mb-4 group-hover:text-primary transition-colors">{card.title}</h3>
+                     <p className="text-gray-500 leading-relaxed mb-10 flex-1 font-light">{card.desc}</p>
+                     <button className="w-full py-4 bg-gray-900 text-white font-bold rounded-2xl hover:bg-primary active:scale-95 transition-all text-xs uppercase tracking-[0.2em]">
+                       {card.btn}
+                     </button>
+                   </div>
+                 </motion.div>
+               ))}
+            </div>
+
+            {/* Bottom Row: Service Highlight Cards */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12">
+               {[
+                 {
+                   title: "Fleet Categories",
+                   desc: "Discover our full range of reliable vehicles, from compact sedans to executive SUVs.",
+                   img: "https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?q=80&w=2070&auto=format&fit=crop",
+                   btn: "View All Vehicles",
+                   theme: "light"
+                 },
+                 {
+                   title: "Service Locations",
+                   desc: "XTASS operates across Ghana's major airports and cities with 24/7 support availability.",
+                   img: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=2070&auto=format&fit=crop",
+                   btn: "See All Locations",
+                   theme: "dark"
+                 },
+                 {
+                   title: "Exclusive Deals",
+                   desc: "Unlock corporate rates and early booking discounts across our entire network.",
+                   img: "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?q=80&w=2070&auto=format&fit=crop",
+                   btn: "Browse Offers",
+                   theme: "light"
+                 }
+               ].map((card, i) => (
+                 <div key={i} className={`rounded-[2.5rem] overflow-hidden flex flex-col border shadow-sm transition-all duration-700 hover:shadow-2xl hover:-translate-y-2 ${card.theme === 'dark' ? 'bg-primary text-white border-primary-active' : 'bg-white border-gray-100'}`}>
+                   <div className="h-64 overflow-hidden relative">
+                     <img src={card.img} alt={card.title} className="w-full h-full object-cover" />
+                     {card.theme === 'dark' && <div className="absolute inset-0 bg-primary/40 mix-blend-multiply"></div>}
+                   </div>
+                   <div className="p-10 flex-1 flex flex-col">
+                     <h3 className={`text-2xl font-display font-bold mb-4 ${card.theme === 'dark' ? 'text-accent' : 'text-gray-900'}`}>{card.title}</h3>
+                     <p className={`leading-relaxed mb-10 flex-1 ${card.theme === 'dark' ? 'text-white/70 font-light italic' : 'text-gray-500 font-light'}`}>{card.desc}</p>
+                     <button className={`py-4 px-10 rounded-2xl font-black transition-all border-2 text-sm uppercase tracking-widest ${card.theme === 'dark' ? 'bg-accent text-primary border-accent hover:bg-white hover:border-white shadow-lg shadow-accent/10' : 'bg-primary text-white border-primary hover:bg-primary-hover hover:border-primary-hover shadow-lg shadow-primary/10'}`}>
+                       {card.btn}
+                     </button>
+                   </div>
+                 </div>
+               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* NETWORK & HUBS SECTION */}
+        <section className="py-32 bg-white relative overflow-hidden">
+           {/* Background Decoration */}
+           <div className="absolute top-0 right-0 -mr-64 -mt-64 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px]"></div>
+           <div className="absolute bottom-0 left-0 -ml-64 -mb-64 w-[600px] h-[600px] bg-accent/10 rounded-full blur-[120px]"></div>
+           
+           <div className="max-w-7xl mx-auto px-4 relative z-10">
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-16 lg:gap-24 items-start">
+                 <div className="md:col-span-4">
+                    <div className="sticky top-40">
+                       <h4 className="text-4xl lg:text-5xl font-display font-bold text-gray-900 mb-6 tracking-tighter">
+                          Popular Hubs <br className="hidden lg:block"/> & Cities
+                       </h4>
+                       <div className="w-20 h-2 bg-accent mb-8 rounded-full"></div>
+                       <p className="text-gray-500 text-lg leading-relaxed mb-10 font-light italic">
+                          "Operating across Ghana's transport arteries, connecting people to progress."
+                       </p>
+                       <div className="bg-gray-50 border border-gray-100 p-8 rounded-3xl">
+                          <p className="text-sm font-bold text-primary uppercase tracking-[0.2em] mb-4">24/7 Availability</p>
+                          <p className="text-gray-600 text-sm leading-relaxed">
+                             Our airport hubs are open around the clock to ensure you have a ride regardless of your arrival time.
+                          </p>
+                       </div>
+                    </div>
+                 </div>
+                 
+                 <div className="md:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-12">
+                    {/* Cities Card */}
+                    <div className="bg-white p-10 rounded-[2.5rem] border border-gray-100 shadow-xl shadow-gray-200/40">
+                       <h5 className="text-2xl font-display font-bold text-gray-900 mb-8 border-b-2 border-accent pb-4 inline-block">Key Metropolitan Areas</h5>
+                       <ul className="space-y-6">
+                          {['Accra', 'Kumasi', 'Tamale', 'Takoradi', 'Wa', 'Sunyani'].map(city => (
+                             <li key={city} className="flex items-center group cursor-pointer">
+                                <div className="w-10 h-10 rounded-xl bg-primary/5 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all mr-4 transform -rotate-3 group-hover:rotate-0">
+                                   <MapPinIcon className="w-5 h-5" />
+                                </div>
+                                <div>
+                                   <p className="text-gray-900 font-bold group-hover:text-primary transition-colors">{city}</p>
+                                   <p className="text-xs text-gray-400 uppercase tracking-widest font-black">Region Hub</p>
+                                </div>
+                                <ChevronRightIcon className="w-4 h-4 ml-auto text-gray-200 group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                             </li>
+                          ))}
+                       </ul>
+                    </div>
+
+                    {/* Airports List */}
+                    <div className="space-y-8">
+                       {[
+                          { code: 'ACC', name: 'Kotoka International', city: 'Accra', status: 'Main Hub' },
+                          { code: 'KMS', name: 'Kumasi Airport', city: 'Kumasi', status: 'Domestic' },
+                          { code: 'TML', name: 'Tamale Airport', city: 'Tamale', status: 'Domestic' },
+                          { code: 'TKD', name: 'Takoradi Airport', city: 'Takoradi', status: 'Domestic' }
+                       ].map(airport => (
+                          <div key={airport.code} className="flex gap-6 p-6 rounded-[2rem] bg-gray-50 border border-transparent hover:border-accent hover:bg-white transition-all group cursor-pointer shadow-sm hover:shadow-2xl">
+                             <div className="bg-primary text-accent text-sm font-black w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                                {airport.code}
+                             </div>
+                             <div>
+                                <div className="flex items-center gap-2 mb-1">
+                                   <p className="font-bold text-gray-900 group-hover:text-primary transition-colors underline decoration-accent/30 decoration-2 underline-offset-4">{airport.name}</p>
+                                   <span className="text-[10px] bg-accent/20 text-primary px-2 py-0.5 rounded-full font-black uppercase">{airport.status}</span>
+                                </div>
+                                <p className="text-sm text-gray-500 font-medium">{airport.city}, Ghana</p>
+                             </div>
+                          </div>
+                       ))}
+                       <button className="w-full py-5 border-2 border-primary text-primary font-black rounded-2xl hover:bg-primary hover:text-white transition-all text-xs uppercase tracking-widest shadow-xl shadow-primary/5">
+                          See All XTASS Locations
+                       </button>
+                    </div>
+                 </div>
+              </div>
+           </div>
+        </section>
+
+        {/* BOTTOM RIDE OPTIONS - Luxury Dark Design */}
+        <section className="py-32 bg-gray-900 text-white relative">
+           {/* Gold Accent Top Bar */}
+           <div className="absolute top-0 left-0 w-full h-2 bg-accent opacity-80 shadow-[0_0_20px_rgba(255,215,0,0.5)]"></div>
+           
+           <div className="max-w-7xl mx-auto px-4 relative z-10">
+              <div className="flex flex-col md:flex-row items-end justify-between mb-20 gap-8">
+                 <div className="text-left">
+                    <h2 className="text-5xl md:text-6xl font-display font-bold mb-6 tracking-tighter">Your Journey, <br className="hidden md:block"/> <span className="text-accent underline decoration-accent/20 decoration-8 underline-offset-8">Your Choice</span></h2>
+                    <p className="text-white/40 text-lg max-w-xl font-light italic">"From the moment of booking to the final destination, we prioritise your comfort and convenience."</p>
+                 </div>
+                 <div className="bg-white/5 border border-white/10 px-8 py-6 rounded-3xl backdrop-blur-sm self-start">
+                    <p className="text-xs font-black uppercase tracking-[0.3em] text-accent mb-2">Available 24/7</p>
+                    <p className="text-3xl font-display font-bold">128+ <span className="text-sm text-white/50 font-sans tracking-normal uppercase">Active Vehicles</span></p>
+                 </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+                 {[
+                   {
+                     title: "Instant Pickup",
+                     desc: "Seamless same-day reservations across our terminal hubs.",
+                     img: "https://images.unsplash.com/photo-1549923746-c502d488b3ea?q=80&w=2071&auto=format&fit=crop",
+                     cta: "Explore Immediate Rides",
+                     action: () => onRoleSelect('Customer')
+                   },
+                   {
+                     title: "Corporate Hire",
+                     desc: "Optimized for long-term work assignments and business mobility.",
+                     img: "https://images.unsplash.com/photo-1550355291-bbee04a92027?q=80&w=2072&auto=format&fit=crop",
+                     cta: "Business Solutions",
+                     action: () => setView('long-term-rental')
+                   },
+                   {
+                     title: "Weekend Escapes",
+                     desc: "Premium transport for family getaways and special weekend travels.",
+                     img: "https://images.unsplash.com/photo-1464851707681-f9d5fdaccea8?q=80&w=2070&auto=format&fit=crop",
+                     cta: "Start Your Escape",
+                     action: () => onRoleSelect('Customer')
+                   }
+                 ].map((opt, i) => (
+                   <motion.div 
+                     key={i} 
+                     whileHover={{ scale: 1.02 }}
+                     className="flex flex-col bg-white/5 border border-white/10 rounded-[3rem] overflow-hidden group hover:border-accent transition-all duration-700 shadow-2xl"
+                   >
+                      <div className="h-80 overflow-hidden relative">
+                         <img src={opt.img} alt={opt.title} className="w-full h-full object-cover grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-[1500ms]" />
+                         <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/20 to-transparent"></div>
+                         <div className="absolute bottom-10 left-10 right-10">
+                            <h4 className="text-3xl font-display font-bold text-white group-hover:text-accent transition-colors tracking-tight">{opt.title}</h4>
+                            <div className="w-12 h-1.5 bg-accent mt-3 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+                         </div>
                       </div>
-                    </div>
-                    <div className="flex space-x-1">
-                      {[1,2,3,4,5].map(n => <StarIcon key={n} className="w-4 h-4 text-primary" />)}
-                    </div>
-                  </div>
-               </div>
-            </div>
-          </div>
-        </section>
-
-        {/* PRICING & TRANSPARENCY NOTE */}
-        <section className="py-20 bg-primary text-white text-center">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <DollarSignIcon className="w-16 h-16 mx-auto mb-6 text-accent opacity-50" />
-            <h2 className="text-3xl font-display font-bold mb-6">Our Transparency Guarantee</h2>
-            <p className="text-lg text-white/80 leading-relaxed mb-10">
-              At XTASS, we hate surprises as much as you do. Our pricing is straightforward. All quotes include relevant local taxes, basic insurance, and unlimited kilometers for most categories. We provide clear billing breakdowns so you can book with complete confidence.
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="bg-white/10 p-6 rounded-xl border border-white/20">
-                <p className="font-bold text-xl mb-1">No Hidden Fees</p>
-                <p className="text-sm opacity-80">Guaranteed fixed prices</p>
+                      <div className="p-12 flex-1 flex flex-col text-center">
+                         <p className="text-white/60 leading-relaxed mb-12 flex-1 font-light italic text-lg px-2">
+                            "{opt.desc}"
+                         </p>
+                         <button 
+                           onClick={opt.action}
+                           className="py-5 px-10 bg-accent text-primary font-black rounded-2xl hover:bg-white transition-all shadow-xl shadow-accent/10 text-xs uppercase tracking-[0.2em]"
+                         >
+                            {opt.cta}
+                         </button>
+                      </div>
+                   </motion.div>
+                 ))}
               </div>
-               <div className="bg-white/10 p-6 rounded-xl border border-white/20">
-                <p className="font-bold text-xl mb-1">Flexible Billing</p>
-                <p className="text-sm opacity-80">Pay online or at pickup</p>
-              </div>
-               <div className="bg-white/10 p-6 rounded-xl border border-white/20">
-                <p className="font-bold text-xl mb-1">Clear Invoices</p>
-                <p className="text-sm opacity-80">Detailed receipts instantly</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* FAQ SECTION */}
-        <section className="py-20 bg-white">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-             <div className="text-center mb-16">
-              <h2 className="text-3xl font-display font-bold text-gray-800">Booking Help & FAQs</h2>
-              <p className="text-gray-600 mt-2">Answers to common reservation questions.</p>
-            </div>
-            
-            <div className="space-y-4">
-              {faqs.map((faq, idx) => (
-                <div key={idx} className="border border-gray-100 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-                  <div className="p-6 bg-white flex items-start text-left">
-                    <div className="bg-primary/5 text-primary font-bold w-10 h-10 rounded-full flex items-center justify-center shrink-0 mr-4">Q</div>
-                    <div>
-                      <h4 className="font-bold text-gray-800 mb-2">{faq.q}</h4>
-                      <p className="text-gray-600 text-sm leading-relaxed">{faq.a}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-            
-            <div className="mt-16 text-center">
-              <p className="text-gray-500 mb-4 font-medium">Still have questions?</p>
-              <button className="text-primary font-bold hover:underline flex items-center mx-auto">
-                Visit Our Help Center
-                <ChevronRightIcon className="w-4 h-4 ml-1" />
-              </button>
-            </div>
-          </div>
+           </div>
         </section>
 
         {commonFooter}
@@ -838,220 +810,647 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
 
   const DealsAndCouponsPage: React.FC<{
     setView: (v: string) => void;
+    onRoleSelect: (role: Role) => void;
     commonFooter: React.ReactNode;
-  }> = ({ setView, commonFooter }) => {
-    const [filter, setFilter] = useState('All');
-    const [searchQuery, setSearchQuery] = useState('');
-
-    const deals = [
-      {
-        id: 1,
-        title: 'Weekend Getaway Discount',
-        type: '15% OFF',
-        code: 'WEEKEND15',
-        category: 'Services',
-        expiry: '2025-12-31',
-        description: 'Get 15% off on all SUV rentals for weekend bookings (Friday - Sunday).',
-        highlight: 'Hot Deal',
-        conditions: 'Minimum 2-day rental required. Valid on SUVs only.'
-      },
-      {
-        id: 2,
-        title: 'Airport Transfer Special',
-        type: 'GHS 50 OFF',
-        code: 'AIRPORT50',
-        category: 'Bookings',
-        expiry: '2025-08-30',
-        description: 'Save GHS 50 on your next airport pickup or drop-off at Kotoka Int’l Airport.',
-        highlight: 'New',
-        conditions: 'Applicable for airport transfer service only.'
-      },
-      {
-        id: 3,
-        title: 'First-Time User Bonus',
-        type: 'FREE GPS',
-        code: 'NEWXTASS',
-        category: 'Memberships',
-        expiry: '2026-01-01',
-        description: 'Enjoy free GPS navigation on your first car reservation with XTASS.',
-        highlight: null,
-        conditions: 'Valid for new customers only.'
-      },
-      {
-        id: 4,
-        title: 'Long-Term Rental Offer',
-        type: '25% OFF',
-        code: 'LONGDRIVE',
-        category: 'Services',
-        expiry: '2025-10-15',
-        description: 'Massive savings for rentals exceeding 14 days.',
-        highlight: 'Ending Soon',
-        conditions: 'Minimum 14-day rental period required.'
-      },
-      {
-         id: 5,
-         title: 'Business Class Upgrade',
-         type: 'FREE UPGRADE',
-         code: 'BIZUPGRADE',
-         category: 'Bookings',
-         expiry: '2025-07-20',
-         description: 'Book an Economy car and get a free upgrade to Business class if available.',
-         highlight: null,
-         conditions: 'Subject to availability at pickup time.'
-      }
-    ];
-
-    const filteredDeals = deals.filter(deal => {
-      const matchesFilter = filter === 'All' || deal.category === filter;
-      const matchesSearch = deal.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          deal.code.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchesFilter && matchesSearch;
-    });
-
-    const copyToClipboard = (code: string) => {
-      navigator.clipboard.writeText(code);
-      alert(`Coupon code ${code} copied to clipboard!`);
-    };
-
+  }> = ({ setView, onRoleSelect, commonFooter }) => {
     return (
-      <main className="bg-gray-50 min-h-screen">
-        {/* HERO SECTION */}
-        <section className="bg-primary text-white py-20 relative overflow-hidden">
-          <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-accent via-transparent to-transparent"></div>
-          <div className="max-w-7xl mx-auto px-4 text-center relative z-10">
-            <motion.h1 
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-4xl md:text-5xl font-display font-bold mb-4"
-            >
-              All Deals & Coupons
-            </motion.h1>
-            <p className="text-xl text-white/80 max-w-2xl mx-auto">
-              Unlock exclusive savings on your next journey. Browse our active promotions and grab the best deals today.
+      <main className="bg-[#f9fafb] min-h-screen font-sans text-left">
+        {/* Navigation / Breadcrumbs */}
+        <nav className="bg-white border-b border-gray-100 py-4">
+          <div className="max-w-6xl mx-auto px-6 flex items-center gap-2 text-sm text-gray-500 font-medium">
+            <button onClick={() => setView('home')} className="text-primary hover:underline border-b border-transparent hover:border-primary transition-all">Home</button>
+            <ChevronRightIcon className="w-3 h-3" />
+            <span className="text-primary font-medium">Car Rental</span>
+            <ChevronRightIcon className="w-3 h-3" />
+            <span className="text-gray-900 font-bold">Deals & Promotions</span>
+          </div>
+        </nav>
+
+        {/* PAGE CONTENT */}
+        <div className="max-w-6xl mx-auto px-6 py-12 md:py-16">
+          <h1 className="text-3xl md:text-5xl font-display font-medium text-gray-900 mb-10">Featured Deals</h1>
+
+          {/* FEATURED DEAL CARD */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden mb-24 group"
+          >
+            <div className="h-64 md:h-96 overflow-hidden">
+              <img 
+                src="https://images.unsplash.com/photo-1549923746-c502d488b3ea?q=80&w=2071&auto=format&fit=crop" 
+                alt="Happy family traveling" 
+                className="w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-105"
+              />
+            </div>
+            <div className="p-10 md:p-14 text-center max-w-3xl mx-auto">
+              <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-4">Enjoy Up To 15% Off</h2>
+              <p className="text-gray-600 text-lg mb-10 font-light">
+                Save up to 15% off the base fare (time and mileage) on your next hire of 3 days or more.
+              </p>
+              <button 
+                onClick={() => setView('start-reservation')}
+                className="bg-primary text-white font-bold py-4 px-12 rounded-full hover:bg-primary-hover transition-all shadow-xl shadow-primary/20 uppercase tracking-widest text-sm"
+              >
+                Learn More
+              </button>
+            </div>
+          </motion.div>
+
+          {/* EXCLUSIVE OFFERS SECTION */}
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-4">Exclusive Offers from XTASS</h2>
+            <p className="text-gray-500 max-w-2xl mx-auto font-light text-lg">
+              Explore our current deals and promotions below, or start a reservation to find the right vehicle at our everyday low rates.
             </p>
           </div>
-        </section>
 
-        {/* CONTROLS SECTION */}
-        <section className="py-8 bg-white border-b border-gray-100 sticky top-[73px] lg:top-[123px] z-30 shadow-sm">
-          <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div className="flex flex-wrap gap-2 text-left">
-              {['All', 'Services', 'Bookings', 'Memberships'].map(cat => (
-                <button
-                  key={cat}
-                  onClick={() => setFilter(cat)}
-                  className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${filter === cat ? 'bg-primary text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
-                >
-                  {cat}
-                </button>
-              ))}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-24">
+            {/* Specials Card */}
+            <div className="bg-white rounded-3xl border border-gray-100 p-10 flex flex-col items-center text-center shadow-sm hover:shadow-xl transition-all cursor-pointer group">
+              <div className="w-16 h-16 bg-primary/5 rounded-2xl flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-all transform -rotate-3 group-hover:rotate-0">
+                <MailIcon className="w-8 h-8" />
+              </div>
+              <h3 className="text-xl font-display font-bold text-gray-900 decoration-accent decoration-2 underline-offset-4 group-hover:underline mb-4">
+                Sign Up for Specials <ChevronRightIcon className="inline w-4 h-4 ml-1" />
+              </h3>
+              <p className="text-gray-500 text-sm leading-relaxed font-light">
+                Get the latest transport discounts, great rates and special offers delivered directly to your inbox. Sign up today and be the first to know about exclusive XTASS promotions.
+              </p>
             </div>
-            <div className="relative">
-              <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <input 
-                type="text" 
-                placeholder="Search deals or enter code..."
-                className="pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:outline-none w-full md:w-80"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+
+            {/* Loyalty Card */}
+            <div className="bg-white rounded-3xl border border-gray-100 p-10 flex flex-col items-center text-center shadow-sm hover:shadow-xl transition-all cursor-pointer group">
+              <div className="w-16 h-16 bg-primary/5 rounded-2xl flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-all transform rotate-3 group-hover:rotate-0">
+                <StarIcon className="w-8 h-8" />
+              </div>
+              <h3 className="text-xl font-display font-bold text-gray-900 decoration-accent decoration-2 underline-offset-4 group-hover:underline mb-4">
+                XTASS Loyalty Programme <ChevronRightIcon className="inline w-4 h-4 ml-1" />
+              </h3>
+              <p className="text-gray-500 text-sm leading-relaxed font-light">
+                You could be earning points toward free travel days. Every trip you take with XTASS counts. Earn points on every booking and redeem them for discounts, free rides, and exclusive rewards. What are you waiting for?
+              </p>
+            </div>
+          </div>
+
+          {/* MORE DEALS SECTION */}
+          <div className="mb-24">
+            <h2 className="text-2xl font-display font-bold text-gray-900 mb-10 border-b border-gray-200 pb-4 inline-block">More Deals</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden flex flex-col group">
+                <div className="h-48 overflow-hidden">
+                  <img 
+                    src="https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?q=80&w=2070&auto=format&fit=crop" 
+                    alt="Vehicle Deal" 
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                  />
+                </div>
+                <div className="p-8 flex-1 flex flex-col text-center">
+                  <h3 className="text-xl font-display font-bold text-gray-900 mb-4 px-2">Loyalty Member Discounts</h3>
+                  <p className="text-gray-500 text-sm leading-relaxed mb-8 flex-1 font-light">
+                    Special rates for XTASS loyalty members. Sign up for the XTASS loyalty programme today to access exclusive member pricing across all service levels. Terms apply.
+                  </p>
+                  <button 
+                    onClick={() => setView('start-reservation')}
+                    className="w-full py-4 bg-primary text-white font-bold rounded-xl hover:bg-primary-hover transition-all text-xs uppercase tracking-widest shadow-lg shadow-primary/20"
+                  >
+                    Learn More
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* SEARCH EVERYDAY LOW RATES SECTION */}
+          <div className="text-center mb-16 pt-12 border-t border-gray-100">
+            <h2 className="text-3xl font-display font-bold text-gray-900 mb-4">Search Our Everyday Low Rates</h2>
+            <p className="text-gray-500 font-light text-lg">
+              If none of our current promotions fit your needs, start a new reservation to view our standard low rates.
+            </p>
+          </div>
+
+          {/* INLINE BOOKING FORM BOX */}
+          <div className="max-w-4xl mx-auto">
+            {/* Urgency Banner */}
+            <div className="bg-primary/5 border border-primary/10 py-4 px-8 rounded-t-3xl flex items-center justify-center gap-4">
+              <ClockIcon className="w-5 h-5 text-primary" />
+              <p className="text-sm font-bold text-gray-800">
+                Hurry! Availability is limited during peak season. Reserve now to lock in your rate.
+              </p>
+            </div>
+
+            {/* Form */}
+            <div className="bg-white rounded-b-[2.5rem] shadow-2xl border border-gray-100 p-8 md:p-14 text-center">
+              <div className="flex flex-col md:flex-row items-baseline justify-center gap-4 mb-10">
+                <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900">Reserve a Vehicle</h2>
+                <div className="flex items-center gap-2">
+                  <span className="text-gray-300 text-xs italic">or</span>
+                  <button 
+                    onClick={() => setView('manage-reservation')}
+                    className="text-primary font-bold hover:underline underline-offset-4 decoration-accent decoration-2"
+                  >
+                    View / Modify / Cancel Reservation
+                  </button>
+                </div>
+              </div>
+
+              <div className="space-y-8 max-w-2xl mx-auto">
+                <div className="text-left">
+                  <div className="flex justify-between items-end mb-3">
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] flex items-center gap-2">
+                       <MapPinIcon className="w-4 h-4 text-primary" />
+                       Pick-Up & Return Location (City or Airport)*
+                    </label>
+                    <span className="text-[10px] text-gray-300 font-normal italic uppercase tracking-tighter">* Required Field</span>
+                  </div>
+                  <div className="relative">
+                    <input 
+                      type="text" 
+                      placeholder="Provide a Location"
+                      className="w-full pl-6 pr-6 py-5 bg-gray-50/50 border border-gray-200 rounded-2xl focus:bg-white focus:ring-4 focus:ring-primary/5 focus:border-primary focus:outline-none text-xl font-medium transition-all shadow-sm"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-4 text-left p-2">
+                  <input 
+                    type="checkbox" 
+                    id="different-location-low-rates"
+                    className="w-6 h-6 rounded border-gray-300 text-primary focus:ring-primary/20 cursor-pointer"
+                  />
+                  <label htmlFor="different-location-low-rates" className="text-sm md:text-base font-bold text-gray-600 cursor-pointer flex items-center gap-2 group hover:text-primary transition-colors">
+                    Return to a different location 
+                    <div className="w-5 h-5 rounded-full bg-gray-200 flex items-center justify-center text-[10px] text-gray-500 font-bold">i</div>
+                  </label>
+                </div>
+
+                <button 
+                  onClick={() => onRoleSelect('Customer')}
+                  className="w-full py-6 bg-primary hover:bg-primary-hover text-white font-bold rounded-2xl shadow-2xl shadow-primary/20 transition-all text-xl md:text-2xl flex items-center justify-center gap-4 group"
+                >
+                  Search / Book Now
+                  <ArrowRightIcon className="w-6 h-6 group-hover:translate-x-3 transition-transform" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {commonFooter}
+      </main>
+    );
+  };
+  
+  const CareerRegistrationForm: React.FC = () => {
+    const [formData, setFormData] = useState({
+      fullName: '',
+      email: '',
+      phone: '',
+      location: '',
+      position: '',
+      experience: '',
+      employmentStatus: '',
+      skills: '',
+      qualification: '',
+      fieldOfStudy: '',
+      whyUs: '',
+      availability: '',
+    });
+    const [cv, setCv] = useState<File | null>(null);
+    const [coverLetter, setCoverLetter] = useState<File | null>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isSuccess, setIsSuccess] = useState(false);
+    const [errors, setErrors] = useState<Record<string, string>>({});
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+      const { name, value } = e.target;
+      setFormData(prev => ({ ...prev, [name]: value }));
+      if (errors[name]) {
+        setErrors(prev => {
+          const newErrors = { ...prev };
+          delete newErrors[name];
+          return newErrors;
+        });
+      }
+    };
+
+    const validate = () => {
+      const newErrors: Record<string, string> = {};
+      if (!formData.fullName) newErrors.fullName = 'Full name is required';
+      if (!formData.email) newErrors.email = 'Email is required';
+      else if (!/^\S+@\S+\.\S+$/.test(formData.email)) newErrors.email = 'Invalid email format';
+      if (!formData.phone) newErrors.phone = 'Phone number is required';
+      if (!formData.location) newErrors.location = 'Location is required';
+      if (!formData.position) newErrors.position = 'Please select a position';
+      if (!formData.experience) newErrors.experience = 'Experience level is required';
+      if (!formData.qualification) newErrors.qualification = 'Highest qualification is required';
+      if (!cv) newErrors.cv = 'Please upload your CV/Resume';
+      
+      setErrors(newErrors);
+      return Object.keys(newErrors).length === 0;
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!validate()) return;
+
+      setIsSubmitting(true);
+      // Simulate API call
+      setTimeout(() => {
+        setIsSubmitting(false);
+        setIsSuccess(true);
+      }, 2000);
+    };
+
+    if (isSuccess) {
+      return (
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-green-50 border border-green-200 rounded-2xl p-8 text-center"
+        >
+          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <CheckCircleIcon className="w-8 h-8 text-green-600" />
+          </div>
+          <h3 className="text-2xl font-bold text-green-800 mb-2 font-display">Application Submitted!</h3>
+          <p className="text-green-700">
+            Thank you for your interest in XTASS. We've received your application and will review it shortly. Our team will contact you via email if your profile matches our requirements.
+          </p>
+          <button 
+             onClick={() => setIsSuccess(false)}
+             className="mt-6 text-green-600 font-semibold hover:underline"
+          >
+            Apply for another position
+          </button>
+        </motion.div>
+      );
+    }
+
+    return (
+      <form onSubmit={handleSubmit} className="space-y-8 bg-white p-6 md:p-10 rounded-2xl border border-gray-100 shadow-sm transition-all focus-within:border-primary/30">
+        <div className="border-b border-gray-100 pb-6">
+            <h2 className="text-3xl font-display font-bold text-gray-900">Apply Now</h2>
+            <p className="text-gray-500 mt-1">Fill out the form below to become part of the XTASS team.</p>
+        </div>
+
+        {/* Personal Information */}
+        <div className="space-y-6">
+          <div className="flex items-center gap-2 text-primary font-bold uppercase tracking-wider text-sm">
+             <UserIcon className="w-4 h-4" />
+             <span>Personal Information</span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-1.5">
+              <label htmlFor="fullName" className="block text-sm font-semibold text-gray-700">Full Name *</label>
+              <input
+                id="fullName"
+                name="fullName"
+                type="text"
+                value={formData.fullName}
+                onChange={handleInputChange}
+                className={`w-full px-4 py-3 rounded-lg border ${errors.fullName ? 'border-red-500 ring-red-100 ring-4' : 'border-gray-200 focus:border-primary focus:ring-primary/10'} focus:outline-none focus:ring-4 transition-all`}
+                placeholder="John Doe"
+              />
+              {errors.fullName && <p className="text-red-500 text-xs mt-1">{errors.fullName}</p>}
+            </div>
+            <div className="space-y-1.5">
+              <label htmlFor="email" className="block text-sm font-semibold text-gray-700">Email Address *</label>
+              <div className="relative">
+                <MailIcon className="absolute left-3 top-3.5 w-4 h-4 text-gray-400" />
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  className={`w-full pl-10 pr-4 py-3 rounded-lg border ${errors.email ? 'border-red-500 ring-red-100 ring-4' : 'border-gray-200 focus:border-primary focus:ring-primary/10'} focus:outline-none focus:ring-4 transition-all`}
+                  placeholder="john@example.com"
+                />
+              </div>
+              {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
+            </div>
+            <div className="space-y-1.5">
+              <label htmlFor="phone" className="block text-sm font-semibold text-gray-700">Phone Number *</label>
+              <div className="relative">
+                <PhoneIcon className="absolute left-3 top-3.5 w-4 h-4 text-gray-400" />
+                <input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  className={`w-full pl-10 pr-4 py-3 rounded-lg border ${errors.phone ? 'border-red-500 ring-red-100 ring-4' : 'border-gray-200 focus:border-primary focus:ring-primary/10'} focus:outline-none focus:ring-4 transition-all`}
+                  placeholder="+233 XX XXX XXXX"
+                />
+              </div>
+              {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
+            </div>
+            <div className="space-y-1.5">
+              <label htmlFor="location" className="block text-sm font-semibold text-gray-700">Location (City, Country) *</label>
+              <div className="relative">
+                <MapPinIcon className="absolute left-3 top-3.5 w-4 h-4 text-gray-400" />
+                <input
+                  id="location"
+                  name="location"
+                  type="text"
+                  value={formData.location}
+                  onChange={handleInputChange}
+                  className={`w-full pl-10 pr-4 py-3 rounded-lg border ${errors.location ? 'border-red-500 ring-red-100 ring-4' : 'border-gray-200 focus:border-primary focus:ring-primary/10'} focus:outline-none focus:ring-4 transition-all`}
+                  placeholder="Accra, Ghana"
+                />
+              </div>
+              {errors.location && <p className="text-red-500 text-xs mt-1">{errors.location}</p>}
+            </div>
+          </div>
+        </div>
+
+        {/* Professional Details */}
+        <div className="space-y-6 pt-4">
+          <div className="flex items-center gap-2 text-primary font-bold uppercase tracking-wider text-sm">
+             <BriefcaseIcon className="w-4 h-4" />
+             <span>Professional Details</span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-1.5">
+              <label htmlFor="position" className="block text-sm font-semibold text-gray-700">Position Applying For *</label>
+              <select
+                id="position"
+                name="position"
+                value={formData.position}
+                onChange={handleInputChange}
+                className={`w-full px-4 py-3 rounded-lg border ${errors.position ? 'border-red-500 ring-red-100 ring-4' : 'border-gray-200 focus:border-primary focus:ring-primary/10'} focus:outline-none focus:ring-4 transition-all bg-white`}
+              >
+                <option value="">Select a position</option>
+                <option value="driver">Professional Driver</option>
+                <option value="logistics">Logistics Coordinator</option>
+                <option value="tech">Technology Team</option>
+                <option value="support">Customer Support Agent</option>
+                <option value="other">Other</option>
+              </select>
+              {errors.position && <p className="text-red-500 text-xs mt-1">{errors.position}</p>}
+            </div>
+            <div className="space-y-1.5">
+              <label htmlFor="experience" className="block text-sm font-semibold text-gray-700">Years of Experience *</label>
+              <input
+                id="experience"
+                name="experience"
+                type="number"
+                value={formData.experience}
+                onChange={handleInputChange}
+                className={`w-full px-4 py-3 rounded-lg border ${errors.experience ? 'border-red-500 ring-red-100 ring-4' : 'border-gray-200 focus:border-primary focus:ring-primary/10'} focus:outline-none focus:ring-4 transition-all`}
+                placeholder="2"
+                min="0"
+              />
+              {errors.experience && <p className="text-red-500 text-xs mt-1">{errors.experience}</p>}
+            </div>
+            <div className="space-y-1.5">
+              <label htmlFor="employmentStatus" className="block text-sm font-semibold text-gray-700">Current Employment Status</label>
+              <input
+                id="employmentStatus"
+                name="employmentStatus"
+                type="text"
+                value={formData.employmentStatus}
+                onChange={handleInputChange}
+                className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-primary focus:ring-primary/10 focus:outline-none focus:ring-4 transition-all"
+                placeholder="Full-time / Freelance / Unemployed"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label htmlFor="skills" className="block text-sm font-semibold text-gray-700">Key Skills</label>
+              <input
+                id="skills"
+                name="skills"
+                type="text"
+                value={formData.skills}
+                onChange={handleInputChange}
+                className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-primary focus:ring-primary/10 focus:outline-none focus:ring-4 transition-all"
+                placeholder="Driving, Communication, Map Navigation..."
               />
             </div>
           </div>
-        </section>
+        </div>
 
-        {/* DEALS GRID */}
-        <section className="py-16">
-          <div className="max-w-7xl mx-auto px-4">
-            {filteredDeals.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
-                {filteredDeals.map((deal) => (
-                  <motion.div 
-                    layout
-                    key={deal.id}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden group hover:shadow-2xl transition-all"
-                  >
-                    <div className="p-6">
-                      <div className="flex justify-between items-start mb-4">
-                        <span className="text-xs font-bold text-primary bg-primary/5 px-3 py-1 rounded-full uppercase tracking-wider">
-                          {deal.category}
-                        </span>
-                        {deal.highlight && (
-                          <span className={`text-[10px] font-black px-2 py-0.5 rounded uppercase ${
-                            deal.highlight === 'Hot Deal' ? 'bg-red-500 text-white' : 
-                            deal.highlight === 'New' ? 'bg-green-500 text-white' : 'bg-orange-500 text-white'
-                          }`}>
-                            {deal.highlight}
-                          </span>
-                        )}
-                      </div>
-                      
-                      <h3 className="text-xl font-bold text-gray-800 mb-2">{deal.title}</h3>
-                      <p className="text-gray-600 text-sm mb-4 leading-relaxed line-clamp-2">{deal.description}</p>
-                      
-                      <div className="flex items-end justify-between mb-6">
-                        <div>
-                          <p className="text-xs text-gray-400 font-bold uppercase">Discount Type</p>
-                          <p className="text-2xl font-black text-primary">{deal.type}</p>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-xs text-gray-400 font-bold uppercase">Expires On</p>
-                          <p className="text-sm font-bold text-gray-800">{deal.expiry}</p>
-                        </div>
-                      </div>
-
-                      <div className="bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl p-4 flex items-center justify-between group-hover:border-primary/30 transition-colors">
-                        <div>
-                          <p className="text-[10px] text-gray-400 font-bold uppercase mb-1">Promo Code</p>
-                          <p className="font-mono font-bold text-gray-800 tracking-wider uppercase">{deal.code}</p>
-                        </div>
-                        <button 
-                          onClick={() => copyToClipboard(deal.code)}
-                          className="bg-white border border-gray-200 p-2 rounded-lg hover:bg-primary hover:text-white hover:border-primary transition-all shadow-sm"
-                          title="Copy Code"
-                        >
-                          <CheckCircleIcon className="w-5 h-5" />
-                        </button>
-                      </div>
-                    </div>
-                    
-                    <div className="bg-gray-50 p-4 border-t border-gray-100">
-                      <button 
-                        onClick={() => { setView('start-reservation'); }}
-                        className="w-full bg-primary text-white font-bold py-3 rounded-xl shadow-md hover:bg-primary-hover transition-all"
-                      >
-                        Apply Discount Now
-                      </button>
-                      <button className="w-full mt-2 text-xs text-gray-500 hover:text-primary transition-colors text-center pb-2 underline" onClick={() => alert(`Terms: ${deal.conditions}`)}>
-                         View Terms & Conditions
-                      </button>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            ) : (
-              <div className="bg-white p-16 rounded-3xl text-center shadow-sm border border-gray-100">
-                 <div className="bg-gray-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
-                   <SearchIcon className="w-10 h-10 text-gray-300" />
-                 </div>
-                 <h3 className="text-2xl font-bold text-gray-800 mb-2">No Deals Found</h3>
-                 <p className="text-gray-500">We couldn't find any deals matching your current filters. Try relaxing your search!</p>
-              </div>
-            )}
+        {/* Education */}
+        <div className="space-y-6 pt-4">
+          <div className="flex items-center gap-2 text-primary font-bold uppercase tracking-wider text-sm">
+             <GraduationCapIcon className="w-4 h-4" />
+             <span>Education</span>
           </div>
-        </section>
-
-        {/* NEWSLETTER ENFORCER */}
-        <section className="py-20 bg-accent/10">
-          <div className="max-w-4xl mx-auto px-4 text-center">
-            <h2 className="text-3xl font-display font-bold text-gray-800 mb-4">Never Miss a Deal Again!</h2>
-            <p className="text-gray-600 mb-8">Sign up for our newsletter to receive exclusive coupons and flash sale notifications right in your inbox.</p>
-            <div className="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
-              <input type="email" placeholder="Enter your email address" className="flex-1 p-4 border border-gray-200 rounded-xl focus:outline-none" />
-              <button className="bg-primary text-white font-bold px-8 py-4 rounded-xl hover:bg-primary-hover transition-all">Subscribe</button>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-1.5">
+              <label htmlFor="qualification" className="block text-sm font-semibold text-gray-700">Highest Qualification *</label>
+              <input
+                id="qualification"
+                name="qualification"
+                type="text"
+                value={formData.qualification}
+                onChange={handleInputChange}
+                className={`w-full px-4 py-3 rounded-lg border ${errors.qualification ? 'border-red-500 ring-red-100 ring-4' : 'border-gray-200 focus:border-primary focus:ring-primary/10'} focus:outline-none focus:ring-4 transition-all`}
+                placeholder="BSc / HND / Senior High School"
+              />
+              {errors.qualification && <p className="text-red-500 text-xs mt-1">{errors.qualification}</p>}
             </div>
-            <p className="text-[10px] text-gray-400 mt-4 uppercase font-bold tracking-widest">No Spam. Just Savings. Guaranteed.</p>
+            <div className="space-y-1.5">
+              <label htmlFor="fieldOfStudy" className="block text-sm font-semibold text-gray-700">Field of Study</label>
+              <input
+                id="fieldOfStudy"
+                name="fieldOfStudy"
+                type="text"
+                value={formData.fieldOfStudy}
+                onChange={handleInputChange}
+                className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-primary focus:ring-primary/10 focus:outline-none focus:ring-4 transition-all"
+                placeholder="Business Administration, Logistics, etc."
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Document Uploads */}
+        <div className="space-y-6 pt-4">
+          <div className="flex items-center gap-2 text-primary font-bold uppercase tracking-wider text-sm">
+             <UploadCloudIcon className="w-4 h-4" />
+             <span>Document Uploads</span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-1.5">
+              <label className="block text-sm font-semibold text-gray-700">Upload CV/Resume *</label>
+              <div className={`relative group border-2 border-dashed ${errors.cv ? 'border-red-300' : 'border-gray-300'} rounded-lg p-6 hover:border-primary/50 transition-colors cursor-pointer`}>
+                <input
+                  type="file"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0] || null;
+                    setCv(file);
+                    if (errors.cv && file) {
+                      setErrors(prev => {
+                        const newErrors = { ...prev };
+                        delete newErrors.cv;
+                        return newErrors;
+                      });
+                    }
+                  }}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  accept=".pdf,.doc,.docx"
+                />
+                <div className="text-center">
+                  <FileTextIcon className="w-8 h-8 text-gray-400 mx-auto group-hover:text-primary transition-colors" />
+                  <p className="mt-2 text-sm text-gray-600">
+                    {cv ? cv.name : 'Click to upload or drag & drop'}
+                  </p>
+                  <p className="text-xs text-gray-400">PDF, DOC, DOCX (Max 5MB)</p>
+                </div>
+              </div>
+              {errors.cv && <p className="text-red-500 text-xs mt-1">{errors.cv}</p>}
+            </div>
+            <div className="space-y-1.5">
+              <label className="block text-sm font-semibold text-gray-700">Upload Cover Letter (Optional)</label>
+              <div className="relative group border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-primary/50 transition-colors cursor-pointer">
+                <input
+                  type="file"
+                  onChange={(e) => setCoverLetter(e.target.files?.[0] || null)}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  accept=".pdf,.doc,.docx"
+                />
+                <div className="text-center">
+                  <FileTextIcon className="w-8 h-8 text-gray-400 mx-auto group-hover:text-primary transition-colors" />
+                  <p className="mt-2 text-sm text-gray-600">
+                    {coverLetter ? coverLetter.name : 'Click to upload or drag & drop'}
+                  </p>
+                  <p className="text-xs text-gray-400">PDF, DOC, DOCX (Max 5MB)</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Additional Information */}
+        <div className="space-y-6 pt-4">
+          <div className="space-y-1.5">
+            <label htmlFor="whyUs" className="block text-sm font-semibold text-gray-700">Why do you want to work with us?</label>
+            <textarea
+              id="whyUs"
+              name="whyUs"
+              rows={4}
+              value={formData.whyUs}
+              onChange={handleInputChange}
+              className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-primary focus:ring-primary/10 focus:outline-none focus:ring-4 transition-all"
+              placeholder="Tell us about your motivation..."
+            />
+          </div>
+          <div className="space-y-1.5">
+            <label htmlFor="availability" className="block text-sm font-semibold text-gray-700">Availability</label>
+            <select
+              id="availability"
+              name="availability"
+              value={formData.availability}
+              onChange={handleInputChange}
+              className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-primary focus:ring-primary/10 focus:outline-none focus:ring-4 transition-all bg-white"
+            >
+              <option value="">Select availability</option>
+              <option value="immediate">Immediate</option>
+              <option value="1week">1 Week Notice</option>
+              <option value="2weeks">2 Weeks Notice</option>
+              <option value="1month">1 Month Notice</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className={`w-full py-4 rounded-xl text-white font-bold text-lg shadow-lg transition-all flex items-center justify-center gap-3 ${isSubmitting ? 'bg-gray-400 cursor-not-allowed' : 'bg-primary hover:bg-primary-hover active:bg-primary-active hover:-translate-y-0.5 active:translate-y-0'}`}
+        >
+          {isSubmitting ? (
+            <>
+              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+              <span>Submitting Application...</span>
+            </>
+          ) : (
+            <>
+              <span>Submit Application</span>
+              <ArrowRightIcon className="w-5 h-5" />
+            </>
+          )}
+        </button>
+      </form>
+    );
+  };
+
+  const CareersPage: React.FC<{ commonFooter: React.ReactNode }> = ({ commonFooter }) => {
+    return (
+      <main>
+        {/* Careers Hero */}
+        <div className="relative bg-primary text-white">
+          <div 
+            className="absolute inset-0 bg-cover bg-center opacity-30" 
+            style={{backgroundImage: "url('https://i.ibb.co/svMbtFfn/XTASS-Hero-Banner-2.jpg')"}}>
+          </div>
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32 text-center">
+            <h1 className="text-4xl md:text-5xl font-display font-bold">Careers</h1>
+            <p className="mt-4 text-lg text-white/90 max-w-3xl mx-auto">
+              Join a team that is transforming travel across Ghana and Africa.
+            </p>
+          </div>
+        </div>
+
+        {/* Introduction Section */}
+        <section className="py-16 md:py-24 bg-white">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="prose lg:prose-lg max-w-none text-gray-700 space-y-8">
+              <div>
+                <p>
+                  XTASS is a growing transport company built on the principles of safety, quality, and service excellence. As we continue to expand our operations across Ghana and into new African markets, we are constantly looking for talented, motivated individuals who share our commitment to professionalism and customer care.
+                </p>
+                <p>
+                  Working at XTASS means being part of a team that is transforming how people travel. From our professional drivers and logistics coordinators to our technology team and customer support agents, every member of the XTASS workforce plays a critical role in delivering the reliable, high-quality service that our customers depend on every day.
+                </p>
+              </div>
+
+              <div className="bg-gray-50 p-8 rounded-2xl border border-gray-100">
+                <h2 className="text-2xl font-display font-bold text-gray-800 mb-6 font-sans">Why Work With Us</h2>
+                <ul className="not-prose space-y-4">
+                  <li className="flex items-start">
+                    <CheckCircleIcon className="w-6 h-6 text-primary mr-3 shrink-0 mt-0.5" />
+                    <span>Be part of a pioneering transport brand in Ghana and across Africa</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircleIcon className="w-6 h-6 text-primary mr-3 shrink-0 mt-0.5" />
+                    <span>Work in a professional, supportive, and growth-oriented environment</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircleIcon className="w-6 h-6 text-primary mr-3 shrink-0 mt-0.5" />
+                    <span>Competitive compensation and benefits package</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircleIcon className="w-6 h-6 text-primary mr-3 shrink-0 mt-0.5" />
+                    <span>Ongoing training and development opportunities</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircleIcon className="w-6 h-6 text-primary mr-3 shrink-0 mt-0.5" />
+                    <span>Clear career progression pathways</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircleIcon className="w-6 h-6 text-primary mr-3 shrink-0 mt-0.5" />
+                    <span>Contribute to a company that puts safety and community first</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div>
+                <h2 className="text-2xl font-display font-bold text-gray-800 mb-6 font-sans">How to Apply</h2>
+                <p>
+                  Interested candidates are invited to reach out to the XTASS team via our support email at <a href="mailto:support@xtass.com" className="text-primary font-bold hover:underline">support@xtass.com</a> with the subject line 'Career Enquiry', or contact us through our website.
+                </p>
+                <p>
+                  As new positions become available, they will be listed on this page. We welcome applications from individuals who are passionate about transport, customer service, safety, and building something meaningful.
+                </p>
+              </div>
+
+              {/* Application Form */}
+              <div id="apply" className="pt-12">
+                <CareerRegistrationForm />
+              </div>
+            </div>
           </div>
         </section>
 
@@ -1059,7 +1458,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
       </main>
     );
   };
-  
+
   const GetReceiptPage: React.FC<{
     commonFooter: React.ReactNode;
     onRoleSelect: (role: Role) => void;
@@ -1318,245 +1717,262 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
   };
   
   const LongTermRentalPage: React.FC<{
+    setView: (v: string) => void;
     commonFooter: React.ReactNode;
     onRoleSelect: (role: Role) => void;
-  }> = ({ commonFooter, onRoleSelect }) => {
-    const [duration, setDuration] = useState(1);
-    
-    const monthlyDeals = [
-      { 
-        id: 'standard', 
-        name: 'Eco Monthly', 
-        price: 'GHS 4,500', 
-        car: 'Economy Hatchback', 
-        features: ['Insurance Included', '24/7 Roadside', 'Basic Maintenance'],
-        img: 'https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?q=80&w=2070&auto=format&fit=crop'
-      },
-      { 
-        id: 'pro', 
-        name: 'Business Monthly', 
-        price: 'GHS 6,800', 
-        car: 'Modern Sedan', 
-        features: ['Free GPS', 'Priority Support', 'Full Maintenance', 'Occasional Swaps'],
-        img: 'https://images.unsplash.com/photo-1550355291-bbee04a92027?q=80&w=2072&auto=format&fit=crop'
-      },
-      { 
-        id: 'premium', 
-        name: 'Executive Monthly', 
-        price: 'GHS 12,500', 
-        car: 'Premium SUV', 
-        features: ['Full Concierge', 'Valet Pickup', 'Elite Insurance', 'Unlimited Kilometers'],
-        img: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=2070&auto=format&fit=crop'
-      },
-    ];
-
+  }> = ({ setView, commonFooter, onRoleSelect }) => {
     return (
-      <main className="bg-gray-50 min-h-screen">
-        {/* HERO */}
-        <section className="bg-[#1A0006] text-white py-24 relative overflow-hidden">
-          <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
-          <div className="max-w-7xl mx-auto px-4 text-center relative z-10">
-            <motion.h1 
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-4xl md:text-6xl font-display font-bold mb-6"
-            >
-              Long-Term Car Rental
-            </motion.h1>
-            <p className="text-xl text-white/70 max-w-2xl mx-auto mb-10 leading-relaxed">
-              The smart alternative to car ownership. Monthly rentals with complete flexibility, full maintenance, and fixed predictable costs.
-            </p>
-            <div className="flex justify-center flex-wrap gap-4">
-              <div className="bg-white/10 px-6 py-3 rounded-full flex items-center space-x-2 border border-white/20">
-                <CheckCircleIcon className="w-5 h-5 text-accent" />
-                <span className="text-sm font-bold">No Long-Term Contracts</span>
+      <main className="bg-[#f9fafb] min-h-screen font-sans text-left pb-10">
+        {/* Navigation / Breadcrumbs */}
+        <nav className="bg-white border-b border-gray-100 py-4">
+          <div className="max-w-6xl mx-auto px-6 flex items-center gap-2 text-sm text-gray-500 font-medium">
+            <button onClick={() => setView('home')} className="text-primary hover:underline border-b border-transparent hover:border-primary transition-all">Home</button>
+            <ChevronRightIcon className="w-3 h-3" />
+            <span className="text-primary font-medium">Car Rental</span>
+            <ChevronRightIcon className="w-3 h-3" />
+            <span className="text-gray-900 font-bold">Long-Term Car Rental</span>
+          </div>
+        </nav>
+
+        {/* HERO / HEADER SECTION */}
+        <div className="max-w-7xl mx-auto px-6 py-12 lg:py-20 flex flex-col lg:flex-row items-center justify-between gap-12">
+          <motion.div 
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="flex-1 lg:max-w-2xl"
+          >
+            <h1 className="text-4xl md:text-6xl font-display font-medium text-gray-900 leading-tight">
+              Take Advantage of Weekly & Monthly Rates
+            </h1>
+          </motion.div>
+          <motion.div 
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="flex-1 hidden lg:block"
+          >
+            <img 
+              src="https://images.unsplash.com/photo-1583121274602-3e2820c69888?q=80&w=2070&auto=format&fit=crop" 
+              alt="Premium Car" 
+              className="w-full h-auto drop-shadow-2xl"
+            />
+          </motion.div>
+        </div>
+
+        {/* BOOKING FORM SECTION */}
+        <section className="max-w-5xl mx-auto px-6 mb-24">
+          <div className="bg-white rounded-[2.5rem] shadow-2xl border border-gray-100 overflow-hidden">
+            {/* Urgency Banner */}
+            <div className="bg-[#e6f4f1] border-b border-[#c2e2dc] py-4 px-8 flex items-center justify-center gap-3">
+              <span className="text-primary">⌛</span>
+              <p className="text-sm font-bold text-gray-800">
+                Hurry! Availability is limited during peak season. Reserve now to lock in your rate.
+              </p>
+            </div>
+
+            <div className="p-8 md:p-14">
+              <div className="flex flex-col md:flex-row items-baseline justify-between gap-4 mb-10">
+                <div className="flex flex-col gap-1 items-start">
+                  <h2 className="text-3xl md:text-4xl font-display font-medium text-gray-900">Start a Long-Term Reservation</h2>
+                  <p className="text-sm font-medium text-gray-500">
+                    Renting for less than 28 days? <button onClick={() => setView('start-reservation')} className="text-primary hover:underline">Book at everyday low rates &rsaquo;</button>
+                  </p>
+                </div>
+                <button 
+                  onClick={() => setView('manage-reservation')}
+                  className="text-primary font-bold hover:underline underline-offset-4 decoration-accent decoration-2 text-sm"
+                >
+                  or View / Modify / Cancel Reservation
+                </button>
               </div>
-              <div className="bg-white/10 px-6 py-3 rounded-full flex items-center space-x-2 border border-white/20">
-                <CheckCircleIcon className="w-5 h-5 text-accent" />
-                <span className="text-sm font-bold">Maintenance Included</span>
-              </div>
-              <div className="bg-white/10 px-6 py-3 rounded-full flex items-center space-x-2 border border-white/20">
-                <CheckCircleIcon className="w-5 h-5 text-accent" />
-                <span className="text-sm font-bold">24/7 Roadside Support</span>
+
+              <div className="space-y-8">
+                <div className="text-left">
+                  <div className="flex justify-between items-end mb-3">
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] flex items-center gap-2">
+                       Pick-Up & Return Location (City or Airport)*
+                    </label>
+                    <span className="text-[10px] text-gray-300 font-normal italic uppercase tracking-tighter">* Required Field</span>
+                  </div>
+                  <div className="relative">
+                    <input 
+                      type="text" 
+                      placeholder="Provide a Location"
+                      className="w-full pl-6 pr-6 py-5 bg-gray-50/50 border border-gray-200 rounded-2xl focus:bg-white focus:ring-4 focus:ring-primary/5 focus:border-primary focus:outline-none text-xl font-medium transition-all shadow-sm"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-4 text-left px-2">
+                  <input 
+                    type="checkbox" 
+                    id="different-location-long-term"
+                    className="w-6 h-6 rounded border-gray-300 text-primary focus:ring-primary/20 cursor-pointer"
+                  />
+                  <label htmlFor="different-location-long-term" className="text-sm md:text-base font-bold text-gray-600 cursor-pointer flex items-center gap-2 group hover:text-primary transition-colors">
+                    Return to a different location 
+                    <div className="w-5 h-5 rounded-full bg-gray-200 flex items-center justify-center text-[10px] text-gray-500 font-bold">i</div>
+                  </label>
+                </div>
+
+                <button 
+                  onClick={() => onRoleSelect('Customer')}
+                  className="w-full md:w-auto px-16 py-6 bg-primary hover:bg-primary-hover text-white font-bold rounded-2xl shadow-2xl shadow-primary/20 transition-all text-xl"
+                >
+                  Search / Book Now
+                </button>
               </div>
             </div>
           </div>
         </section>
 
-        {/* SUBSCRIPTION CALCULATOR */}
-        <section className="py-20">
-          <div className="max-w-7xl mx-auto px-4">
-            <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-12 mb-16 overflow-hidden relative">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-32 -mt-32"></div>
-              
-              <div className="md:flex items-center justify-between gap-12 relative z-10">
-                <div className="flex-1 mb-8 md:mb-0 text-left">
-                  <h2 className="text-3xl font-display font-bold text-gray-800 mb-4">Choose Your Duration</h2>
-                  <p className="text-gray-500 mb-8 max-w-md">The longer you rent, the more you save. Select your expected rental duration to see exclusive monthly rates.</p>
-                  
-                  <div className="space-y-6">
-                    <div>
-                      <div className="flex justify-between mb-4">
-                        <span className="font-bold text-gray-700">Duration: <span className="text-primary">{duration} Month{duration > 1 ? 's' : ''}</span></span>
-                        <span className="text-xs font-black text-accent bg-accent/10 px-2 py-1 rounded">-{duration > 1 ? (duration * 2) : 0}% Discount applied</span>
-                      </div>
-                      <input 
-                        type="range" 
-                        min="1" 
-                        max="12" 
-                        value={duration}
-                        onChange={(e) => setDuration(parseInt(e.target.value))}
-                        className="w-full h-3 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-primary"
-                      />
-                      <div className="flex justify-between text-[10px] font-black text-gray-400 mt-2 uppercase tracking-widest">
-                        <span>1 Month</span>
-                        <span>6 Months</span>
-                        <span>12 Months</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="w-full md:w-1/3 bg-gray-50 p-8 rounded-2xl border border-gray-100">
-                  <h4 className="font-bold text-gray-800 mb-6 text-left">Monthly Benefits</h4>
-                  <ul className="space-y-4">
-                    {[
-                      'Comprehensive Insurance',
-                      'Free Seasonal Maintenance',
-                      'Vehicle Replacement Guard',
-                      'Local Taxes Included',
-                      'Flexible Exit Terms'
-                    ].map((benefit, i) => (
-                      <li key={i} className="flex items-center text-sm font-medium text-gray-600">
-                        <ShieldIcon className="w-4 h-4 text-primary mr-3" />
-                        {benefit}
-                      </li>
-                    ))}
-                  </ul>
-                  <button onClick={() => onRoleSelect('Customer')} className="w-full mt-8 bg-primary text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-xl transition-all">
-                    Start Custom Plan
-                  </button>
-                </div>
+        {/* KEY FEATURES SECTION */}
+        <section className="max-w-7xl mx-auto px-6 mb-24">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* 28 Day Hire Rates */}
+            <div className="bg-white p-10 rounded-3xl border border-gray-100 shadow-sm flex flex-col items-center text-center group hover:shadow-xl transition-all">
+              <div className="w-16 h-16 bg-primary/5 rounded-2xl flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-all transform -rotate-3 group-hover:rotate-0">
+                <CalendarIcon className="w-8 h-8" />
               </div>
+              <h3 className="text-xl font-display font-bold text-gray-900 mb-4">28 Day Hire Rates</h3>
+              <p className="text-gray-500 text-sm leading-relaxed font-light">
+                Long-term hire rates begin with rental amounting to more than 28 days.
+              </p>
             </div>
 
-            {/* MONTHLY DEALS */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
-              {monthlyDeals.map((deal) => (
-                <div key={deal.id} className="bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100 flex flex-col hover:shadow-2xl transition-all duration-300">
-                  <div className="h-56 bg-cover bg-center" style={{backgroundImage: `url(${deal.img})`}}></div>
-                  <div className="p-8 flex-1 flex flex-col">
-                    <div className="flex justify-between items-start mb-6">
-                      <div>
-                        <h3 className="text-2xl font-bold text-gray-800 mb-1">{deal.name}</h3>
-                        <p className="text-primary text-sm font-bold uppercase tracking-widest">{deal.car}</p>
-                      </div>
-                    </div>
-                    
-                    <ul className="space-y-3 mb-10 flex-1">
-                      {deal.features.map((f, i) => (
-                        <li key={i} className="flex items-center text-sm text-gray-500 font-medium">
-                          <CheckCircleIcon className="w-4 h-4 text-green-500 mr-2" />
-                          {f}
-                        </li>
-                      ))}
-                    </ul>
+            {/* Unlimited Mileage */}
+            <div className="bg-white p-10 rounded-3xl border border-gray-100 shadow-sm flex flex-col items-center text-center group hover:shadow-xl transition-all">
+              <div className="w-16 h-16 bg-primary/5 rounded-2xl flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-all transform rotate-3 group-hover:rotate-0">
+                <TrophyIcon className="w-8 h-8" />
+              </div>
+              <h3 className="text-xl font-display font-bold text-gray-900 mb-4">Unlimited Mileage</h3>
+              <p className="text-gray-500 text-sm leading-relaxed font-light">
+                While some providers may limit you on mileage, there is no mileage limit for most vehicle classes on our long-term hires.
+              </p>
+            </div>
 
-                    <div className="pt-6 border-t border-gray-50 flex items-center justify-between">
-                       <div>
-                         <p className="text-xs text-gray-400 font-bold uppercase">Starting From</p>
-                         <p className="text-2xl font-black text-gray-800">{deal.price}<span className="text-sm font-bold text-gray-400">/mo</span></p>
-                       </div>
-                       <button 
-                        onClick={() => onRoleSelect('Customer')}
-                        className="bg-accent text-primary font-bold px-6 py-3 rounded-xl hover:bg-accent/90 transition-all text-sm"
-                       >
-                         Choose
-                       </button>
-                    </div>
+            {/* Multiple Locations */}
+            <div className="bg-white p-10 rounded-3xl border border-gray-100 shadow-sm flex flex-col items-center text-center group hover:shadow-xl transition-all">
+              <div className="w-16 h-16 bg-primary/5 rounded-2xl flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-all transform -rotate-3 group-hover:rotate-0">
+                <MapPinIcon className="w-8 h-8" />
+              </div>
+              <h3 className="text-xl font-display font-bold text-gray-900 mb-4">Multiple Locations</h3>
+              <p className="text-gray-500 text-sm leading-relaxed font-light">
+                With operations across Ghana's major airports and cities, you're sure to find a branch near you.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* POPULAR VEHICLE TYPES */}
+        <section className="bg-white py-24 mb-24">
+          <div className="max-w-7xl mx-auto px-6 text-center">
+            <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-4">Popular Long-Term Hire Vehicle Types</h2>
+            <p className="text-gray-500 max-w-2xl mx-auto font-light text-lg mb-10">
+              From compact sedans to spacious SUVs and vans, we offer a large range of reliable vehicles to suit your long-term hire needs.
+            </p>
+            <button 
+              onClick={() => onRoleSelect('Customer')}
+              className="py-4 px-10 border-2 border-primary text-primary font-bold rounded-full hover:bg-primary hover:text-white transition-all uppercase tracking-widest text-xs mb-16"
+            >
+              View All Hire Vehicles
+            </button>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-left">
+              {[
+                { 
+                  type: 'Sedan', 
+                  suitable: '1–3 passengers. Ideal for solo business travelers, couples, or point-to-point city transfers.',
+                  img: 'https://images.unsplash.com/photo-1550355291-bbee04a92027?q=80&w=2072&auto=format&fit=crop'
+                },
+                { 
+                  type: 'SUV', 
+                  suitable: '1–4 passengers with luggage. Well suited for airport transfers with large bags or small family groups.',
+                  img: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=2070&auto=format&fit=crop'
+                },
+                { 
+                  type: 'Van / Minivan', 
+                  suitable: '5–8 passengers. Ideal for group travel, family trips, and corporate team transfers.',
+                  img: 'https://images.unsplash.com/photo-1549411223-28956903d3f9?q=80&w=2074&auto=format&fit=crop'
+                }
+              ].map((v, i) => (
+                <div key={i} className="group cursor-pointer">
+                  <div className="h-48 overflow-hidden rounded-2xl mb-6">
+                    <img src={v.img} alt={v.type} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                   </div>
+                  <h3 className="text-2xl font-display font-bold text-gray-900 mb-2">{v.type}</h3>
+                  <p className="text-gray-500 text-sm font-light leading-relaxed">{v.suitable}</p>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* VS OWNERSHIP */}
-        <section className="py-20 bg-white">
-          <div className="max-w-5xl mx-auto px-4">
-             <div className="text-center mb-16">
-               <h2 className="text-3xl font-display font-bold text-gray-800">Long-Term Rental vs. Ownership</h2>
-               <p className="text-gray-500 mt-2">Why more professionals are switching to flexible transportation.</p>
-             </div>
+        {/* REASONS TO HIRE SECTION */}
+        <section className="max-w-7xl mx-auto px-6 mb-24">
+          <div className="bg-white rounded-[3rem] border border-gray-100 shadow-xl overflow-hidden flex flex-col lg:flex-row">
+            <div className="flex-1 p-10 md:p-20 text-left">
+              <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-8">Reasons to Hire a Vehicle Long-Term</h2>
+              <p className="text-gray-500 mb-10 font-light text-lg">There are several common reasons for hiring a vehicle long term:</p>
+              
+              <div className="space-y-10">
+                <div className="flex gap-6">
+                  <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2.5 shrink-0"></div>
+                  <div>
+                    <h4 className="font-bold text-gray-900 text-lg mb-2">Preserve the value of your personal vehicle</h4>
+                    <p className="text-gray-500 text-sm font-light leading-relaxed">
+                      Taking an extended trip or heading to a secondary residence for the season? Hiring a vehicle for the duration of your trip prevents you from having to put mileage on your personal vehicle and reduces wear and tear.
+                    </p>
+                  </div>
+                </div>
 
-             <div className="overflow-hidden rounded-2xl border border-gray-100 shadow-xl">
-               <table className="w-full text-left">
-                 <thead>
-                   <tr className="bg-primary text-white">
-                     <th className="p-6 font-bold uppercase tracking-wider text-sm">Feature</th>
-                     <th className="p-6 font-bold uppercase tracking-wider text-sm">XTASS Long-Term</th>
-                     <th className="p-6 font-bold uppercase tracking-wider text-sm">Ownership / Lease</th>
-                   </tr>
-                 </thead>
-                 <tbody className="divide-y divide-gray-50">
-                   {[
-                     { f: 'Upfront Cost', x: 'Zero Deposit', o: 'High Down Payment' },
-                     { f: 'Maintenance', x: '100% Covered', o: 'Out of Pocket' },
-                     { f: 'Commitment', x: 'Monthly Renewal', o: '3-5 Year Minimum' },
-                     { f: 'Resale Value', x: 'Not Your Concern', o: 'Depreciating Asset' },
-                     { f: 'Vehicle Swap', x: 'Available Anytime', o: 'Not Possible' },
-                   ].map((row, i) => (
-                     <tr key={i} className="hover:bg-gray-50">
-                       <td className="p-6 font-bold text-gray-800">{row.f}</td>
-                       <td className="p-6 text-green-600 font-bold">{row.x}</td>
-                       <td className="p-6 text-gray-400 font-medium">{row.o}</td>
-                     </tr>
-                   ))}
-                 </tbody>
-               </table>
-             </div>
+                <div className="flex gap-6">
+                  <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2.5 shrink-0"></div>
+                  <div>
+                    <h4 className="font-bold text-gray-900 text-lg mb-2">Hire a van for larger, long-term work projects</h4>
+                    <p className="text-gray-500 text-sm font-light leading-relaxed">
+                      Renting a vehicle by the month for work projects as needed is a great option. XTASS's range of vans and SUVs is well suited for extended professional engagements.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex gap-6">
+                  <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2.5 shrink-0"></div>
+                  <div>
+                    <h4 className="font-bold text-gray-900 text-lg mb-2">Transportation solution while your vehicle is in the shop</h4>
+                    <p className="text-gray-500 text-sm font-light leading-relaxed">
+                      Whether you've had an accident or have a major repair on your personal vehicle, a long-term hire is a great way to get back on the road without missing a beat.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <button 
+                onClick={() => onRoleSelect('Customer')}
+                className="mt-16 bg-primary text-white font-bold py-5 px-12 rounded-2xl hover:bg-primary-hover transition-all shadow-2xl shadow-primary/20 text-lg"
+              >
+                Reserve Now
+              </button>
+            </div>
+            <div className="flex-1 min-h-[400px]">
+              <img 
+                src="https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?q=80&w=2070&auto=format&fit=crop" 
+                alt="Long-term rental service" 
+                className="w-full h-full object-cover"
+              />
+            </div>
           </div>
         </section>
 
-        {/* CORPORATE / ENTERPRISE SECTION */}
-        <section className="py-20 bg-gray-50">
-          <div className="max-w-7xl mx-auto px-4">
-            <div className="bg-primary rounded-3xl p-12 md:p-20 text-white flex flex-col md:flex-row items-center gap-16 relative overflow-hidden">
-               <div className="absolute inset-0 opacity-5 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
-               <div className="flex-1 relative z-10 text-left">
-                 <h2 className="text-3xl md:text-5xl font-display font-bold mb-6">Enterprise & Corporate Fleet</h2>
-                 <p className="text-xl text-white/70 mb-10 leading-relaxed">
-                   Need a dedicated fleet for your staff or consultants? We provide tailored long-term solutions for businesses of all sizes, including dedicated account managers and centralized billing.
-                 </p>
-                 <div className="flex flex-wrap gap-4">
-                   <button className="bg-accent text-primary font-bold py-4 px-10 rounded-xl hover:scale-105 transition-all">
-                     Get Corporate Quote
-                   </button>
-                   <button className="bg-white/10 text-white border border-white/20 font-bold py-4 px-10 rounded-xl hover:bg-white/20 transition-all">
-                     Download Fleet Guide
-                   </button>
-                 </div>
-               </div>
-               <div className="w-full md:w-1/3 relative z-10">
-                 <div className="bg-white/10 p-8 rounded-3xl border border-white/20 backdrop-blur-md">
-                   <BriefcaseIcon className="w-12 h-12 text-accent mb-6" />
-                   <div className="space-y-4">
-                     <div className="flex items-center text-sm">
-                       <div className="w-1.5 h-1.5 bg-accent rounded-full mr-3"></div>
-                       <span>Dedicated Fleet Manager</span>
-                     </div>
-                     <div className="flex items-center text-sm">
-                       <div className="w-1.5 h-1.5 bg-accent rounded-full mr-3"></div>
-                       <span>Monthly Usage Reports</span>
-                     </div>
-                     <div className="flex items-center text-sm">
-                       <div className="w-1.5 h-1.5 bg-accent rounded-full mr-3"></div>
-                       <span>Priority VIP Support</span>
-                     </div>
-                   </div>
-                 </div>
-               </div>
-            </div>
+        {/* COMPARISON SECTION */}
+        <section className="max-w-4xl mx-auto px-6 mb-24 text-center">
+          <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-10">Short-Term Lease vs. Long-Term Vehicle Hire</h2>
+          <div className="space-y-6 text-gray-600 font-light text-lg leading-relaxed">
+            <p>
+              Some vehicle dealerships may allow you to lease a vehicle for several months at a time, but terms tend to be limited and may include a minimum number of days and mileage restrictions.
+            </p>
+            <p>
+              With an XTASS long-term hire, you can rent a vehicle for as long as needed, whether it's several weeks, a month, or longer. Additionally, there is no mileage limit for most vehicle classes.
+            </p>
           </div>
         </section>
 
@@ -1566,230 +1982,277 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
   };
 
   const OneWayRentalPage: React.FC<{
+    setView: (v: string) => void;
     commonFooter: React.ReactNode;
     onRoleSelect: (role: Role) => void;
-  }> = ({ commonFooter, onRoleSelect }) => {
-    const [formData, setFormData] = useState({
-      pickupLocation: '',
-      dropoffLocation: '',
-      pickupDate: '',
-      pickupTime: '',
-      returnDate: '',
-      returnTime: '',
-      vehicleType: 'Economy',
-    });
-
-    const [estimatedPrice, setEstimatedPrice] = useState<string | null>(null);
-
-    const handleInputChange = (field: string, value: string) => {
-      setFormData(prev => ({ ...prev, [field]: value }));
-      // Simple logic to trigger a price estimate
-      if (formData.pickupLocation && value && field === 'dropoffLocation') {
-        setEstimatedPrice('GHS 450.00 - 850.00');
-      }
-    };
-
-    const vehicleTypes = [
-      { id: 'Economy', name: 'Economy', features: '4 Seats, 2 Bags', icon: <CarIcon className="w-8 h-8" /> },
-      { id: 'SUV', name: 'SUV', features: '7 Seats, 4 Bags', icon: <SearchIcon className="w-8 h-8" /> },
-      { id: 'Luxury', name: 'Luxury', features: 'Premium Interior', icon: <StarIcon className="w-8 h-8" /> },
-      { id: 'Business', name: 'Business', features: 'Professional Pick', icon: <BriefcaseIcon className="w-8 h-8" /> },
-    ];
-
+  }> = ({ setView, commonFooter, onRoleSelect }) => {
     return (
-      <main className="bg-gray-50 min-h-screen">
-        {/* HERO SECTION */}
-        <section className="bg-primary text-white py-20 relative overflow-hidden">
-          <div className="absolute inset-0 opacity-20 bg-cover bg-center" style={{backgroundImage: "url('https://images.unsplash.com/photo-1464851707681-f9d5fdaccea8?q=80&w=2070&auto=format&fit=crop')"}}></div>
-          <div className="max-w-7xl mx-auto px-4 text-center relative z-10">
-            <motion.h1 
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-4xl md:text-5xl font-display font-bold mb-4"
+      <main className="bg-[#f9fafb] min-h-screen font-sans text-left pb-10">
+        {/* Navigation / Breadcrumbs */}
+        <nav className="bg-white border-b border-gray-100 py-4">
+          <div className="max-w-6xl mx-auto px-6 flex items-center gap-2 text-sm text-gray-500 font-medium">
+            <button onClick={() => setView('home')} className="text-primary hover:underline border-b border-transparent hover:border-primary transition-all">Home</button>
+            <ChevronRightIcon className="w-3 h-3" />
+            <span className="text-primary font-medium">Car Rental</span>
+            <ChevronRightIcon className="w-3 h-3" />
+            <span className="text-gray-900 font-bold">One Way Car Rental</span>
+          </div>
+        </nav>
+
+        {/* HERO / HEADER SECTION */}
+        <div className="max-w-7xl mx-auto px-6 py-12 lg:py-20 flex flex-col lg:flex-row items-center justify-between gap-12">
+          <motion.div 
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="flex-1 lg:max-w-2xl"
+          >
+            <h1 className="text-4xl md:text-6xl font-display font-medium text-gray-900 leading-tight">
+              Take Advantage of Weekly & Monthly Rates
+            </h1>
+          </motion.div>
+          <motion.div 
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="flex-1 hidden lg:block"
+          >
+            <img 
+              src="https://images.unsplash.com/photo-1583121274602-3e2820c69888?q=80&w=2070&auto=format&fit=crop" 
+              alt="Premium Car" 
+              className="w-full h-auto drop-shadow-2xl"
+            />
+          </motion.div>
+        </div>
+
+        {/* BOOKING FORM SECTION */}
+        <section className="max-w-5xl mx-auto px-6 mb-24">
+          <div className="bg-white rounded-[2.5rem] shadow-2xl border border-gray-100 overflow-hidden">
+            {/* Urgency Banner */}
+            <div className="bg-[#e6f4f1] border-b border-[#c2e2dc] py-4 px-8 flex items-center justify-center gap-3">
+              <span className="text-primary">⌛</span>
+              <p className="text-sm font-bold text-gray-800">
+                Hurry! Availability is limited during peak season. Reserve now to lock in your rate.
+              </p>
+            </div>
+
+            <div className="p-8 md:p-14">
+              <div className="flex flex-col md:flex-row items-baseline justify-between gap-4 mb-10">
+                <div className="flex flex-col gap-1 items-start">
+                  <h2 className="text-3xl md:text-4xl font-display font-medium text-gray-900">Start a Long-Term Reservation</h2>
+                  <p className="text-sm font-medium text-gray-500">
+                    Renting for less than 28 days? <button onClick={() => setView('start-reservation')} className="text-primary hover:underline">Book at everyday low rates &rsaquo;</button>
+                  </p>
+                </div>
+                <button 
+                  onClick={() => setView('manage-reservation')}
+                  className="text-primary font-bold hover:underline underline-offset-4 decoration-accent decoration-2 text-sm"
+                >
+                  or View / Modify / Cancel Reservation
+                </button>
+              </div>
+
+              <div className="space-y-8">
+                <div className="text-left">
+                  <div className="flex justify-between items-end mb-3">
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] flex items-center gap-2">
+                       Pick-Up & Return Location (City or Airport)*
+                    </label>
+                    <span className="text-[10px] text-gray-300 font-normal italic uppercase tracking-tighter">* Required Field</span>
+                  </div>
+                  <div className="relative">
+                    <input 
+                      type="text" 
+                      placeholder="Provide a Location"
+                      className="w-full pl-6 pr-6 py-5 bg-gray-50/50 border border-gray-200 rounded-2xl focus:bg-white focus:ring-4 focus:ring-primary/5 focus:border-primary focus:outline-none text-xl font-medium transition-all shadow-sm"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-4 text-left px-2">
+                  <input 
+                    type="checkbox" 
+                    id="different-location-one-way"
+                    className="w-6 h-6 rounded border-gray-300 text-primary focus:ring-primary/20 cursor-pointer"
+                  />
+                  <label htmlFor="different-location-one-way" className="text-sm md:text-base font-bold text-gray-600 cursor-pointer flex items-center gap-2 group hover:text-primary transition-colors">
+                    Return to a different location 
+                    <div className="w-5 h-5 rounded-full bg-gray-200 flex items-center justify-center text-[10px] text-gray-500 font-bold">i</div>
+                  </label>
+                </div>
+
+                <button 
+                  onClick={() => onRoleSelect('Customer')}
+                  className="w-full md:w-auto px-16 py-6 bg-primary hover:bg-primary-hover text-white font-bold rounded-2xl shadow-2xl shadow-primary/20 transition-all text-xl"
+                >
+                  Search / Book Now
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* KEY FEATURES SECTION */}
+        <section className="max-w-7xl mx-auto px-6 mb-24">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* 28 Day Hire Rates */}
+            <div className="bg-white p-10 rounded-3xl border border-gray-100 shadow-sm flex flex-col items-center text-center group hover:shadow-xl transition-all">
+              <div className="w-16 h-16 bg-primary/5 rounded-2xl flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-all transform -rotate-3 group-hover:rotate-0">
+                <CalendarIcon className="w-8 h-8" />
+              </div>
+              <h3 className="text-xl font-display font-bold text-gray-900 mb-4">28 Day Hire Rates</h3>
+              <p className="text-gray-500 text-sm leading-relaxed font-light">
+                Long-term hire rates begin with rental amounting to more than 28 days.
+              </p>
+            </div>
+
+            {/* Unlimited Mileage */}
+            <div className="bg-white p-10 rounded-3xl border border-gray-100 shadow-sm flex flex-col items-center text-center group hover:shadow-xl transition-all">
+              <div className="w-16 h-16 bg-primary/5 rounded-2xl flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-all transform rotate-3 group-hover:rotate-0">
+                <TrophyIcon className="w-8 h-8" />
+              </div>
+              <h3 className="text-xl font-display font-bold text-gray-900 mb-4">Unlimited Mileage</h3>
+              <p className="text-gray-500 text-sm leading-relaxed font-light">
+                While some providers may limit you on mileage, there is no mileage limit for most vehicle classes on our long-term hires.
+              </p>
+            </div>
+
+            {/* Multiple Locations */}
+            <div className="bg-white p-10 rounded-3xl border border-gray-100 shadow-sm flex flex-col items-center text-center group hover:shadow-xl transition-all">
+              <div className="w-16 h-16 bg-primary/5 rounded-2xl flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-all transform -rotate-3 group-hover:rotate-0">
+                <MapPinIcon className="w-8 h-8" />
+              </div>
+              <h3 className="text-xl font-display font-bold text-gray-900 mb-4">Multiple Locations</h3>
+              <p className="text-gray-500 text-sm leading-relaxed font-light">
+                With operations across Ghana's major airports and cities, you're sure to find a branch near you.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* POPULAR VEHICLE TYPES */}
+        <section className="bg-white py-24 mb-24">
+          <div className="max-w-7xl mx-auto px-6 text-center">
+            <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-4">Popular Long-Term Hire Vehicle Types</h2>
+            <p className="text-gray-500 max-w-2xl mx-auto font-light text-lg mb-10">
+              From compact sedans to spacious SUVs and vans, we offer a large range of reliable vehicles to suit your long-term hire needs.
+            </p>
+            <button 
+              onClick={() => onRoleSelect('Customer')}
+              className="py-4 px-10 border-2 border-primary text-primary font-bold rounded-full hover:bg-primary hover:text-white transition-all uppercase tracking-widest text-xs mb-16"
             >
-              One-Way Car Rental
-            </motion.h1>
-            <p className="text-xl text-white/80 max-w-2xl mx-auto">
-              Pick up your ride in one city and drop it off in another. Total travel flexibility for your next big move or cross-country road trip.
+              View All Hire Vehicles
+            </button>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-left">
+              {[
+                { 
+                  type: 'Sedan', 
+                  suitable: '1–3 passengers. Ideal for solo business travelers, couples, or point-to-point city transfers.',
+                  img: 'https://images.unsplash.com/photo-1550355291-bbee04a92027?q=80&w=2072&auto=format&fit=crop'
+                },
+                { 
+                  type: 'SUV', 
+                  suitable: '1–4 passengers with luggage. Well suited for airport transfers with large bags or small family groups.',
+                  img: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=2070&auto=format&fit=crop'
+                },
+                { 
+                  type: 'Van / Minivan', 
+                  suitable: '5–8 passengers. Ideal for group travel, family trips, and corporate team transfers.',
+                  img: 'https://images.unsplash.com/photo-1549411223-28956903d3f9?q=80&w=2074&auto=format&fit=crop'
+                }
+              ].map((v, i) => (
+                <div key={i} className="group cursor-pointer">
+                  <div className="h-48 overflow-hidden rounded-2xl mb-6">
+                    <img src={v.img} alt={v.type} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                  </div>
+                  <h3 className="text-2xl font-display font-bold text-gray-900 mb-2">{v.type}</h3>
+                  <p className="text-gray-500 text-sm font-light leading-relaxed">{v.suitable}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* REASONS TO HIRE SECTION */}
+        <section className="max-w-7xl mx-auto px-6 mb-24">
+          <div className="bg-white rounded-[3rem] border border-gray-100 shadow-xl overflow-hidden flex flex-col lg:flex-row">
+            <div className="flex-1 p-10 md:p-20 text-left">
+              <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-8">Reasons to Hire a Vehicle Long-Term</h2>
+              <p className="text-gray-500 mb-10 font-light text-lg">There are several common reasons for hiring a vehicle long term:</p>
+              
+              <div className="space-y-10">
+                <div className="flex gap-6">
+                  <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2.5 shrink-0"></div>
+                  <div>
+                    <h4 className="font-bold text-gray-900 text-lg mb-2">Preserve the value of your personal vehicle</h4>
+                    <p className="text-gray-500 text-sm font-light leading-relaxed">
+                      Taking an extended trip or heading to a secondary residence for the season? Hiring a vehicle for the duration of your trip prevents you from having to put mileage on your personal vehicle and reduces wear and tear.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex gap-6">
+                  <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2.5 shrink-0"></div>
+                  <div>
+                    <h4 className="font-bold text-gray-900 text-lg mb-2">Hire a van for larger, long-term work projects</h4>
+                    <p className="text-gray-500 text-sm font-light leading-relaxed">
+                      Renting a vehicle by the month for work projects as needed is a great option. XTASS's range of vans and SUVs is well suited for extended professional engagements.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex gap-6">
+                  <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2.5 shrink-0"></div>
+                  <div>
+                    <h4 className="font-bold text-gray-900 text-lg mb-2">Transportation solution while your vehicle is in the shop</h4>
+                    <p className="text-gray-500 text-sm font-light leading-relaxed">
+                      Whether you've had an accident or have a major repair on your personal vehicle, a long-term hire is a great way to get back on the road without missing a beat.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <button 
+                onClick={() => onRoleSelect('Customer')}
+                className="mt-16 bg-primary text-white font-bold py-5 px-12 rounded-2xl hover:bg-primary-hover transition-all shadow-2xl shadow-primary/20 text-lg"
+              >
+                Reserve Now
+              </button>
+            </div>
+            <div className="flex-1 min-h-[400px]">
+              <img 
+                src="https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?q=80&w=2070&auto=format&fit=crop" 
+                alt="Long-term rental service" 
+                className="w-full h-full object-cover"
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* COMPARISON SECTION */}
+        <section className="max-w-4xl mx-auto px-6 mb-24 text-center">
+          <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-10">Short-Term Lease vs. Long-Term Vehicle Hire</h2>
+          <div className="space-y-6 text-gray-600 font-light text-lg leading-relaxed">
+            <p>
+              Some vehicle dealerships may allow you to lease a vehicle for several months at a time, but terms tend to be limited and may include a minimum number of days and mileage restrictions.
+            </p>
+            <p>
+              With an XTASS long-term hire, you can rent a vehicle for as long as needed, whether it's several weeks, a month, or longer. Additionally, there is no mileage limit for most vehicle classes.
             </p>
           </div>
         </section>
 
-        {/* BOOKING FORM */}
-        <section className="py-12 -mt-12 relative z-10">
-          <div className="max-w-6xl mx-auto px-4 flex flex-col lg:flex-row gap-8">
-            <div className="flex-1 bg-white rounded-2xl shadow-xl p-8 md:p-10">
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 text-left">
-                  <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">From: Pickup Location</label>
-                    <div className="relative">
-                      <MapPinIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                      <input 
-                        type="text" 
-                        placeholder="Start City or Station"
-                        className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:outline-none"
-                        value={formData.pickupLocation}
-                        onChange={(e) => handleInputChange('pickupLocation', e.target.value)}
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">To: Drop-off Location</label>
-                     <div className="relative">
-                      <MapPinIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary" />
-                      <input 
-                        type="text" 
-                        placeholder="Destination City or Station"
-                        className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:outline-none"
-                        value={formData.dropoffLocation}
-                        onChange={(e) => handleInputChange('dropoffLocation', e.target.value)}
-                      />
-                    </div>
-                  </div>
-               </div>
-
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 text-left">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-2">Pickup Date</label>
-                      <input type="date" className="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-2">Time</label>
-                      <input type="time" className="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl" />
-                    </div>
-                  </div>
-                   <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-2">Drop-off Date</label>
-                      <input type="date" className="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-2">Time</label>
-                      <input type="time" className="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl" />
-                    </div>
-                  </div>
-               </div>
-
-               <div className="mb-10 text-left">
-                  <h4 className="text-sm font-bold text-gray-700 mb-4 uppercase tracking-widest">Select Your Vehicle</h4>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    {vehicleTypes.map(v => (
-                      <button 
-                        key={v.id}
-                        type="button"
-                        onClick={() => handleInputChange('vehicleType', v.id)}
-                        className={`p-6 border-2 rounded-2xl flex flex-col items-center transition-all ${formData.vehicleType === v.id ? 'border-primary bg-primary/5 text-primary' : 'border-gray-100 hover:border-primary/20'}`}
-                      >
-                        {v.icon}
-                        <span className="font-bold mt-2">{v.name}</span>
-                        <span className="text-[10px] opacity-70">{v.features}</span>
-                      </button>
-                    ))}
-                  </div>
-               </div>
-
-               <button 
-                onClick={() => onRoleSelect('Customer')}
-                className="w-full bg-primary text-white font-bold py-5 rounded-2xl shadow-xl hover:bg-primary-hover transition-all text-lg"
-               >
-                 Book One-Way Ride
-               </button>
-            </div>
-
-            {/* SIDEBAR SUMMARY */}
-            <div className="w-full lg:w-80 space-y-6">
-               {estimatedPrice && (
-                 <motion.div 
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  className="bg-accent p-6 rounded-2xl text-primary shadow-lg"
-                 >
-                    <p className="text-xs font-bold uppercase tracking-widest mb-1 opacity-70">Estimated Price</p>
-                    <p className="text-3xl font-black">{estimatedPrice}</p>
-                    <p className="text-[10px] mt-2 opacity-60">*Final price based on distance and vehicle availability.</p>
-                 </motion.div>
-               )}
-
-               <div className="bg-white p-6 rounded-2xl shadow-md border border-gray-100">
-                  <h4 className="font-bold text-gray-800 mb-4 text-left">Why One-Way?</h4>
-                  <ul className="space-y-4">
-                    {[
-                      { icon: <CheckCircleIcon className="w-4 h-4 text-green-500" />, text: 'Intercity Travel' },
-                      { icon: <CheckCircleIcon className="w-4 h-4 text-green-500" />, text: 'Airport Relocation' },
-                      { icon: <CheckCircleIcon className="w-4 h-4 text-green-500" />, text: 'No-Return Logistics' },
-                      { icon: <CheckCircleIcon className="w-4 h-4 text-green-500" />, text: 'Flexible Touring' },
-                    ].map((item, i) => (
-                      <li key={i} className="flex items-center text-sm text-gray-600 font-medium">
-                        {item.icon}
-                        <span className="ml-2">{item.text}</span>
-                      </li>
-                    ))}
-                  </ul>
-               </div>
-
-               <div className="bg-primary p-6 rounded-2xl text-white shadow-xl text-left">
-                  <ShieldIcon className="w-8 h-8 text-accent mb-4" />
-                  <h4 className="font-bold mb-2">Fully Insured</h4>
-                  <p className="text-xs text-white/70 leading-relaxed">All one-way trips include comprehensive roadside assistance across all major regions in Ghana.</p>
-               </div>
-            </div>
-          </div>
-        </section>
-
-        {/* LOGIC EXPLANATION */}
-        <section className="py-20 bg-white">
-          <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center gap-16">
-            <div className="flex-1 text-left">
-              <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-800 mb-6">How Our One-Way Rental Works</h2>
-              <p className="text-gray-600 mb-8 leading-relaxed">
-                Sometimes your journey doesn't bring you back to where you started. Whether it's a move to Kumasi from Accra or a business trip ending at a different regional hub, we've optimized our fleet redistribution to support your linear travels.
-              </p>
-              <div className="space-y-6">
-                {[
-                  { title: 'Distance-Based Pricing', desc: 'Our smart algorithm calculates the route distance and local vehicle demand to give you the fairest possible rate.' },
-                  { title: 'Wide Network Support', desc: 'Drop off at any of our 15+ hubs nationwide. No extra "return trip" fees for standard routes.' },
-                  { title: '24/7 Availability', desc: 'Book your one-way ride any time. Our system adjusts for fleet balance in real-time.' },
-                ].map((item, i) => (
-                  <div key={i} className="flex gap-4 text-left">
-                    <div className="h-2 w-2 bg-accent rounded-full mt-2 shrink-0"></div>
-                    <div>
-                      <h4 className="font-bold text-gray-800">{item.title}</h4>
-                      <p className="text-sm text-gray-500">{item.desc}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="flex-1">
-               <img 
-                src="https://images.unsplash.com/photo-1502877338535-766e1452684a?q=80&w=2072&auto=format&fit=crop" 
-                alt="Car on Road" 
-                className="rounded-3xl shadow-2xl"
-               />
-            </div>
-          </div>
-        </section>
-
-        {/* FAQ */}
-        <section className="py-20 bg-gray-50">
-          <div className="max-w-4xl mx-auto px-4">
-             <div className="text-center mb-12">
-               <h2 className="text-3xl font-display font-bold text-gray-800">One-Way Rental FAQs</h2>
-             </div>
-             <div className="space-y-4 text-left">
-               {[
-                 { q: 'Is there an extra fee for one-way?', a: 'Standard regional routes have clear, fixed pricing. Long-distance bespoke routes may include a small redistribution fee which is clearly shown in your quote.' },
-                 { q: 'Can I change my drop-off location mid-trip?', a: 'Yes, but please contact our 24/7 support. Changing the destination may result in a recalculation of the total price.' },
-                 { q: 'What vehicles are eligible?', a: 'All our vehicles from Economy to Luxury are available for one-way rentals across major city routes.' },
-               ].map((item, i) => (
-                 <div key={i} className="bg-white p-6 rounded-xl border border-gray-100">
-                    <h4 className="font-bold text-gray-800 mb-2">{item.q}</h4>
-                    <p className="text-sm text-gray-600">{item.a}</p>
-                 </div>
-               ))}
-             </div>
-          </div>
+        {/* FOOTER SECTION: SEARCH EVERYDAY LOW RATES */}
+        <section className="max-w-5xl mx-auto px-6 py-16 border-t border-gray-100 text-center">
+          <h2 className="text-3xl font-display font-bold text-gray-900 mb-4">Search Our Everyday Low Rates</h2>
+          <p className="text-gray-500 font-light text-lg mb-10">
+            If none of our current promotions fit your needs, start a new reservation to view our standard low rates.
+          </p>
+          <button 
+            onClick={() => setView('start-reservation')}
+            className="bg-primary text-white font-bold py-5 px-14 rounded-2xl hover:bg-primary-hover transition-all shadow-xl shadow-primary/20"
+          >
+            Start a New Reservation
+          </button>
         </section>
 
         {commonFooter}
@@ -1798,175 +2261,270 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
   };
 
   const BusinessSolutionsPage: React.FC<{
+    setView: (v: string) => void;
     commonFooter: React.ReactNode;
     onRoleSelect: (role: Role) => void;
-  }> = ({ commonFooter, onRoleSelect }) => {
+  }> = ({ setView, commonFooter, onRoleSelect }) => {
     return (
-      <main className="bg-gray-50 min-h-screen">
+      <main className="bg-[#f9fafb] min-h-screen font-sans text-left">
+        {/* Navigation / Breadcrumbs */}
+        <nav className="bg-white border-b border-gray-100 py-4">
+          <div className="max-w-6xl mx-auto px-6 flex items-center gap-2 text-sm text-gray-500 font-medium">
+            <button onClick={() => setView('home')} className="text-primary hover:underline border-b border-transparent hover:border-primary transition-all">Home</button>
+            <ChevronRightIcon className="w-3 h-3" />
+            <span className="text-primary font-medium">Car Rental</span>
+            <ChevronRightIcon className="w-3 h-3" />
+            <span className="text-gray-900 font-bold">Solutions for Business</span>
+          </div>
+        </nav>
+
         {/* HERO SECTION */}
-        <section className="bg-[#0A192F] text-white py-24 relative overflow-hidden">
-          <div className="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069&auto=format&fit=crop')] bg-cover bg-center"></div>
-          <div className="max-w-7xl mx-auto px-4 text-center relative z-10">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="inline-block px-4 py-1 bg-accent text-primary text-xs font-black uppercase tracking-widest rounded mb-6"
-            >
-              Enterprise Excellence
-            </motion.div>
-            <h1 className="text-4xl md:text-6xl font-display font-bold mb-6">Solutions for Business</h1>
-            <p className="text-xl text-white/70 max-w-2xl mx-auto mb-10 leading-relaxed">
-              Scalable, efficient, and tailored transportation solutions designed to drive your business forward. Centralize your logistics and empower your team.
-            </p>
-            <div className="flex justify-center flex-wrap gap-4">
-              <button onClick={() => onRoleSelect('Customer')} className="bg-primary text-white font-bold py-4 px-10 rounded-xl hover:bg-primary-hover transition-all">
-                Open Business Account
-              </button>
-              <button className="bg-white/10 text-white border border-white/20 font-bold py-4 px-10 rounded-xl hover:bg-white/20 transition-all">
-                Request a Demo
-              </button>
+        <section className="relative h-[600px] overflow-hidden">
+          <div className="absolute inset-0 z-0">
+            <img 
+              src="https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069&auto=format&fit=crop" 
+              alt="Business Transport" 
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-black/60"></div>
+          </div>
+          <div className="max-w-7xl mx-auto px-6 h-full flex items-center relative z-10 text-white">
+            <div className="max-w-3xl">
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="inline-block px-4 py-1.5 bg-primary text-white text-[10px] font-black uppercase tracking-widest rounded mb-6"
+              >
+                Business Transport
+              </motion.div>
+              <motion.h1 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className="text-4xl md:text-6xl font-display font-medium leading-tight mb-6"
+              >
+                Join Our Business Transport Programme
+              </motion.h1>
+              <motion.p 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="text-lg md:text-xl text-white/80 font-light mb-10 leading-relaxed max-w-2xl"
+              >
+                XTASS offers businesses unmatched value with competitive rates, a professionally managed fleet, and thousands of airport and neighbourhood service locations.
+              </motion.p>
+              <motion.button 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                onClick={() => onRoleSelect('Customer')}
+                className="bg-primary hover:bg-primary-hover text-white font-bold py-5 px-12 rounded-2xl shadow-2xl transition-all text-lg"
+              >
+                Sign Up Now
+              </motion.button>
             </div>
           </div>
         </section>
 
-        {/* VALUE PROPOSITION */}
-        <section className="py-20">
-          <div className="max-w-7xl mx-auto px-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-left">
+        {/* GET STARTED IN 3 SIMPLE STEPS */}
+        <section className="py-24 bg-white border-b border-gray-100">
+          <div className="max-w-7xl mx-auto px-6">
+            <h2 className="text-3xl md:text-4xl font-display font-bold text-center text-gray-900 mb-16">Get Started in 3 Simple Steps</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
               {[
-                { icon: <ShieldIcon className="w-10 h-10 text-primary" />, title: 'Reliability & Priority', desc: 'Guaranteed vehicle availability and priority support for all corporate bookings.' },
-                { icon: <BarChart2Icon className="w-10 h-10 text-primary" />, title: 'Centralized Billing', desc: 'Stop managing individual reimbursements. Get monthly consolidated invoices for your entire team.' },
-                { icon: <ClockIcon className="w-10 h-10 text-primary" />, title: 'Scalable Growth', desc: 'From a single consultant to a multi-city sales force, our solutions grow with your business.' },
-              ].map((item, i) => (
-                <div key={i} className="bg-white p-10 rounded-3xl shadow-lg border border-gray-100 hover:-translate-y-2 transition-all">
-                  <div className="bg-primary/5 w-20 h-20 rounded-2xl flex items-center justify-center mb-8">
-                    {item.icon}
+                { step: '1. Sign Up Today', detail: 'Complete our simple form to tell us about your business.' },
+                { step: '2. Get Started Fast', detail: 'Qualified businesses receive an account number so you can start booking almost immediately.' },
+                { step: '3. Start Saving Now', detail: 'Get up to 20% off base rates with unlimited mileage on most vehicle classes.' },
+              ].map((s, i) => (
+                <div key={i} className="flex flex-col items-center text-center">
+                  <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center text-primary font-display font-black text-2xl mb-8 border border-gray-100 shadow-sm">
+                    {i + 1}
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-800 mb-4">{item.title}</h3>
-                  <p className="text-gray-600 leading-relaxed">{item.desc}</p>
+                  <h3 className="text-xl font-bold text-gray-900 mb-4">{s.step}</h3>
+                  <p className="text-gray-500 font-light leading-relaxed">{s.detail}</p>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* SOLUTIONS GRID */}
-        <section className="py-20 bg-white">
-          <div className="max-w-7xl mx-auto px-4">
-            <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8 text-left">
-               <div>
-                 <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-800">Designed for Every Organization</h2>
-                 <p className="text-gray-500 mt-2">Tailored packages that fit your operational rhythm.</p>
-               </div>
-               <div className="flex bg-gray-100 p-1 rounded-xl">
-                 <button className="px-6 py-2 bg-white text-primary font-bold rounded-lg shadow-sm">Subscription</button>
-                 <button className="px-6 py-2 text-gray-500 font-bold">On-Demand</button>
-               </div>
-            </div>
+        {/* RESERVE WITH CORPORATE ACCOUNT FORM */}
+        <section className="py-24 max-w-5xl mx-auto px-6">
+          <div className="bg-white rounded-[2.5rem] shadow-2xl border border-gray-100 overflow-hidden text-left">
+            <div className="p-8 md:p-14">
+              <div className="flex flex-col md:flex-row items-baseline justify-between gap-4 mb-4">
+                <h2 className="text-3xl md:text-4xl font-display font-medium text-gray-900">Reserve a Vehicle with Your Corporate Account</h2>
+                <button 
+                  onClick={() => setView('manage-reservation')}
+                  className="text-primary font-bold hover:underline underline-offset-4 decoration-accent decoration-2 text-sm"
+                >
+                  or View / Modify / Cancel Reservation
+                </button>
+              </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-left">
-              {[
-                { title: 'SME Starter', target: 'Teams up to 10', features: ['Monthly Invoicing', 'Standard Fleet Access', '3 Users'], price: 'Custom' },
-                { title: 'Corporate Pro', target: 'Teams up to 50', features: ['Priority Dispatch', 'Premium Fleet', '10 Users', 'Dedicated Mgr'], price: 'Custom' },
-                { title: 'Logistics Hub', target: 'Ops & Deliveries', features: ['Bulk Booking API', 'Van/Truck Options', 'Unlimited Users'], price: 'Custom' },
-                { title: 'Executive Elite', target: 'VIP Travel', features: ['Chauffeur Service', 'Luxury Fleet Only', 'Airport Concierge'], price: 'Custom' },
-              ].map((plane, i) => (
-                <div key={i} className="bg-gray-50 p-8 rounded-3xl border border-gray-100 flex flex-col group hover:bg-primary transition-all duration-500">
-                  <h4 className="text-xl font-bold text-gray-800 group-hover:text-white mb-2">{plane.title}</h4>
-                  <p className="text-xs font-black text-primary group-hover:text-accent uppercase tracking-widest mb-6">{plane.target}</p>
-                  <ul className="space-y-3 mb-10 flex-1">
-                    {plane.features.map((f, j) => (
-                      <li key={j} className="flex items-center text-sm text-gray-600 group-hover:text-white/80">
-                        <CheckCircleIcon className="w-4 h-4 text-primary group-hover:text-accent mr-2" />
-                        {f}
-                      </li>
-                    ))}
-                  </ul>
-                  <button className="w-full bg-white text-primary font-bold py-3 rounded-xl shadow-md border border-gray-100 group-hover:bg-accent group-hover:text-primary transition-all">
-                    Contact Sales
+              <div className="space-y-8 mt-10">
+                <div className="text-left">
+                  <div className="flex justify-between items-end mb-3">
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] flex items-center gap-2">
+                       Pick-Up & Return Location (City or Airport)*
+                    </label>
+                    <span className="text-[10px] text-gray-300 font-normal italic uppercase tracking-tighter">* Required Field</span>
+                  </div>
+                  <div className="relative">
+                    <input 
+                      type="text" 
+                      placeholder="Provide a Location"
+                      className="w-full pl-6 pr-6 py-5 bg-gray-50/50 border border-gray-200 rounded-2xl focus:bg-white focus:ring-4 focus:ring-primary/5 focus:border-primary focus:outline-none text-xl font-medium transition-all shadow-sm"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-4 text-left px-2">
+                  <input 
+                    type="checkbox" 
+                    id="different-location-corporate"
+                    className="w-6 h-6 rounded border-gray-300 text-primary focus:ring-primary/20 cursor-pointer"
+                  />
+                  <label htmlFor="different-location-corporate" className="text-sm md:text-base font-bold text-gray-600 cursor-pointer flex items-center gap-2 group hover:text-primary transition-colors">
+                    Return to a different location 
+                    <div className="w-5 h-5 rounded-full bg-gray-200 flex items-center justify-center text-[10px] text-gray-500 font-bold">i</div>
+                  </label>
+                </div>
+
+                <button 
+                  onClick={() => onRoleSelect('Customer')}
+                  className="w-full md:w-auto px-16 py-6 bg-primary hover:bg-primary-hover text-white font-bold rounded-2xl shadow-2xl shadow-primary/20 transition-all text-xl"
+                >
+                  Search / Book Now
+                </button>
+
+                <div className="pt-8 border-t border-gray-50 flex flex-col md:flex-row md:items-center justify-between gap-4 text-sm font-medium">
+                  <p className="text-gray-500">
+                    Can't find your Corporate Account Number? Contact your Travel Management Team.
+                  </p>
+                  <button onClick={() => onRoleSelect('Customer')} className="text-primary font-bold hover:underline">
+                    Not yet enrolled? Sign up now.
                   </button>
                 </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* EXCLUSIVE BENEFITS */}
+        <section className="bg-white py-24 border-y border-gray-100">
+          <div className="max-w-7xl mx-auto px-6 text-center">
+            <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-16">Exclusive Benefits for Your Business</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
+              {[
+                { icon: <GlobeIcon className="w-8 h-8" />, title: 'Wide Coverage', detail: 'Thousands of locations, whether around the corner or across the globe.' },
+                { icon: <CarIcon className="w-8 h-8" />, title: 'Diverse Fleet', detail: 'Diverse fleet of reliable, well-maintained vehicles.' },
+                { icon: <AwardIcon className="w-8 h-8" />, title: 'Competitive Rates', detail: 'Competitive rates with contracted business pricing honoured globally.' },
+                { icon: <UserCheckIcon className="w-8 h-8" />, title: 'Exceptional Service', detail: 'Exceptional service from a team that knows your business.' },
+                { icon: <TrendingDownIcon className="w-8 h-8" />, title: 'Cost-Effective', detail: 'A cost-effective alternative to mileage reimbursement that offers significant savings per trip.' },
+              ].map((b, i) => (
+                <div key={i} className="flex flex-col items-center group">
+                  <div className="w-16 h-16 bg-primary/5 rounded-2xl flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-all transform rotate-3 group-hover:rotate-0">
+                    {b.icon}
+                  </div>
+                  <h4 className="text-lg font-bold text-gray-900 mb-3">{b.title}</h4>
+                  <p className="text-gray-500 text-xs leading-relaxed font-light">{b.detail}</p>
+                </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* FEATURES / DASHBOARD */}
-        <section className="py-24 bg-gray-50 overflow-hidden">
-          <div className="max-w-7xl mx-auto px-4 flex flex-col lg:flex-row items-center gap-16">
-            <div className="flex-1 text-left relative">
-               <div className="absolute -top-10 -left-10 w-40 h-40 bg-accent/20 rounded-full blur-3xl"></div>
-               <h2 className="text-3xl md:text-5xl font-display font-bold text-gray-800 mb-8 relative z-10">Centralized Control for Your Team</h2>
-               <div className="space-y-8 relative z-10">
-                 {[
-                   { title: 'Master Dashboard', desc: 'Real-time visibility into all active bookings and historical trip data across your organization.' },
-                   { title: 'Advanced Reporting', desc: 'Export detailed cost-tracking and usage reports for seamless internal accounting.' },
-                   { title: 'Team Management', desc: 'Invite team members, set budget limits, and manage permissions from a single interface.' },
-                 ].map((item, i) => (
-                   <div key={i} className="flex gap-6">
-                      <div className="w-12 h-12 bg-white rounded-xl shadow-md flex items-center justify-center shrink-0">
-                        <span className="font-display font-bold text-primary">{i+1}</span>
-                      </div>
-                      <div>
-                        <h4 className="text-xl font-bold text-gray-800 mb-1">{item.title}</h4>
-                        <p className="text-gray-500 leading-relaxed">{item.desc}</p>
-                      </div>
-                   </div>
-                 ))}
-               </div>
-            </div>
-            <div className="flex-1 relative">
-               <div className="relative z-10 bg-white p-4 rounded-3xl shadow-2xl border border-gray-100">
-                  <img 
-                    src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2026&auto=format&fit=crop" 
-                    alt="Business Dashboard" 
-                    className="rounded-2xl"
-                  />
-               </div>
-               <div className="absolute -bottom-10 -right-10 bg-accent p-8 rounded-3xl shadow-xl hidden md:block">
-                  <p className="text-primary font-black text-4xl mb-1">99.9%</p>
-                  <p className="text-primary text-xs font-bold uppercase tracking-widest">Uptime & Reliability</p>
-               </div>
+        {/* INDUSTRY-LEADING PROGRAMME */}
+        <section className="py-24 bg-[#f9fafb]">
+          <div className="max-w-7xl mx-auto px-6 text-center">
+            <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-16">Industry-Leading Programme</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+              {/* Comprehensive Mobility Offerings */}
+              <div className="bg-white p-10 rounded-[2.5rem] border border-gray-100 shadow-sm flex flex-col justify-between group hover:shadow-xl transition-all text-left">
+                <div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-6 font-display">Comprehensive Mobility Offerings</h3>
+                  <p className="text-gray-500 text-sm font-light leading-relaxed mb-8">
+                    We're more than just transport. Our portfolio of solutions includes Truck Rental, Fleet Management, Carsharing, and Vanpooling. We'll listen to your business challenges, then customise a solution that meets your needs.
+                  </p>
+                </div>
+                <button className="w-fit bg-primary text-white font-bold py-3 px-8 rounded-xl hover:bg-primary-hover transition-all text-sm">
+                  Learn More
+                </button>
+              </div>
+
+              {/* Duty of Care */}
+              <div className="bg-white p-10 rounded-[2.5rem] border border-gray-100 shadow-sm flex flex-col justify-between group hover:shadow-xl transition-all text-left">
+                <div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-6 font-display">Duty of Care</h3>
+                  <p className="text-gray-500 text-sm font-light leading-relaxed mb-8">
+                    Customer safety is our top priority, and we want both you and your employees to feel confident when they travel. From our corporate infrastructure to our customer-first policies, we've got you covered.
+                  </p>
+                </div>
+                <button className="w-fit bg-primary text-white font-bold py-3 px-8 rounded-xl hover:bg-primary-hover transition-all text-sm">
+                  Learn More
+                </button>
+              </div>
+
+              {/* Business Transport Resource Centre */}
+              <div className="bg-white p-10 rounded-[2.5rem] border border-gray-100 shadow-sm flex flex-col justify-between group hover:shadow-xl transition-all text-left">
+                <div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-6 font-display">Business Transport Resource Centre</h3>
+                  <p className="text-gray-500 text-sm font-light leading-relaxed mb-8">
+                    Find a variety of articles, white papers and more to reference as you develop, rethink, and possibly revise your company's travel policies and programmes.
+                  </p>
+                </div>
+                <button className="w-fit bg-primary text-white font-bold py-3 px-8 rounded-xl hover:bg-primary-hover transition-all text-sm">
+                  Go Now
+                </button>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* CONSULTATION FORM */}
+        {/* MANAGEMENT TOOLS */}
         <section className="py-24 bg-white">
-          <div className="max-w-4xl mx-auto px-4 bg-primary rounded-[3rem] p-12 md:p-20 text-white shadow-2xl">
-             <div className="text-center mb-12">
-               <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">Request a Consultation</h2>
-               <p className="text-white/70">Tell us about your business needs and our enterprise team will reach out within 24 hours.</p>
-             </div>
-             <form className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
-               <div>
-                  <label className="block text-xs font-black uppercase tracking-widest mb-2 opacity-70">Company Name</label>
-                  <input type="text" className="w-full bg-white/10 border border-white/20 rounded-xl p-4 focus:bg-white/20 focus:outline-none transition-all" />
-               </div>
-               <div>
-                  <label className="block text-xs font-black uppercase tracking-widest mb-2 opacity-70">Business Email</label>
-                  <input type="email" className="w-full bg-white/10 border border-white/20 rounded-xl p-4 focus:bg-white/20 focus:outline-none transition-all" />
-               </div>
-               <div>
-                  <label className="block text-xs font-black uppercase tracking-widest mb-2 opacity-70">Contact Person</label>
-                  <input type="text" className="w-full bg-white/10 border border-white/20 rounded-xl p-4 focus:bg-white/20 focus:outline-none transition-all" />
-               </div>
-               <div>
-                  <label className="block text-xs font-black uppercase tracking-widest mb-2 opacity-70">Fleet Size Needed</label>
-                  <select className="w-full bg-white/10 border border-white/20 rounded-xl p-4 focus:bg-white/20 focus:outline-none transition-all appearance-none cursor-pointer">
-                    <option className="text-gray-800">1-5 Vehicles</option>
-                    <option className="text-gray-800">5-20 Vehicles</option>
-                    <option className="text-gray-800">20+ Vehicles</option>
-                  </select>
-               </div>
-               <div className="md:col-span-2">
-                  <label className="block text-xs font-black uppercase tracking-widest mb-2 opacity-70">Your Requirements</label>
-                  <textarea rows={4} className="w-full bg-white/10 border border-white/20 rounded-xl p-4 focus:bg-white/20 focus:outline-none transition-all"></textarea>
-               </div>
-               <button type="button" className="md:col-span-2 bg-accent text-primary font-black py-5 rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl text-lg uppercase tracking-widest">
-                 Submit Request
-               </button>
-             </form>
+          <div className="max-w-7xl mx-auto px-6">
+            <h2 className="text-3xl md:text-4xl font-display font-bold text-center text-gray-900 mb-16">Business Transport Programme Management Tools</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {[
+                { 
+                  title: 'Travel Management Tool', 
+                  desc: "Book and manage vehicle hires on behalf of your company's travelers.",
+                  img: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2026&auto=format&fit=crop'
+                },
+                { 
+                  title: 'Trip Optimiser — Rent or Reimburse?', 
+                  desc: 'Our complimentary tool allows you to quickly compare driving a rental versus a personal vehicle.',
+                  img: 'https://images.unsplash.com/photo-1554224155-1696413565d3?q=80&w=2070&auto=format&fit=crop'
+                },
+                { 
+                  title: 'Entertainment & Production Rentals', 
+                  desc: 'Vehicle and van rental for TV and film production, concerts, sporting events, and more.',
+                  img: 'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?q=80&w=2070&auto=format&fit=crop'
+                },
+                { 
+                  title: 'FBO Delivery Service', 
+                  desc: 'Vehicle service waiting for you at Fixed Base Operators across Ghana.',
+                  img: 'https://images.unsplash.com/photo-1549411223-28956903d3f9?q=80&w=2074&auto=format&fit=crop'
+                },
+              ].map((tool, i) => (
+                <div key={i} className="flex flex-col group cursor-pointer bg-gray-50 rounded-3xl overflow-hidden border border-gray-100 hover:shadow-2xl transition-all">
+                  <div className="h-48 overflow-hidden">
+                    <img src={tool.img} alt={tool.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                  </div>
+                  <div className="p-8 flex-1 flex flex-col justify-between items-start">
+                    <div>
+                      <h4 className="text-lg font-bold text-gray-900 mb-4 group-hover:text-primary transition-colors">{tool.title}</h4>
+                      <p className="text-gray-500 text-sm font-light leading-relaxed mb-8">{tool.desc}</p>
+                    </div>
+                    <button className="bg-primary text-white font-bold py-3 px-6 rounded-xl hover:bg-primary-hover transition-all text-xs">
+                      Learn More
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 
@@ -1980,327 +2538,148 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
     onRoleSelect: (role: Role) => void;
     commonFooter: React.ReactNode;
   }> = ({ setView, onRoleSelect, commonFooter }) => {
-    const [lookupMode, setLookupMode] = useState(true);
-    const [confirmationNo, setConfirmationNo] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
-    const [booking, setBooking] = useState<any>(null);
-    const [isEditing, setIsEditing] = useState(false);
-    const [showCancelConfirm, setShowCancelConfirm] = useState(false);
-
-    const handleLookup = (e: React.FormEvent) => {
-      e.preventDefault();
-      setIsLoading(true);
-      // Simulate API call
-      setTimeout(() => {
-        setBooking({
-          id: confirmationNo || 'XT-8829-GH',
-          lastName: lastName || 'Doe',
-          pickupLocation: 'Kotoka International Airport (ACC)',
-          dropoffLocation: 'East Legon, Accra',
-          pickupDate: '2025-06-15',
-          pickupTime: '10:00 AM',
-          returnDate: '2025-06-20',
-          returnTime: '02:00 PM',
-          vehicle: 'SUV (Toyota Highlander)',
-          status: 'Confirmed',
-          total: 'GHS 2,450.00'
-        });
-        setIsLoading(false);
-        setLookupMode(false);
-      }, 1500);
-    };
-
-    const handleCancel = () => {
-      setIsLoading(true);
-      setTimeout(() => {
-        setBooking(prev => ({ ...prev, status: 'Cancelled' }));
-        setIsLoading(false);
-        setShowCancelConfirm(false);
-      }, 1000);
-    };
-
     return (
-      <main className="bg-gray-50 min-h-screen">
-        {/* HERO */}
-        <section className="bg-[#1A0006] text-white py-16">
-          <div className="max-w-7xl mx-auto px-4 text-center">
-            <h1 className="text-3xl md:text-4xl font-display font-bold">Manage Your Reservation</h1>
-            <p className="text-white/70 mt-2">View, modify, or cancel your booking with ease.</p>
+      <main className="bg-[#f9fafb] min-h-screen font-sans">
+        {/* Navigation / Breadcrumbs */}
+        <nav className="bg-white border-b border-gray-100 py-4">
+          <div className="max-w-6xl mx-auto px-6 flex items-center gap-2 text-sm text-gray-500 font-medium">
+            <button onClick={() => setView('home')} className="text-primary hover:underline border-b border-transparent hover:border-primary transition-all">Home</button>
+            <ChevronRightIcon className="w-3 h-3" />
+            <button onClick={() => setView('start-reservation')} className="text-primary hover:underline border-b border-transparent hover:border-primary transition-all">Reserve</button>
+            <ChevronRightIcon className="w-3 h-3" />
+            <span className="text-gray-900 font-bold">Modify a Car Rental Reservation</span>
           </div>
-        </section>
+        </nav>
 
-        <section className="py-12 -mt-8 relative z-10">
-          <div className="max-w-3xl mx-auto px-4">
-            {lookupMode ? (
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="bg-white rounded-2xl shadow-xl p-8 md:p-10"
+        {/* Header Section */}
+        <div className="max-w-6xl mx-auto px-6 pt-12 md:pt-20">
+          <div className="flex flex-col md:flex-row md:items-baseline gap-4 mb-4">
+            <h1 className="text-3xl md:text-5xl font-display font-medium text-gray-900">
+              View / Modify / Cancel Reservation
+            </h1>
+            <div className="flex items-center gap-2">
+              <span className="text-gray-500 text-sm italic">or</span>
+              <button 
+                onClick={() => setView('start-reservation')}
+                className="text-primary font-bold hover:underline underline-offset-4 decoration-2 decoration-primary/30"
               >
-                <div className="flex items-center space-x-4 mb-8">
-                  <div className="bg-primary/10 p-3 rounded-full">
-                    <SearchIcon className="w-6 h-6 text-primary" />
-                  </div>
-                  <div>
-                    <h2 className="text-xl font-bold text-gray-800">Find Your Booking</h2>
-                    <p className="text-gray-500 text-sm">Enter your details to access your reservation.</p>
-                  </div>
+                Reserve a Vehicle
+              </button>
+            </div>
+          </div>
+          <p className="text-lg text-gray-600 font-light mt-8 mb-10">
+            First, which of these describes your rental?
+          </p>
+
+          {/* Option Cards */}
+          <div className="grid grid-cols-1 gap-6 max-w-4xl">
+            {/* Option 1 */}
+            <motion.div 
+              whileHover={{ scale: 1.01, backgroundColor: '#ffffff' }}
+              className="bg-white border border-gray-100 p-8 rounded-2xl flex flex-col md:flex-row md:items-center justify-between shadow-sm hover:shadow-xl transition-all cursor-pointer group"
+            >
+              <div className="flex items-center gap-6 mb-4 md:mb-0">
+                <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center text-gray-900 group-hover:bg-primary group-hover:text-white transition-all transform -rotate-3 group-hover:rotate-0">
+                  <CarIcon className="w-8 h-8" />
                 </div>
-
-                <form onSubmit={handleLookup} className="space-y-6">
-                  <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">Confirmation Number</label>
-                    <input 
-                      type="text" 
-                      placeholder="e.g. XT-123456"
-                      className="w-full p-4 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary/20 focus:outline-none font-mono uppercase"
-                      value={confirmationNo}
-                      onChange={(e) => setConfirmationNo(e.target.value.toUpperCase())}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">Last Name</label>
-                    <input 
-                      type="text" 
-                      placeholder="As it appears on booking"
-                      className="w-full p-4 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary/20 focus:outline-none"
-                      value={lastName}
-                      onChange={(e) => setLastName(e.target.value)}
-                      required
-                    />
-                  </div>
-                  <button 
-                    disabled={isLoading}
-                    className="w-full bg-primary text-white font-bold py-4 rounded-xl shadow-lg hover:bg-primary-hover transition-all flex items-center justify-center"
-                  >
-                    {isLoading ? (
-                      <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                    ) : 'Access Reservation'}
-                  </button>
-                </form>
-
-                <div className="mt-8 pt-8 border-t border-gray-100 text-center">
-                  <p className="text-gray-500 text-sm">Don't have your confirmation number?</p>
-                  <button 
-                    onClick={() => onRoleSelect('Customer')}
-                    className="text-primary font-bold text-sm mt-2 hover:underline"
-                  >
-                    Login to view all bookings
-                  </button>
-                </div>
-              </motion.div>
-            ) : (
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="bg-white rounded-2xl shadow-xl overflow-hidden"
-              >
-                {/* Header */}
-                <div className="bg-primary p-6 text-white flex justify-between items-center">
-                  <div>
-                    <p className="text-white/60 text-xs font-bold uppercase tracking-widest">Confirmation Number</p>
-                    <h3 className="text-2xl font-mono">{booking.id}</h3>
-                  </div>
-                  <div className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider ${
-                    booking.status === 'Confirmed' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
-                  }`}>
-                    {booking.status}
-                  </div>
-                </div>
-
-                {/* Details */}
-                <div className="p-8">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
-                    <div className="space-y-6">
-                      <div>
-                        <p className="text-gray-400 text-xs font-bold uppercase mb-1">Pick-up</p>
-                        <p className="font-bold text-gray-800">{booking.pickupLocation}</p>
-                        <p className="text-gray-600 text-sm">{booking.pickupDate} at {booking.pickupTime}</p>
-                      </div>
-                      <div>
-                        <p className="text-gray-400 text-xs font-bold uppercase mb-1">Return</p>
-                        <p className="font-bold text-gray-800">{booking.dropoffLocation}</p>
-                        <p className="text-gray-600 text-sm">{booking.returnDate} at {booking.returnTime}</p>
-                      </div>
-                    </div>
-                    <div className="space-y-6">
-                      <div>
-                        <p className="text-gray-400 text-xs font-bold uppercase mb-1">Vehicle Class</p>
-                        <div className="flex items-center space-x-2">
-                          <CarIcon className="w-5 h-5 text-primary" />
-                          <p className="font-bold text-gray-800">{booking.vehicle}</p>
-                        </div>
-                      </div>
-                      <div>
-                        <p className="text-gray-400 text-xs font-bold uppercase mb-1">Total Estimated</p>
-                        <p className="text-2xl font-bold text-primary">{booking.total}</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {booking.status === 'Confirmed' && (
-                    <div className="grid grid-cols-2 gap-4">
-                      <button 
-                        onClick={() => setIsEditing(true)}
-                        className="bg-gray-100 text-gray-800 font-bold py-3 rounded-lg hover:bg-gray-200 transition-colors flex items-center justify-center"
-                      >
-                        Modify Booking
-                      </button>
-                      <button 
-                        onClick={() => setShowCancelConfirm(true)}
-                        className="bg-red-50 text-red-600 font-bold py-3 rounded-lg hover:bg-red-100 transition-colors"
-                      >
-                        Cancel Reservation
-                      </button>
-                    </div>
-                  )}
-
-                  {booking.status === 'Cancelled' && (
-                    <div className="bg-red-50 border border-red-100 p-4 rounded-xl text-center">
-                      <p className="text-red-600 font-bold">This reservation has been cancelled.</p>
-                      <button 
-                        onClick={() => setView('start-reservation')}
-                        className="text-primary font-bold text-sm mt-2 hover:underline"
-                      >
-                        Book a new ride
-                      </button>
-                    </div>
-                  )}
-
-                  <button 
-                    onClick={() => setLookupMode(true)}
-                    className="w-full mt-8 text-gray-400 text-sm hover:text-gray-600 transition-colors"
-                  >
-                    ← Back to lookup
-                  </button>
-                </div>
-              </motion.div>
-            )}
-
-            {/* Support Info */}
-            <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-start">
-                <ShieldIcon className="w-6 h-6 text-primary mr-4 mt-1" />
-                <div>
-                  <h4 className="font-bold text-gray-800 mb-1">Cancellation Policy</h4>
-                  <p className="text-sm text-gray-500">Free cancellation up to 24 hours before pickup. Late fees may apply thereafter.</p>
-                </div>
+                <h3 className="text-xl md:text-2xl font-display font-bold text-gray-900">I have picked up my vehicle.</h3>
               </div>
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-start">
-                <PhoneIcon className="w-6 h-6 text-primary mr-4 mt-1" />
-                <div>
-                  <h4 className="font-bold text-gray-800 mb-1">Need Assistance?</h4>
-                  <p className="text-sm text-gray-500">Our 24/7 support team is here to help with your reservation.</p>
+              <button className="bg-primary text-white font-bold py-3 px-10 rounded-full hover:bg-primary-hover transition-all text-sm shadow-lg shadow-primary/20">
+                Select →
+              </button>
+            </motion.div>
+
+            {/* Option 2 */}
+            <motion.div 
+              whileHover={{ scale: 1.01, backgroundColor: '#ffffff' }}
+              className="bg-white border border-gray-100 p-8 rounded-2xl flex flex-col md:flex-row md:items-center justify-between shadow-sm hover:shadow-xl transition-all cursor-pointer group"
+            >
+              <div className="flex items-center gap-6 mb-4 md:mb-0">
+                <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center text-gray-900 group-hover:bg-primary group-hover:text-white transition-all transform -rotate-3 group-hover:rotate-0">
+                  <ClockIcon className="w-8 h-8" />
+                </div>
+                <h3 className="text-xl md:text-2xl font-display font-bold text-gray-900">I have an upcoming reservation.</h3>
+              </div>
+              <button className="bg-primary text-white font-bold py-3 px-10 rounded-full hover:bg-primary-hover transition-all text-sm shadow-lg shadow-primary/20">
+                Select →
+              </button>
+            </motion.div>
+          </div>
+        </div>
+
+        {/* Page Usage Notes Section */}
+        <section className="max-w-6xl mx-auto px-6 py-20 mt-12 grid grid-cols-1 lg:grid-cols-2 gap-16 border-t border-gray-200">
+          <div className="space-y-8">
+            <h4 className="text-xs font-black uppercase tracking-[0.2em] text-primary mb-6">Reservation Management</h4>
+            <div className="space-y-6 text-gray-600 leading-relaxed font-light text-lg">
+              <p>
+                Customers who have an active ride or an upcoming reservation can use this page to view full trip details, make modifications such as changing pickup time, location, or vehicle type, or cancel the reservation entirely. All modifications and cancellations are subject to XTASS's booking terms and conditions, which are clearly communicated during the booking process.
+              </p>
+              <p>
+                Cancellations made well in advance are generally free of charge. Cancellations made close to the scheduled pickup time may incur a modest fee. All terms are clearly displayed during the booking process so customers can make informed decisions.
+              </p>
+            </div>
+          </div>
+
+          {/* Support Section */}
+          <div className="bg-white p-10 rounded-[2.5rem] border border-gray-100 shadow-2xl relative overflow-hidden h-fit">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-accent/10 rounded-full -mr-16 -mt-16 blur-2xl"></div>
+            <h4 className="text-xl font-display font-bold text-gray-900 mb-8 border-b-2 border-accent pb-4 inline-block">Need Support?</h4>
+            <div className="space-y-6">
+              <p className="text-gray-500 font-light mb-8">
+                Customers requiring assistance with modifying or cancelling a booking can also contact the XTASS customer support team directly via phone, email, or WhatsApp.
+              </p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 bg-primary/5 rounded-xl flex items-center justify-center text-primary shrink-0">
+                    <PhoneIcon className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-black uppercase tracking-widest text-primary/40 mb-1">Phone</p>
+                    <p className="font-bold text-gray-800">+233 XXX XXX XXX</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 bg-primary/5 rounded-xl flex items-center justify-center text-primary shrink-0">
+                    <MailIcon className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-black uppercase tracking-widest text-primary/40 mb-1">Email</p>
+                    <p className="font-bold text-gray-800">support@xtass.com</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 bg-primary/5 rounded-xl flex items-center justify-center text-primary shrink-0">
+                    <MessageSquareIcon className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-black uppercase tracking-widest text-primary/40 mb-1">WhatsApp</p>
+                    <p className="font-bold text-gray-800">Available via website</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 bg-primary/5 rounded-xl flex items-center justify-center text-primary shrink-0">
+                    <ClockIcon className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-black uppercase tracking-widest text-primary/40 mb-1">Hours</p>
+                    <p className="font-bold text-gray-800 leading-tight">24/7 Support</p>
+                    <p className="text-[10px] text-gray-400">365 days a year</p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </section>
-
-        {/* MODALS */}
-        <AnimatePresence>
-          {showCancelConfirm && (
-            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                onClick={() => setShowCancelConfirm(false)}
-                className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-              />
-              <motion.div 
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.9, opacity: 0 }}
-                className="bg-white rounded-2xl shadow-2xl relative z-10 max-w-md w-full p-8 overflow-hidden text-center"
-              >
-                <div className="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <ShieldIcon className="w-8 h-8" />
-                </div>
-                <h3 className="text-2xl font-bold text-gray-800 mb-2">Cancel Reservation?</h3>
-                <p className="text-gray-600 mb-8">Are you sure you want to cancel your booking? This action cannot be undone.</p>
-                
-                <div className="space-y-4">
-                  <button 
-                    onClick={handleCancel}
-                    disabled={isLoading}
-                    className="w-full bg-red-600 text-white font-bold py-4 rounded-xl hover:bg-red-700 transition-all flex items-center justify-center"
-                  >
-                    {isLoading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div> : 'Confirm Cancellation'}
-                  </button>
-                  <button 
-                    onClick={() => setShowCancelConfirm(false)}
-                    className="w-full bg-gray-100 text-gray-800 font-bold py-4 rounded-xl hover:bg-gray-200 transition-all"
-                  >
-                    Keep Reservation
-                  </button>
-                </div>
-              </motion.div>
-            </div>
-          )}
-
-          {isEditing && (
-             <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                onClick={() => setIsEditing(false)}
-                className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-              />
-              <motion.div 
-                initial={{ scale: 0.9, opacity: 0, y: 20 }}
-                animate={{ scale: 1, opacity: 1, y: 0 }}
-                exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                className="bg-white rounded-2xl shadow-2xl relative z-10 max-w-2xl w-full p-8 overflow-hidden"
-              >
-                <h3 className="text-2xl font-bold text-gray-800 mb-6 font-display">Modify Reservation</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 text-left">
-                  <div>
-                    <label className="block text-xs font-bold text-gray-400 uppercase mb-2">Pickup Date</label>
-                    <input type="date" className="w-full p-4 bg-gray-50 border border-gray-200 rounded-lg" defaultValue={booking.pickupDate} />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-gray-400 uppercase mb-2">Return Date</label>
-                    <input type="date" className="w-full p-4 bg-gray-50 border border-gray-200 rounded-lg" defaultValue={booking.returnDate} />
-                  </div>
-                </div>
-                <div className="bg-yellow-50 border border-yellow-100 p-4 rounded-xl mb-8 text-left">
-                   <p className="text-yellow-800 text-sm font-medium">Modifying may affect the total price of your reservation. You'll review any changes before confirming.</p>
-                </div>
-                <div className="flex space-x-4">
-                  <button 
-                    onClick={() => {
-                      setIsLoading(true);
-                      setTimeout(() => {
-                        setIsLoading(false);
-                        setIsEditing(false);
-                        alert('Your reservation has been updated successfully.');
-                      }, 1000);
-                    }}
-                    className="flex-1 bg-primary text-white font-bold py-4 rounded-xl hover:bg-primary-hover transition-all"
-                  >
-                    Save Changes
-                  </button>
-                  <button 
-                    onClick={() => setIsEditing(false)}
-                    className="px-8 bg-gray-100 text-gray-800 font-bold py-4 rounded-xl hover:bg-gray-200 transition-all"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </motion.div>
-            </div>
-          )}
-        </AnimatePresence>
 
         {commonFooter}
       </main>
     );
   };
-
   const commonFooter = (
       <footer className="text-white" style={{ backgroundColor: '#1A0006' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -2312,7 +2691,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
               <ul className="space-y-3 text-gray-300">
                 <li><a href="#" className="hover:text-white transition-colors">Why Choose XTASS</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Our Story</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Careers</a></li>
+                <li><button onClick={() => setView('careers')} className="hover:text-white transition-colors">Careers</button></li>
                 <li><a href="#" className="hover:text-white transition-colors">Press & Media</a></li>
               </ul>
             </div>
@@ -2513,7 +2892,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                   </AnimatePresence>
                 </div>
 
-                <NavLinkRed active={view === 'careers'} onClick={() => {}}>Careers</NavLinkRed>
+                <NavLinkRed active={view === 'careers'} onClick={() => setView('careers')}>Careers</NavLinkRed>
                 <NavLinkRed active={view === 'contact'} onClick={() => {}}>Contact Us</NavLinkRed>
               </div>
             </nav>
@@ -2580,7 +2959,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                   </AnimatePresence>
                 </div>
 
-                <MobileNavLink onClick={() => setIsMobileMenuOpen(false)}>Careers</MobileNavLink>
+                <MobileNavLink onClick={() => { setView('careers'); setIsMobileMenuOpen(false); }}>Careers</MobileNavLink>
                 <MobileNavLink onClick={() => setIsMobileMenuOpen(false)}>Contact Us</MobileNavLink>
                 
                 <div className="pt-8 flex justify-center space-x-6 text-primary">
@@ -4351,7 +4730,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
       )}
 
       {view === 'deals-and-coupons' && (
-        <DealsAndCouponsPage setView={setView} commonFooter={commonFooter} />
+        <DealsAndCouponsPage setView={setView} onRoleSelect={onRoleSelect} commonFooter={commonFooter} />
       )}
 
       {view === 'get-receipt' && (
@@ -4359,11 +4738,11 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
       )}
 
       {view === 'one-way-rental' && (
-        <OneWayRentalPage commonFooter={commonFooter} onRoleSelect={onRoleSelect} />
+        <OneWayRentalPage setView={setView} commonFooter={commonFooter} onRoleSelect={onRoleSelect} />
       )}
 
       {view === 'long-term-rental' && (
-        <LongTermRentalPage commonFooter={commonFooter} onRoleSelect={onRoleSelect} />
+        <LongTermRentalPage setView={setView} commonFooter={commonFooter} onRoleSelect={onRoleSelect} />
       )}
 
       {view === 'business-solutions' && (
@@ -4374,6 +4753,10 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
         <main className="min-h-screen bg-white">
           {/* Empty Hospitality Page */}
         </main>
+      )}
+
+      {view === 'careers' && (
+        <CareersPage commonFooter={commonFooter} />
       )}
 
       {view === 'accessibility' && (
