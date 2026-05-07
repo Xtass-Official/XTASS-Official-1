@@ -96,8 +96,8 @@ const DriverForgotPasswordScreen: React.FC<NavigationProps> = ({ navigate }) => 
 
 
 const DriverRegistrationScreen: React.FC<NavigationProps> = ({ navigate }) => (
-     <ScreenContainer>
-        <Header title="Driver Registration" onBack={() => navigate('DriverLogin')} />
+    <ScreenContainer>
+        <Header title="Driver Registration" onBack={() => navigate('DriverLogin')} onForward={() => navigate('DocumentUpload')} />
         <div className="p-4 space-y-4">
             <h3 className="font-semibold text-lg">Personal Details</h3>
             <Input id="fullName" label="Full Name" type="text" placeholder="Kofi Mensah" defaultValue="Kofi Mensah" />
@@ -114,7 +114,7 @@ const DriverRegistrationScreen: React.FC<NavigationProps> = ({ navigate }) => (
 
 const DocumentUploadScreen: React.FC<NavigationProps> = ({ navigate }) => (
     <ScreenContainer>
-        <Header title="Upload Documents" onBack={() => navigate('DriverRegistration')} />
+        <Header title="Upload Documents" onBack={() => navigate('DriverRegistration')} onForward={() => navigate('ApplicationStatus')} />
         <div className="p-4 space-y-4">
             <DocumentUploadItem title="Ghana Card" />
             <DocumentUploadItem title="Driver's License" />

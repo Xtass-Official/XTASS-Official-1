@@ -118,7 +118,7 @@ const AdminLoginScreen: React.FC<NavigationProps> = ({ navigate, logout }) => (
       <p className="text-center text-gray-500 mb-8 font-medium">XTASS Enterprise Portal</p>
       <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); navigate('AdminDashboard'); }}>
         <Input id="email" label="Email" type="email" placeholder="admin@xtass.com" icon={<UserIcon className="w-5 h-5 text-gray-400" />} defaultValue="admin@xtass.com" />
-        <Input id="password" label="Password" type="password" placeholder="••••••••" icon={<LockIcon className="w-5 h-5 text-gray-400" />} defaultValue="adminpass" />
+        <Input id="password" label="Password" type="password" placeholder="••••••••" icon={<LockIcon className="w-5 h-5 text-gray-400" />} defaultValue="adminpass123" />
         <div>
           <Button type="submit">Sign In</Button>
         </div>

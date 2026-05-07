@@ -139,17 +139,13 @@ export const CustomerApp: React.FC<CustomerAppProps> = ({ screen, navigate, logo
   const renderScreen = () => {
     switch (screen) {
       case 'Login':
-        return <AuthScreen navigate={navigate} isLogin logout={logout} />;
+        return <AuthScreen navigate={navigate} isLogin logout={logout} setOtpOrigin={setOtpOrigin} />;
       case 'Register':
         return <AuthScreen 
-            navigate={(nextScreen: Screen) => {
-                if (nextScreen === 'OTPVerification') {
-                    setOtpOrigin('Register');
-                }
-                navigate(nextScreen);
-            }} 
+            navigate={navigate}
             isLogin={false} 
             logout={logout}
+            setOtpOrigin={setOtpOrigin}
         />;
       case 'ForgotPassword':
           return <ForgotPasswordScreen 
@@ -316,7 +312,7 @@ const countryCodes = [
     { code: '+44', name: 'UK' },
 ];
 
-const AuthScreen: React.FC<{ navigate: (s: Screen) => void, isLogin: boolean, logout?: () => void }> = ({ navigate, isLogin, logout }) => {
+const AuthScreen: React.FC<{ navigate: (s: Screen) => void, isLogin: boolean, logout?: () => void, setOtpOrigin?: (s: Screen) => void }> = ({ navigate, isLogin, logout, setOtpOrigin }) => {
     const title = isLogin ? "Welcome to XTASS" : "Create Account";
     const subTitle = isLogin ? "Sign in to your account" : "Let's get you started";
     
@@ -491,14 +487,14 @@ const AuthScreen: React.FC<{ navigate: (s: Screen) => void, isLogin: boolean, lo
                                 <AppleIcon className="w-5 h-5 text-black"/>
                                 <span>Continue with Apple ID</span>
                             </button>
-                            <button onClick={() => { setOtpOrigin('Login'); navigate('OTPVerification'); }} className="w-full flex items-center justify-center space-x-2 py-3 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 min-h-[48px] transition-colors duration-200">
-                                <PhoneIcon className="w-5 h-5 text-gray-600"/>
-                                <span>Continue with Phone OTP</span>
-                            </button>
-                            <button onClick={() => { setOtpOrigin('Login'); navigate('OTPVerification'); }} className="w-full flex items-center justify-center space-x-2 py-3 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 min-h-[48px] transition-colors duration-200">
-                                <MailIcon className="w-5 h-5 text-gray-600"/>
-                                <span>Continue with Email OTP</span>
-                            </button>
+                             <button onClick={() => { if(setOtpOrigin) setOtpOrigin('Login'); navigate('OTPVerification'); }} className="w-full flex items-center justify-center space-x-2 py-3 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 min-h-[48px] transition-colors duration-200">
+                                 <PhoneIcon className="w-5 h-5 text-gray-600"/>
+                                 <span>Continue with Phone OTP</span>
+                             </button>
+                             <button onClick={() => { if(setOtpOrigin) setOtpOrigin('Login'); navigate('OTPVerification'); }} className="w-full flex items-center justify-center space-x-2 py-3 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 min-h-[48px] transition-colors duration-200">
+                                 <MailIcon className="w-5 h-5 text-gray-600"/>
+                                 <span>Continue with Email OTP</span>
+                             </button>
                         </div>
                     </>
                 ) : (
@@ -667,7 +663,7 @@ const ForgotPasswordScreen: React.FC<NavigationProps & { setPhoneForOTP: (detail
 };
 
 const OTPScreen: React.FC<{ navigate: (s: Screen) => void, onBack: () => void, showToast: (msg: string) => void, phoneDetails: { phone: string; code: string } }> = ({ navigate, onBack, showToast, phoneDetails }) => {
-    const [otp, setOtp] = useState<string[]>(new Array(6).fill(""));
+    const [otp, setOtp] = useState<string[]>(['1', '2', '3', '4', '5', '6']);
     const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
     const [isVerifying, setIsVerifying] = useState(false);
     const [countdown, setCountdown] = useState(60);
@@ -712,7 +708,7 @@ const OTPScreen: React.FC<{ navigate: (s: Screen) => void, onBack: () => void, s
         const code = otp.join("");
 
         setTimeout(() => {
-            if (code === "235777") {
+            if (code === "235777" || code === "123456") {
                 setMessage({ text: 'Redirecting you to the login page…', type: 'success' });
                 setTimeout(() => {
                     navigate('Login');
@@ -959,12 +955,12 @@ interface TripDetailsInputScreenProps extends NavigationProps {
 }
 const TripDetailsInputScreen: React.FC<TripDetailsInputScreenProps> = ({ navigate, setVehicleTypeForFilter, initialDetails }) => {
     const [pickup, setPickup] = useState(initialDetails?.pickup || "Kotoka Int'l Airport, Terminal 3");
-    const [destination, setDestination] = useState(initialDetails?.dropoff || '');
-    const [passengers, setPassengers] = useState(initialDetails?.passengers || '');
-    const [luggage, setLuggage] = useState('');
+    const [destination, setDestination] = useState(initialDetails?.dropoff || 'Labadi Beach Hotel, Accra');
+    const [passengers, setPassengers] = useState(initialDetails?.passengers || '2');
+    const [luggage, setLuggage] = useState('2');
     const [childSeat, setChildSeat] = useState(false);
     const [wheelchairAccess, setWheelchairAccess] = useState(false);
-    const [vehicleType, setVehicleType] = useState<string | null>(null);
+    const [vehicleType, setVehicleType] = useState<string | null>('Premium Class');
     const [documentType, setDocumentType] = useState('');
     const [isCaptureModalOpen, setIsCaptureModalOpen] = useState(false);
     const [capturedImage, setCapturedImage] = useState<string | null>(null);
@@ -1038,7 +1034,12 @@ const TripDetailsInputScreen: React.FC<TripDetailsInputScreenProps> = ({ navigat
     
     return (
         <ScreenContainer>
-            <Header title="Instant Ride" onBack={() => navigate('ServiceSelection')} />
+            <Header title="Instant Ride" onBack={() => navigate('ServiceSelection')} onForward={() => {
+                if (pickup && destination && passengers) {
+                    setVehicleTypeForFilter(vehicleTypes[vehicleType as keyof typeof vehicleTypes] || null);
+                    navigate('CompatibleShuttlesList');
+                }
+            }} />
             <div className="p-4 space-y-4">
                 <div>
                     <h3 className="block text-sm font-medium text-gray-700 mb-2">Select Vehicle Type</h3>
@@ -1094,11 +1095,11 @@ interface ScheduleRideScreenProps extends NavigationProps {
 }
 const ScheduleRideScreen: React.FC<ScheduleRideScreenProps> = ({ navigate, setVehicleTypeForFilter, initialDetails }) => {
     const [pickup, setPickup] = useState(initialDetails?.pickup || "Kotoka Int'l Airport, Terminal 3");
-    const [destination, setDestination] = useState(initialDetails?.dropoff || '');
-    const [date, setDate] = useState(initialDetails?.date || '');
-    const [time, setTime] = useState(initialDetails?.time || '');
-    const [passengers, setPassengers] = useState(initialDetails?.passengers || '');
-    const [vehicleType, setVehicleType] = useState<string | null>(null);
+    const [destination, setDestination] = useState(initialDetails?.dropoff || 'Mövenpick Ambassador Hotel, Accra');
+    const [date, setDate] = useState(initialDetails?.date || '15/12/2025');
+    const [time, setTime] = useState(initialDetails?.time || '14:30');
+    const [passengers, setPassengers] = useState(initialDetails?.passengers || '3');
+    const [vehicleType, setVehicleType] = useState<string | null>('Business Class');
     const [dateError, setDateError] = useState('');
 
     const vehicleTypes = {
@@ -1125,7 +1126,11 @@ const ScheduleRideScreen: React.FC<ScheduleRideScreenProps> = ({ navigate, setVe
     
     return (
         <ScreenContainer>
-            <Header title="Schedule a Ride" onBack={() => navigate('ServiceSelection')} />
+            <Header title="Schedule a Ride" onBack={() => navigate('ServiceSelection')} onForward={() => {
+                 if (pickup && destination && passengers && date.length === 10 && !dateError && time) {
+                    handleFindRide();
+                 }
+            }} />
             <div className="p-4 space-y-4">
                 <div>
                     <h3 className="block text-sm font-medium text-gray-700 mb-2">Select Vehicle Type</h3>
@@ -1163,14 +1168,14 @@ interface CarRentalScreenProps extends NavigationProps {
 }
 const CarRentalScreen: React.FC<CarRentalScreenProps> = ({ navigate, setRentalDuration, setVehicleTypeForFilter, setRentalDetails }) => {
     const [details, setDetails] = useState({
-        pickupDate: '',
-        pickupTime: '',
-        returnDate: '',
-        returnTime: '',
-        passengers: '1',
-        luggage: '1',
+        pickupDate: '20/12/2025',
+        pickupTime: '10:00',
+        returnDate: '25/12/2025',
+        returnTime: '10:00',
+        passengers: '4',
+        luggage: '3',
         pickupLocation: "Kotoka Int'l Airport, Terminal 3",
-        dropoffLocation: "Kotoka Int'l Airport, Terminal 3",
+        dropoffLocation: "Labone, Accra",
     });
     const [pickupDateError, setPickupDateError] = useState('');
     const [returnDateError, setReturnDateError] = useState('');
@@ -1229,7 +1234,11 @@ const CarRentalScreen: React.FC<CarRentalScreenProps> = ({ navigate, setRentalDu
 
     return (
         <ScreenContainer>
-            <Header title="Car Rental" onBack={() => navigate('ServiceSelection')} />
+            <Header title="Car Rental" onBack={() => navigate('ServiceSelection')} onForward={() => {
+                if (details.pickupDate && details.returnDate && details.pickupTime && details.returnTime) {
+                    handleSubmit();
+                }
+            }} />
             <div className="p-4 space-y-4">
                 <Input id="pickupLocation" label="Pickup Location" value={details.pickupLocation} onChange={e => handleInputChange('pickupLocation', e.target.value)} icon={<MapPinIcon className="w-5 h-5 text-gray-400"/>} />
                 <Input id="dropoffLocation" label="Return Location" value={details.dropoffLocation} onChange={e => handleInputChange('dropoffLocation', e.target.value)} icon={<MapPinIcon className="w-5 h-5 text-gray-400"/>} />
@@ -1403,7 +1412,7 @@ const CompatibleShuttlesListScreen: React.FC<CompatibleShuttlesListScreenProps> 
 const ShuttleDriverDetailsScreen: React.FC<NavigationProps> = ({ navigate }) => {
     return (
         <ScreenContainer>
-            <Header title="Driver Details" onBack={() => navigate('CompatibleShuttlesList')} />
+            <Header title="Driver Details" onBack={() => navigate('CompatibleShuttlesList')} onForward={() => navigate('BookingConfirmation')} />
             <div className="p-4 text-center">
                 <img src="https://i.pravatar.cc/150?u=Kofi Mensah" alt="Driver" className="w-32 h-32 rounded-full mx-auto mb-4 border-4 border-primary" />
                 <h2 className="text-2xl font-bold">Kofi Mensah</h2>
@@ -1424,7 +1433,7 @@ const ShuttleDriverDetailsScreen: React.FC<NavigationProps> = ({ navigate }) => 
 const BookingConfirmationScreen: React.FC<NavigationProps> = ({ navigate }) => {
     return (
         <ScreenContainer>
-            <Header title="Confirm Booking" onBack={() => navigate('ShuttleDriverDetails')} />
+            <Header title="Confirm Booking" onBack={() => navigate('ShuttleDriverDetails')} onForward={() => navigate('PaymentSelection')} />
             <div className="p-4 space-y-4">
                  <div className="bg-white p-4 rounded-lg shadow">
                     <h3 className="font-bold text-lg mb-2">Trip Summary</h3>
@@ -1447,7 +1456,7 @@ interface PaymentSelectionScreenProps extends NavigationProps {
 const PaymentSelectionScreen: React.FC<PaymentSelectionScreenProps> = ({ navigate, onBack }) => {
     return (
         <ScreenContainer>
-            <Header title="Select Payment" onBack={onBack} />
+            <Header title="Select Payment" onBack={onBack} onForward={() => navigate('PaymentProcessing')} />
             <div className="p-4 space-y-3">
                 <div onClick={() => navigate('PaymentProcessing')} className="p-4 border rounded-lg flex items-center space-x-4 cursor-pointer hover:bg-gray-50">
                     <CreditCardIcon className="w-8 h-8 text-primary" />
@@ -1568,7 +1577,7 @@ const TripHistoryScreen: React.FC<NavigationProps> = ({ navigate }) => {
     ];
     return (
         <ScreenContainer>
-            <Header title="Trip History" />
+            <Header title="Trip History" onBack={() => navigate('ServiceSelection')} onForward={() => navigate('Profile')} />
             <div className="p-4 space-y-3">
                 {trips.map(trip => (
                     <div key={trip.id} onClick={() => navigate('TripDetailsView')} className="p-4 border rounded-lg cursor-pointer hover:bg-gray-50">
@@ -1607,7 +1616,7 @@ const TripDetailsViewScreen: React.FC<NavigationProps> = ({ navigate }) => {
 const AccountProfileScreen: React.FC<NavigationProps> = ({ navigate, logout }) => {
     return (
         <ScreenContainer>
-            <Header title="My Profile" />
+            <Header title="My Profile" onBack={() => navigate('ServiceSelection')} onForward={() => navigate('TripHistory')} />
             <div className="p-4">
                 <div className="flex flex-col items-center mb-6">
                     <img src="https://i.pravatar.cc/150?u=customer" alt="Profile" className="w-24 h-24 rounded-full mb-2" />

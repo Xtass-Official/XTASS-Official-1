@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Screen, NavigationProps } from '../../types';
-import { HomeIcon, HistoryIcon, UserIcon, PhoneIcon, ChevronLeftIcon, XCircleIcon } from '../Icons';
+import { HomeIcon, HistoryIcon, UserIcon, PhoneIcon, ChevronLeftIcon, ChevronRightIcon, XCircleIcon } from '../Icons';
 
 // Reusable Button Component
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -46,18 +46,26 @@ export const Input: React.FC<InputProps> = ({ icon, label, id, ...props }) => {
 interface HeaderProps {
     title: string;
     onBack?: () => void;
+    onForward?: () => void;
 }
-export const Header: React.FC<HeaderProps> = ({ title, onBack }) => {
+export const Header: React.FC<HeaderProps> = ({ title, onBack, onForward }) => {
     return (
         <header className="bg-white shadow-md sticky top-0 z-10">
             <div className="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
-                {onBack ? (
-                    <button onClick={onBack} className="text-primary p-2 -ml-2">
-                        <ChevronLeftIcon className="w-6 h-6" />
-                    </button>
-                ) : <div className="w-8"></div> }
-                <h1 className="text-xl font-display font-bold text-primary text-center">{title}</h1>
-                <div className="w-8">
+                <div className="w-10">
+                    {onBack && (
+                        <button onClick={onBack} className="text-primary p-2 -ml-2" aria-label="Go back">
+                            <ChevronLeftIcon className="w-6 h-6" />
+                        </button>
+                    )}
+                </div>
+                <h1 className="text-xl font-display font-bold text-primary text-center flex-1">{title}</h1>
+                <div className="w-10 text-right">
+                    {onForward && (
+                        <button onClick={onForward} className="text-primary p-2 -mr-2" aria-label="Go forward">
+                            <ChevronRightIcon className="w-6 h-6" />
+                        </button>
+                    )}
                 </div>
             </div>
         </header>

@@ -15,15 +15,15 @@ export const AuthDropdown: React.FC<AuthDropdownProps> = ({ isOpen, onClose, onL
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Form states
-  const [signinLoginStr, setSigninLoginStr] = useState('');
-  const [signinPassword, setSigninPassword] = useState('');
+  const [signinLoginStr, setSigninLoginStr] = useState('official.xtass@gmail.com');
+  const [signinPassword, setSigninPassword] = useState('password123');
   const [signinError, setSigninError] = useState('');
 
-  const [regName, setRegName] = useState('');
-  const [regEmail, setRegEmail] = useState('');
-  const [regPhone, setRegPhone] = useState('');
-  const [regPassword, setRegPassword] = useState('');
-  const [regConfirmPassword, setRegConfirmPassword] = useState('');
+  const [regName, setRegName] = useState('Kofi Amoako');
+  const [regEmail, setRegEmail] = useState('kofi@example.com');
+  const [regPhone, setRegPhone] = useState('024 123 4567');
+  const [regPassword, setRegPassword] = useState('password123');
+  const [regConfirmPassword, setRegConfirmPassword] = useState('password123');
 
   const [regErrors, setRegErrors] = useState<{
     email?: string;
