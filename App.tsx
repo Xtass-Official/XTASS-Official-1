@@ -239,6 +239,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
   const [passengers, setPassengers] = useState('');
+  const [showCustomPassengers, setShowCustomPassengers] = useState(false);
   const [dateError, setDateError] = useState('');
   const [timeError, setTimeError] = useState('');
 
@@ -2973,13 +2974,16 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                           id="rideType"
                           value={rideType}
                           onChange={(e) => setRideType(e.target.value)}
-                          className={`w-full p-3 pl-4 pr-4 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-accent appearance-none bg-white ${!rideType ? 'text-gray-500' : 'text-gray-800'}`}
+                          className={`w-full p-3 pl-4 pr-10 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-accent appearance-none bg-white ${!rideType ? 'text-gray-500' : 'text-gray-800'}`}
                           required
                         >
                           <option value="" disabled>Select your ride</option>
                           <option value="Instant Ride">Instant Ride</option>
                           <option value="Scheduled Ride">Scheduled Ride</option>
                         </select>
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                          <ChevronDownIcon className="w-5 h-5" />
+                        </div>
                       </div>
                     </div>
                     {/* Pick Up Location */}
@@ -3044,17 +3048,50 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                         </div>
                       </>
                     )}
-                    {/* Passaengers */}
+                    {/* Passengers */}
                     <div>
-                      <label htmlFor="passengers" className="block text-lg font-semibold text-gray-800 mb-2">Passaengers</label>
-                      <input
-                        type="number"
-                        id="passengers"
-                        placeholder="No. of Passangers"
-                        className="w-full p-3 pl-4 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-accent placeholder-gray-500"
-                        value={passengers}
-                        onChange={e => setPassengers(e.target.value)}
-                      />
+                      <label htmlFor="passengers" className="block text-lg font-semibold text-gray-800 mb-2">Passengers</label>
+                      <div className="relative">
+                        {!showCustomPassengers ? (
+                          <div className="relative">
+                            <select
+                              id="passengers"
+                              className={`w-full p-3 pl-4 pr-10 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-accent appearance-none bg-white ${!passengers ? 'text-gray-500' : 'text-gray-800'}`}
+                              value={passengers}
+                              onChange={(e) => {
+                                if (e.target.value === 'custom') {
+                                  setShowCustomPassengers(true);
+                                  setPassengers('');
+                                } else {
+                                  setPassengers(e.target.value);
+                                }
+                              }}
+                            >
+                              <option value="" disabled>No. of Passengers</option>
+                              {[1, 2, 3, 4, 5, 6, 7].map(num => (
+                                <option key={num} value={num}>{num}</option>
+                              ))}
+                              <option value="custom">Custom...</option>
+                            </select>
+                            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                              <ChevronDownIcon className="w-5 h-5" />
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="relative flex items-center">
+                            <input
+                              type="number"
+                              id="passengers_custom"
+                              autoFocus
+                              placeholder="Enter number"
+                              className="w-full p-3 pl-4 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-accent placeholder-gray-500"
+                              value={passengers}
+                              onChange={e => setPassengers(e.target.value)}
+                              min="1"
+                            />
+                          </div>
+                        )}
+                      </div>
                     </div>
                     {/* Book Now Button */}
                     <div>
