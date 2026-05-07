@@ -43,18 +43,19 @@ export const DriverApp: React.FC<DriverAppProps> = ({ screen, navigate, logout }
 
 const DriverAuthScreen: React.FC<{ navigate: (s: Screen) => void, isLogin: boolean, logout?: () => void }> = ({ navigate, isLogin, logout }) => {
     return (
-        <div className="relative flex flex-col items-center justify-start md:justify-center min-h-screen bg-gray-100 p-4 md:p-8 overflow-x-hidden">
+        <div className="relative flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4 sm:p-6 md:p-8 lg:p-12 overflow-x-hidden">
             {logout && (
-                <button onClick={logout} className="absolute top-4 left-4 text-primary p-2 rounded-full hover:bg-gray-200 z-10" aria-label="Go back">
+                <button onClick={logout} className="absolute top-4 left-4 text-primary p-2 rounded-full hover:bg-gray-200 z-10 transition-colors duration-200" aria-label="Go back">
                     <ChevronLeftIcon className="w-6 h-6" />
                 </button>
             )}
-            <div className="w-full max-w-[98%] sm:max-w-[90%] md:max-w-md text-center mb-8 mt-12 md:mt-0 px-4 transition-all duration-500">
-                 <h1 className="text-4xl font-display font-bold text-primary">XTASS Driver</h1>
-            </div>
-            <div className="w-full max-w-[98%] sm:max-w-[90%] md:max-w-md lg:max-w-sm bg-white p-6 sm:p-8 md:p-10 lg:p-8 rounded-xl shadow-lg mb-8 md:mb-0 transition-all duration-500">
-                <h2 className="text-2xl font-bold font-display text-gray-900 text-center">{isLogin ? "Driver Login" : "Driver Registration"}</h2>
-                <form className="space-y-4 mt-6" onSubmit={(e) => { e.preventDefault(); navigate(isLogin ? 'DriverDashboard' : 'DocumentUpload'); }}>
+            <div className="w-full max-w-[100%] sm:max-w-[450px] md:max-w-[500px] flex flex-col items-center my-auto">
+                <div className="text-center mb-10 px-4 transition-all duration-500 w-full">
+                     <h1 className="text-4xl md:text-5xl font-display font-bold text-primary tracking-tight">XTASS Driver</h1>
+                </div>
+                <div className="w-full bg-white p-6 sm:p-8 md:p-10 rounded-2xl shadow-xl transition-all duration-500">
+                    <h2 className="text-2xl md:text-3xl font-bold font-display text-gray-900 text-center tracking-tight">{isLogin ? "Driver Login" : "Driver Registration"}</h2>
+                    <form className="space-y-5 mt-8" onSubmit={(e) => { e.preventDefault(); navigate(isLogin ? 'DriverDashboard' : 'DocumentUpload'); }}>
                     <Input id="phone" label="Phone Number" type="tel" placeholder="024 123 4567" icon={<PhoneIcon className="w-5 h-5 text-gray-400" />} defaultValue="055 987 6543" />
                     <Input id="password" label="Password" type="password" placeholder="••••••••" icon={<LockIcon className="w-5 h-5 text-gray-400" />} defaultValue="driverpass" />
                     <div className="pt-2">
@@ -73,6 +74,7 @@ const DriverAuthScreen: React.FC<{ navigate: (s: Screen) => void, isLogin: boole
                 </div>
             </div>
         </div>
+    </div>
     );
 };
 

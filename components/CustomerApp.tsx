@@ -446,7 +446,7 @@ const AuthScreen: React.FC<{ navigate: (s: Screen) => void, isLogin: boolean, lo
 
 
     return (
-        <div className="relative flex flex-col items-center justify-start md:justify-center min-h-screen bg-gray-100 p-4 md:p-8 overflow-x-hidden">
+        <div className="relative flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4 sm:p-6 md:p-8 overflow-x-hidden">
             <Modal isOpen={showTermsModal} onClose={() => setShowTermsModal(false)} title="Terms & Conditions">
                 <div className="space-y-4 text-sm text-gray-600">
                     <p>Welcome to XTASS. These terms and conditions outline the rules and regulations for the use of our services.</p>
@@ -460,12 +460,13 @@ const AuthScreen: React.FC<{ navigate: (s: Screen) => void, isLogin: boolean, lo
                 </div>
             </Modal>
             
-            <button onClick={() => isLogin && logout ? logout() : navigate('Login')} className="absolute top-4 left-4 text-primary p-2 rounded-full hover:bg-gray-200 z-10" aria-label="Go back">
+            <button onClick={() => isLogin && logout ? logout() : navigate('Login')} className="absolute top-4 left-4 text-primary p-2 rounded-full hover:bg-gray-200 z-10 transition-colors duration-200" aria-label="Go back">
                 <ChevronLeftIcon className="w-6 h-6" />
             </button>
-            <div className="w-full max-w-[98%] sm:max-w-[90%] md:max-w-md lg:max-w-sm bg-white p-6 sm:p-8 md:p-10 lg:p-8 rounded-xl shadow-lg mt-12 md:mt-0 mb-8 md:mb-0 transition-all duration-500">
-                <h2 className="text-2xl font-bold font-display text-gray-900 text-center">{title}</h2>
-                <p className="text-center text-gray-500 mb-6">{subTitle}</p>
+
+            <div className="w-full max-w-[100%] sm:max-w-[450px] md:max-w-[500px] lg:max-w-[480px] bg-white p-6 sm:p-8 md:p-10 rounded-2xl shadow-xl transition-all duration-500 my-auto">
+                <h2 className="text-3xl font-bold font-display text-gray-900 text-center tracking-tight mb-2">{title}</h2>
+                <p className="text-center text-gray-500 mb-8 text-base">{subTitle}</p>
                 
                 {isLogin ? (
                     <>

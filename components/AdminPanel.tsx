@@ -107,15 +107,16 @@ const NavItem: React.FC<{ screenName: Screen, currentScreen: Screen, navigate: (
 // --- Screen Components ---
 
 const AdminLoginScreen: React.FC<NavigationProps> = ({ navigate, logout }) => (
-  <div className="relative flex flex-col items-center justify-start md:justify-center min-h-screen bg-gray-200 p-4 md:p-8 overflow-x-hidden">
+  <div className="relative flex flex-col items-center justify-center min-h-screen bg-gray-200 p-4 sm:p-6 md:p-8 lg:p-12 overflow-x-hidden text-gray-800">
     {logout && (
-        <button onClick={logout} className="absolute top-4 left-4 text-primary p-2 rounded-full hover:bg-gray-200 z-10" aria-label="Go back">
+        <button onClick={logout} className="absolute top-4 left-4 text-primary p-2 rounded-full hover:bg-gray-200 z-10 transition-colors duration-200" aria-label="Go back">
             <ChevronLeftIcon className="w-6 h-6" />
         </button>
     )}
-    <div className="w-full max-w-[98%] sm:max-w-[90%] md:max-w-md lg:max-w-sm bg-white p-6 sm:p-8 md:p-10 lg:p-8 rounded-lg shadow-lg mt-12 md:mt-0 mb-8 md:mb-0 transition-all duration-500">
-      <h2 className="text-3xl font-bold font-display text-primary text-center">Admin Panel</h2>
-      <form className="mt-8 space-y-6" onSubmit={(e) => { e.preventDefault(); navigate('AdminDashboard'); }}>
+    <div className="w-full max-w-[100%] sm:max-w-[450px] md:max-w-[500px] lg:max-w-[480px] bg-white p-8 sm:p-10 rounded-2xl shadow-xl transition-all duration-500 my-auto">
+      <h2 className="text-3xl font-bold font-display text-primary text-center tracking-tight mb-2">Admin Panel</h2>
+      <p className="text-center text-gray-500 mb-8 font-medium">XTASS Enterprise Portal</p>
+      <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); navigate('AdminDashboard'); }}>
         <Input id="email" label="Email" type="email" placeholder="admin@xtass.com" icon={<UserIcon className="w-5 h-5 text-gray-400" />} defaultValue="admin@xtass.com" />
         <Input id="password" label="Password" type="password" placeholder="••••••••" icon={<LockIcon className="w-5 h-5 text-gray-400" />} defaultValue="adminpass" />
         <div>
