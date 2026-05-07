@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Button, Input } from './UI';
-import { EyeIcon, EyeOffIcon, GoogleIcon } from '../Icons';
+import { EyeIcon, EyeOffIcon, GoogleIcon, AppleIcon, PhoneIcon, MailIcon } from '../Icons';
 
 interface AuthDropdownProps {
   isOpen: boolean;
@@ -206,11 +206,32 @@ export const AuthDropdown: React.FC<AuthDropdownProps> = ({ isOpen, onClose, onL
                   </div>
 
                   <div className="pt-4">
-                    <button type="submit" className="w-full font-bold py-3 px-4 rounded shadow-sm focus:outline-none transition-all duration-200 ease-in-out min-h-[48px] flex items-center justify-center bg-[#FFD700] hover:bg-[#F2CC00] text-[#341f26]">Sign In</button>
-                    <button type="button" onClick={() => { onLoginSuccess?.(); onClose(); }} className="mt-3 w-full font-bold py-3 px-4 border border-gray-300 rounded shadow-sm focus:outline-none transition-all duration-200 ease-in-out min-h-[48px] flex items-center justify-center bg-white hover:bg-gray-50 text-gray-700">
-                      <GoogleIcon className="w-5 h-5 mr-2" />
-                      Continue with Google
-                    </button>
+                    <button type="submit" className="w-full font-bold py-3 px-4 rounded shadow-sm focus:outline-none transition-all duration-200 ease-in-out min-h-[48px] flex items-center justify-center bg-primary hover:bg-primary-hover text-white">Sign In</button>
+                    
+                    <div className="flex items-center justify-center my-4">
+                        <div className="border-t border-gray-300 flex-grow"></div>
+                        <span className="px-4 text-gray-500 text-sm">OR</span>
+                        <div className="border-t border-gray-300 flex-grow"></div>
+                    </div>
+
+                    <div className="space-y-3">
+                        <button type="button" onClick={() => { onLoginSuccess?.(); onClose(); }} className="w-full flex items-center justify-center space-x-2 py-3 px-4 border border-gray-300 rounded shadow-sm focus:outline-none transition-all duration-200 ease-in-out min-h-[48px] bg-white hover:bg-gray-50 text-gray-700 text-sm font-medium">
+                          <GoogleIcon className="w-5 h-5" />
+                          <span>Continue with Google</span>
+                        </button>
+                        <button type="button" onClick={() => { onLoginSuccess?.(); onClose(); }} className="w-full flex items-center justify-center space-x-2 py-3 px-4 border border-gray-300 rounded shadow-sm focus:outline-none transition-all duration-200 ease-in-out min-h-[48px] bg-white hover:bg-gray-50 text-gray-700 text-sm font-medium">
+                          <AppleIcon className="w-5 h-5 text-black" />
+                          <span>Continue with Apple ID</span>
+                        </button>
+                        <button type="button" onClick={() => { onLoginSuccess?.(); onClose(); }} className="w-full flex items-center justify-center space-x-2 py-3 px-4 border border-gray-300 rounded shadow-sm focus:outline-none transition-all duration-200 ease-in-out min-h-[48px] bg-white hover:bg-gray-50 text-gray-700 text-sm font-medium">
+                          <PhoneIcon className="w-5 h-5 text-gray-600" />
+                          <span>Continue with Phone OTP</span>
+                        </button>
+                        <button type="button" onClick={() => { onLoginSuccess?.(); onClose(); }} className="w-full flex items-center justify-center space-x-2 py-3 px-4 border border-gray-300 rounded shadow-sm focus:outline-none transition-all duration-200 ease-in-out min-h-[48px] bg-white hover:bg-gray-50 text-gray-700 text-sm font-medium">
+                          <MailIcon className="w-5 h-5 text-gray-600" />
+                          <span>Continue with Email OTP</span>
+                        </button>
+                    </div>
                   </div>
                   
                   <div className="text-center mt-4">
