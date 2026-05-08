@@ -2980,6 +2980,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                           <option value="" disabled>Select your ride</option>
                           <option value="Instant Ride">Instant Ride</option>
                           <option value="Scheduled Ride">Scheduled Ride</option>
+                          <option value="Car Rental">Car Rental</option>
                         </select>
                         <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
                           <ChevronDownIcon className="w-5 h-5" />
