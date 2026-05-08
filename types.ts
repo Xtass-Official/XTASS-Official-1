@@ -25,6 +25,7 @@ export type Screen =
   | 'TripCompletionReceipt'
   | 'TripHistory'
   | 'TripDetailsView'
+  | 'MyBookings'
   | 'AccountProfile'
   | 'SavedPassengers'
   | 'EmergencyContacts'
@@ -53,6 +54,7 @@ export type Screen =
   | 'AdminDashboard'
   | 'DriverManagement'
   | 'LiveOperations'
+  | 'AdminBookings'
   | 'SystemConfig';
   
 export interface NavigationProps {

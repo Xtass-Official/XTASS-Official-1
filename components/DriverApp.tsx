@@ -3,7 +3,7 @@ import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import type { Screen, NavigationProps } from '../types';
 import { Button, Input, Header, ScreenContainer } from './shared/UI';
-import { PhoneIcon, LockIcon, CarIcon, UploadCloudIcon, FileTextIcon, DollarSignIcon, CheckCircleIcon, ChevronLeftIcon, XCircleIcon } from './Icons';
+import { PhoneIcon, LockIcon, CarIcon, UploadCloudIcon, FileTextIcon, DollarSignIcon, CheckCircleIcon, ChevronLeftIcon, XCircleIcon, ShieldIcon } from './Icons';
 
 interface DriverAppProps extends NavigationProps {
   screen: Screen;
@@ -192,10 +192,27 @@ const TripRequestScreen: React.FC<NavigationProps> = ({ navigate }) => (
                 45
             </div>
             <h2 className="text-2xl font-bold mt-4">New Trip Request</h2>
-            <div className="my-4 text-left space-y-1">
-                <p><strong>Pickup:</strong> Kotoka Int'l Airport</p>
-                <p><strong>Destination:</strong> Accra Mall</p>
-                <p><strong>Fare:</strong> <span className="font-bold text-green-600">$10.00 (PREPAID)</span></p>
+            <div className="my-4 text-left space-y-2 bg-gray-50 p-4 border border-gray-100">
+                <div className="flex justify-between items-center">
+                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Service Type</span>
+                    <span className="text-[10px] font-black text-primary uppercase tracking-widest border border-primary px-2 py-0.5">Instant Ride</span>
+                </div>
+                <p className="text-sm"><strong>Pickup:</strong> Kotoka Int'l Airport</p>
+                <p className="text-sm"><strong>Destination:</strong> Accra Mall</p>
+                <div className="flex justify-between items-center pt-2 border-t border-gray-200">
+                    <span className="text-sm font-bold">Estimated Fare:</span>
+                    <span className="font-black text-green-600 text-lg">$10.00</span>
+                </div>
+                <div className="flex gap-2">
+                    <div className="flex-1 bg-white p-2 border border-gray-200 text-center">
+                        <p className="text-[8px] font-black text-gray-400 uppercase tracking-widest leading-tight">Passengers</p>
+                        <p className="font-bold text-sm">2 Pax</p>
+                    </div>
+                    <div className="flex-1 bg-white p-2 border border-gray-200 text-center">
+                        <p className="text-[8px] font-black text-gray-400 uppercase tracking-widest leading-tight">Luggage</p>
+                        <p className="font-bold text-sm">Large</p>
+                    </div>
+                </div>
             </div>
             <div className="flex space-x-2">
                 <Button variant="secondary" onClick={() => navigate('DriverDashboard')}>Decline</Button>
@@ -206,31 +223,61 @@ const TripRequestScreen: React.FC<NavigationProps> = ({ navigate }) => (
 );
 
 
-const TripManagementScreen: React.FC<NavigationProps> = ({ navigate }) => (
-    <ScreenContainer>
-        <Header title="Trip to Accra Mall" onBack={() => navigate('DriverDashboard')} />
-         <div className="relative h-[calc(100vh-120px)]">
-             <div className="absolute inset-0 bg-gray-300 flex items-center justify-center">
-                <p className="text-gray-500 font-semibold">Navigation Map Placeholder</p>
-            </div>
-            <div className="absolute bottom-0 left-0 right-0 p-4">
-                <div className="bg-white p-4 rounded-lg shadow-lg">
-                    <div className="flex items-center space-x-4">
-                        <img src="https://picsum.photos/seed/user/64/64" alt="customer" className="w-16 h-16 rounded-full" />
-                        <div>
-                            <p className="font-bold">Ama Serwaa</p>
-                            <p className="text-gray-600">Pickup in 5 mins</p>
-                        </div>
-                        <div className="flex-grow text-right">
-                           <a href="tel:0241234567" className="bg-primary text-white p-3 rounded-full shadow-md"><PhoneIcon /></a>
+const TripManagementScreen: React.FC<NavigationProps> = ({ navigate }) => {
+    const [isCancelled, setIsCancelled] = React.useState(false);
+
+    return (
+        <ScreenContainer>
+            <Header title="Trip in Progress" onBack={() => navigate('DriverDashboard')} />
+            <div className="relative h-[calc(100vh-120px)] bg-gray-100">
+                <div className="absolute inset-0 flex items-center justify-center">
+                    <p className="text-gray-400 font-black text-2xl uppercase tracking-[0.2em] opacity-20">Live Navigation Map</p>
+                </div>
+                
+                {isCancelled && (
+                    <div className="absolute inset-0 bg-red-600/95 z-50 flex items-center justify-center p-8 text-center animate-fade-in">
+                        <div className="space-y-6">
+                            <XCircleIcon className="w-24 h-24 text-white mx-auto animate-bounce" />
+                            <h2 className="text-3xl font-black text-white uppercase tracking-widest">Trip Cancelled</h2>
+                            <p className="text-red-100 font-bold">The customer has cancelled this trip. Please return to the dashboard for your next assignment.</p>
+                            <Button variant="accent" onClick={() => navigate('DriverDashboard')} className="bg-white text-red-600 hover:bg-red-50 border-none px-12">Return to Dashboard</Button>
                         </div>
                     </div>
-                     <Button onClick={() => navigate('DriverTripCompletion')} className="mt-4">End Trip</Button>
+                )}
+
+                <div className="absolute bottom-6 left-4 right-4 space-y-4">
+                    {/* Live Update Notification Simulation */}
+                    <div className="bg-white/90 backdrop-blur-sm p-3 border-l-4 border-accent shadow-lg animate-pulse cursor-pointer" onClick={() => setIsCancelled(true)}>
+                        <p className="text-[10px] font-black text-accent uppercase tracking-widest leading-none mb-1">Live Simulator</p>
+                        <p className="text-xs font-bold text-gray-800">Tap to simulate Customer Cancellation</p>
+                    </div>
+
+                    <div className="bg-white p-6 shadow-2xl border border-gray-100 space-y-4">
+                        <div className="flex items-center space-x-4 pb-4 border-b border-gray-50">
+                            <img src="https://picsum.photos/seed/user/100/100" alt="customer" className="w-16 h-16 rounded-none border-2 border-primary" />
+                            <div className="flex-1">
+                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Customer</p>
+                                <p className="text-lg font-black text-gray-900 leading-none">Ama Serwaa</p>
+                                <div className="flex items-center gap-1 mt-1 text-accent">
+                                    <ShieldIcon className="w-3 h-3 fill-current" />
+                                    <span className="text-[10px] font-black uppercase tracking-widest">Premium Member</span>
+                                </div>
+                            </div>
+                            <a href="tel:0241234567" className="bg-primary text-white p-4 hover:bg-primary-hover transition-colors rounded-none shadow-lg">
+                                <PhoneIcon className="w-6 h-6" />
+                            </a>
+                        </div>
+                        
+                        <div className="grid grid-cols-2 gap-4">
+                            <button className="py-4 border border-gray-200 text-gray-600 font-black text-[10px] uppercase tracking-widest hover:bg-gray-50 transition-all rounded-none">Arrived</button>
+                            <button onClick={() => navigate('DriverTripCompletion')} className="py-4 bg-primary text-white font-black text-[10px] uppercase tracking-widest hover:bg-primary-hover transition-all rounded-none shadow-lg shadow-primary/20">Complete Trip</button>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </ScreenContainer>
-);
+        </ScreenContainer>
+    );
+};
 
 const DriverTripCompletionScreen: React.FC<NavigationProps> = ({ navigate }) => (
     <ScreenContainer>

@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import type { Screen, NavigationProps } from '../types';
 import { Button, Input, Select, Header, BottomNav, FloatingActionButtons, ScreenContainer, Toast, Modal } from './shared/UI';
-import { UserIcon, LockIcon, PhoneIcon, MapPinIcon, UsersIcon, BriefcaseIcon, CalendarIcon, ClockIcon, CreditCardIcon, ArrowRightIcon, CheckCircleIcon, XCircleIcon, ChevronLeftIcon, EyeIcon, EyeOffIcon, MailIcon, CameraIcon, ChevronDownIcon, ShieldIcon, GoogleIcon, AppleIcon, UploadCloudIcon, CarIcon, BabyIcon, BusIcon, SnowflakeIcon, FileTextIcon, StarIcon, GlobeIcon } from './Icons';
+import { UserIcon, LockIcon, PhoneIcon, MapPinIcon, UsersIcon, BriefcaseIcon, CalendarIcon, ClockIcon, CreditCardIcon, ArrowRightIcon, CheckCircleIcon, XCircleIcon, ChevronLeftIcon, EyeIcon, EyeOffIcon, MailIcon, CameraIcon, ChevronDownIcon, ShieldIcon, GoogleIcon, AppleIcon, UploadCloudIcon, CarIcon, BabyIcon, BusIcon, SnowflakeIcon, FileTextIcon, StarIcon, GlobeIcon, BookingIcon } from './Icons';
 
 // Type for booking details from the landing page form
 interface BookingDetails {
@@ -249,6 +249,8 @@ export const CustomerApp: React.FC<CustomerAppProps> = ({ screen, navigate, logo
 // FIX: Resolve "Cannot find name" error by defining the component.
       case 'TripHistory':
           return <TripHistoryScreen navigate={navigate} />;
+      case 'MyBookings':
+          return <MyBookingsScreen navigate={navigate} />;
 // FIX: Resolve "Cannot find name" error by defining the component.
       case 'TripDetailsView':
           return <TripDetailsViewScreen navigate={navigate} />;
@@ -1782,6 +1784,11 @@ const TripTrackingScreen: React.FC<NavigationProps> = ({ navigate }) => {
                             </div>
                         </div>
                         <Button onClick={() => navigate('TripCompletionReceipt')} className="mt-4">Simulate Arrival</Button>
+                        <div className="grid grid-cols-3 gap-2 mt-4">
+                            <button onClick={() => navigate('MyBookings')} className="py-2 bg-gray-50 border border-gray-200 text-primary font-bold text-[10px] uppercase tracking-widest hover:bg-primary hover:text-white transition-all">View</button>
+                            <button onClick={() => navigate('MyBookings')} className="py-2 bg-gray-50 border border-gray-200 text-gray-800 font-bold text-[10px] uppercase tracking-widest hover:bg-gray-100 transition-all">Modify</button>
+                            <button onClick={() => navigate('MyBookings')} className="py-2 bg-gray-50 border border-gray-200 text-red-600 font-bold text-[10px] uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all">Cancel</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1824,7 +1831,10 @@ const TripCompletionReceiptScreen: React.FC<TripCompletionReceiptScreenProps> = 
                         ))}
                     </div>
                 </div>
-                <Button onClick={() => navigate('ServiceSelection')} className="mt-6">Done</Button>
+                <div className="grid grid-cols-2 gap-4 mt-8">
+                    <Button variant="outline" onClick={() => navigate('MyBookings')} className="font-bold">View My Bookings</Button>
+                    <Button onClick={() => navigate('ServiceSelection')} className="font-bold">Done</Button>
+                </div>
             </div>
         </ScreenContainer>
     );
@@ -1838,7 +1848,7 @@ const TripHistoryScreen: React.FC<NavigationProps> = ({ navigate }) => {
     ];
     return (
         <ScreenContainer>
-            <Header title="Trip History" onBack={() => navigate('ServiceSelection')} onForward={() => navigate('Profile')} />
+            <Header title="Trip History" onBack={() => navigate('ServiceSelection')} onForward={() => navigate('AccountProfile')} />
             <div className="p-4 space-y-3">
                 {trips.map(trip => (
                     <div key={trip.id} onClick={() => navigate('TripDetailsView')} className="p-4 border rounded-lg cursor-pointer hover:bg-gray-50">
@@ -1852,24 +1862,672 @@ const TripHistoryScreen: React.FC<NavigationProps> = ({ navigate }) => {
                     </div>
                 ))}
             </div>
+            <div className="p-4">
+                <Button variant="outline" onClick={() => navigate('MyBookings')} className="w-full">Manage My Bookings</Button>
+            </div>
         </ScreenContainer>
     );
 };
 
-const TripDetailsViewScreen: React.FC<NavigationProps> = ({ navigate }) => {
+const MyBookingsScreen: React.FC<NavigationProps> = ({ navigate }) => {
+    const [serviceFilter, setServiceFilter] = useState<'Instant' | 'Schedule' | 'Rental'>('Instant');
+    const [selectedTab, setSelectedTab] = useState<'Upcoming' | 'Active' | 'Completed' | 'Cancelled'>('Upcoming');
+    
+    const allBookings = [
+        // Instant Rides
+        { 
+            id: 'XT-12345', 
+            serviceType: 'Instant',
+            type: 'Instant Ride', 
+            pickup: 'Kotoka Int\'l Airport', 
+            dropoff: 'East Legon', 
+            date: '2025-05-15', 
+            time: '02:30 PM', 
+            passengers: 2, 
+            vehicle: { type: 'Economy Sedan', plate: 'GW 123-25', color: 'Silver' }, 
+            driver: { name: 'Kofi Mensah', rating: 4.8, phone: '+233 24 123 4567' },
+            status: 'Upcoming',
+            rideStatus: 'Confirmed'
+        },
+        { 
+            id: 'XT-12346', 
+            serviceType: 'Instant',
+            type: 'Instant Ride', 
+            pickup: 'Airport City', 
+            dropoff: 'Labadi', 
+            date: '2025-05-08', 
+            time: '05:15 PM', 
+            passengers: 1, 
+            vehicle: { type: 'Comfort Class', plate: 'AS 445-23', color: 'White' }, 
+            driver: { name: 'Ama Serwaa', rating: 4.9, phone: '+233 20 888 9999' },
+            status: 'Active',
+            rideStatus: 'En Route',
+            eta: '4 min',
+            progress: 45
+        },
+        { 
+            id: 'XT-12347', 
+            serviceType: 'Instant',
+            type: 'Instant Ride', 
+            pickup: 'The Octagon', 
+            dropoff: 'Cantonments', 
+            date: '2025-05-01', 
+            time: '10:00 AM', 
+            passengers: 1, 
+            status: 'Completed',
+            fare: 12.50
+        },
+
+        // Scheduled Rides
+        { 
+            id: 'XT-99001', 
+            serviceType: 'Schedule',
+            type: 'Scheduled Ride', 
+            pickup: 'Osu', 
+            dropoff: 'Airport Residential', 
+            date: '2025-05-20', 
+            time: '08:00 AM', 
+            passengers: 1, 
+            vehicleClass: 'Business Class',
+            status: 'Upcoming',
+            countdown: '3 days'
+        },
+        { 
+            id: 'XT-99002', 
+            serviceType: 'Schedule',
+            type: 'Scheduled Ride', 
+            pickup: 'Legon', 
+            dropoff: 'Spintex', 
+            date: '2025-05-18', 
+            time: '09:00 AM', 
+            passengers: 2, 
+            vehicleClass: 'Executive',
+            status: 'Upcoming',
+            countdown: '1 day'
+        },
+
+        // Car Rentals
+        { 
+            id: 'XT-RC001', 
+            serviceType: 'Rental',
+            type: 'Car Rental', 
+            pickup: 'Accra Mall', 
+            dropoff: 'Accra Mall', 
+            date: '2025-05-10', 
+            time: '10:00 AM', 
+            returnDate: '2025-05-15',
+            returnTime: '10:00 AM',
+            vehicle: 'Luxury SUV', 
+            vehicleImage: 'https://i.ibb.co/zWN7ZHns/Airport-Pickup-1.jpg',
+            status: 'Active',
+            remainingDuration: '2 days',
+            dailyRate: 150,
+            totalRate: 750
+        },
+        { 
+            id: 'XT-RC002', 
+            serviceType: 'Rental',
+            type: 'Car Rental', 
+            pickup: 'Kotoka Airport', 
+            dropoff: 'Kotoka Airport', 
+            date: '2025-05-25', 
+            time: '12:00 PM', 
+            returnDate: '2025-05-30',
+            returnTime: '12:00 PM',
+            vehicle: 'Economy Sedan', 
+            status: 'Upcoming'
+        }
+    ];
+
+    const filteredBookings = allBookings.filter(b => b.serviceType === serviceFilter && b.status === selectedTab);
+
+    const getTitle = () => {
+        if (serviceFilter === 'Instant') return 'My Booking (Instant Ride)';
+        if (serviceFilter === 'Schedule') return 'My Booking (Schedule A Ride)';
+        return 'My Booking (Car Rental)';
+    };
+
+    const EmptyState = () => {
+        const config = {
+            Instant: {
+                text: "No instant rides found. Need a ride now? Book an Instant Ride for immediate pickup.",
+                cta: "Book Instant Ride",
+                navigate: "TripDetailsInput"
+            },
+            Schedule: {
+                text: "No scheduled rides found. Plan ahead and schedule your next ride for peace of mind.",
+                cta: "Schedule a Ride",
+                navigate: "ScheduleRide"
+            },
+            Rental: {
+                text: "No rental bookings found. Experience the freedom of the open road with our premium rental fleet.",
+                cta: "See Available Cars",
+                navigate: "CarRental"
+            }
+        };
+        const current = config[serviceFilter];
+        return (
+            <div className="py-20 text-center px-6">
+                <div className="w-20 h-20 bg-gray-50 flex items-center justify-center text-gray-200 rounded-none mx-auto mb-4">
+                    <BookingIcon className="w-10 h-10" />
+                </div>
+                <p className="text-gray-400 font-bold uppercase tracking-widest text-xs leading-relaxed mb-6">{current.text}</p>
+                <Button variant="secondary" onClick={() => navigate(current.navigate as Screen)}>{current.cta}</Button>
+            </div>
+        );
+    };
+
     return (
         <ScreenContainer>
-            <Header title="Trip Details" onBack={() => navigate('TripHistory')} />
-            <div className="p-4 space-y-4">
-                <div className="bg-gray-200 h-48 rounded-lg flex items-center justify-center"><p>Map Placeholder</p></div>
-                <div className="bg-white p-4 rounded-lg shadow">
-                    <p><strong>Date:</strong> {new Date('2025-10-26').toLocaleString()}</p>
-                    <p><strong>From:</strong> Kotoka Int'l Airport</p>
-                    <p><strong>To:</strong> Accra Mall</p>
-                    <p><strong>Driver:</strong> Kofi Mensah</p>
-                    <p><strong>Fare:</strong> $10.00</p>
+            <Header title={getTitle()} onBack={() => navigate('ServiceSelection')} />
+            
+            {/* Service Type Selector */}
+            <div className="bg-gray-100 p-1 flex gap-1 sticky top-0 z-20 border-b border-gray-200">
+                {(['Instant', 'Schedule', 'Rental'] as const).map(type => (
+                    <button
+                        key={type}
+                        onClick={() => setServiceFilter(type)}
+                        className={`flex-1 py-3 text-[10px] font-black uppercase tracking-widest transition-all ${serviceFilter === type ? 'bg-white text-primary shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+                    >
+                        {type === 'Schedule' ? 'Schedule' : type}
+                    </button>
+                ))}
+            </div>
+
+            {/* Tab Navigation */}
+            <div className="flex border-b overflow-x-auto scrollbar-hide bg-white sticky top-[49px] z-10 shadow-sm">
+                {(['Upcoming', 'Active', 'Completed', 'Cancelled'] as const).map(tab => (
+                    <button
+                        key={tab}
+                        onClick={() => setSelectedTab(tab)}
+                        className={`flex-1 py-4 px-2 text-[10px] font-black uppercase tracking-widest whitespace-nowrap transition-all border-b-2 ${selectedTab === tab ? 'border-primary text-primary' : 'border-transparent text-gray-400'}`}
+                    >
+                        {tab === 'Active' ? 'Active / Ongoing' : tab}
+                    </button>
+                ))}
+            </div>
+
+            <div className="p-4 space-y-4 pb-24">
+                {filteredBookings.length > 0 ? (
+                    filteredBookings.map(booking => (
+                        <div key={booking.id} className={`bg-white border rounded-none shadow-sm overflow-hidden transition-all ${booking.status === 'Active' ? 'ring-1 ring-primary/20' : ''}`}>
+                            {/* Card Header */}
+                            <div className="p-4 border-b bg-gray-50 flex justify-between items-center">
+                                <span className="text-[10px] font-black text-gray-400 tracking-widest uppercase">ID: {booking.id}</span>
+                                <span className={`text-[10px] font-black px-2 py-0.5 rounded-none uppercase tracking-widest ${
+                                    booking.status === 'Upcoming' ? 'bg-blue-100 text-blue-700' :
+                                    booking.status === 'Active' ? 'bg-green-600 text-white animate-pulse' :
+                                    booking.status === 'Completed' ? 'bg-gray-100 text-gray-700' :
+                                    'bg-red-100 text-red-700'
+                                }`}>
+                                    {booking.status === 'Active' && booking.serviceType === 'Instant' ? (booking as any).rideStatus : booking.status}
+                                </span>
+                            </div>
+
+                            {/* Card Body - Contextual */}
+                            <div className="p-5 space-y-4">
+                                {serviceFilter === 'Instant' && (
+                                    <InstantRideCard booking={booking} />
+                                )}
+                                {serviceFilter === 'Schedule' && (
+                                    <ScheduleRideCard booking={booking} />
+                                )}
+                                {serviceFilter === 'Rental' && (
+                                    <CarRentalCard booking={booking} />
+                                )}
+                            </div>
+                            
+                            {/* Actions - Contextual */}
+                            <div className="p-4 bg-gray-50 border-t flex gap-2">
+                                {serviceFilter === 'Instant' && booking.status === 'Active' ? (
+                                    <>
+                                        <button onClick={() => navigate('TripTracking')} className="flex-1 py-3 bg-primary text-white font-black text-[10px] uppercase tracking-widest hover:bg-primary-hover transition-all rounded-none">Track Live</button>
+                                        <button className="flex-1 py-3 bg-white border border-gray-200 text-gray-800 font-black text-[10px] uppercase tracking-widest hover:bg-gray-100 transition-all rounded-none">Call</button>
+                                    </>
+                                ) : serviceFilter === 'Schedule' && booking.status === 'Upcoming' ? (
+                                    <>
+                                        <button onClick={() => navigate('TripDetailsView')} className="flex-1 py-3 bg-white border border-gray-200 text-gray-800 font-black text-[10px] uppercase tracking-widest hover:bg-gray-100 transition-all rounded-none">View Details</button>
+                                        <button className="flex-1 py-3 bg-white border border-primary text-primary font-black text-[10px] uppercase tracking-widest hover:bg-primary hover:text-white transition-all rounded-none">Reschedule</button>
+                                    </>
+                                ) : serviceFilter === 'Rental' && booking.status === 'Active' ? (
+                                    <>
+                                        <button className="flex-1 py-3 bg-white border border-gray-200 text-gray-800 font-black text-[10px] uppercase tracking-widest hover:bg-gray-100 transition-all rounded-none">Agreement</button>
+                                        <button className="flex-1 py-3 bg-primary text-white font-black text-[10px] uppercase tracking-widest hover:bg-primary-hover transition-all rounded-none">Extend</button>
+                                    </>
+                                ) : (
+                                    <button 
+                                        onClick={() => navigate('TripDetailsView')}
+                                        className="flex-1 py-3 bg-white border border-gray-200 text-gray-800 font-black text-[10px] uppercase tracking-widest hover:bg-gray-100 transition-all rounded-none"
+                                    >
+                                        View
+                                    </button>
+                                )}
+                                
+                                {booking.status === 'Upcoming' && (
+                                    <button className="flex-1 py-3 bg-white border border-red-200 text-red-600 font-black text-[10px] uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all rounded-none">
+                                        Cancel
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                    ))
+                ) : (
+                    <EmptyState />
+                )}
+            </div>
+        </ScreenContainer>
+    );
+};
+
+const InstantRideCard = ({ booking }: { booking: any }) => {
+    return (
+        <div className="space-y-4">
+            {booking.status === 'Active' && (
+                <div className="flex items-center gap-4 bg-primary/5 p-3 border border-primary/10">
+                    <div className="w-10 h-10 bg-white rounded-full border-2 border-primary overflow-hidden flex-shrink-0">
+                        <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${booking.driver.name}`} alt={booking.driver.name} />
+                    </div>
+                    <div className="flex-1">
+                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Driver Assigned</p>
+                        <p className="font-bold text-gray-900">{booking.driver.name}</p>
+                    </div>
+                    <div className="text-right">
+                        <p className="text-[10px] font-black text-primary uppercase tracking-widest">Arriving In</p>
+                        <p className="text-lg font-black text-primary">{booking.eta}</p>
+                    </div>
+                </div>
+            )}
+
+            <div className="space-y-3">
+                <div className="flex items-start gap-4">
+                    <div className="mt-1">
+                        <div className="w-2 h-2 rounded-full bg-primary ring-2 ring-primary/20"></div>
+                        <div className="w-px h-8 bg-gray-200 mx-auto my-1"></div>
+                        <div className="w-2 h-2 rounded-full bg-accent ring-2 ring-accent/20"></div>
+                    </div>
+                    <div className="flex-1 space-y-4">
+                        <div>
+                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 leading-none">Pick-up</p>
+                            <p className="text-sm font-bold text-gray-800">{booking.pickup}</p>
+                        </div>
+                        <div>
+                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 leading-none">Drop-off</p>
+                            <p className="text-sm font-bold text-gray-800">{booking.dropoff}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                {booking.status === 'Active' && (
+                    <div className="pt-2">
+                        <div className="h-1 w-full bg-gray-100 mb-1">
+                            <div className="h-full bg-primary" style={{ width: `${booking.progress}%` }}></div>
+                        </div>
+                        <div className="flex justify-between">
+                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Trip Progress</p>
+                            <p className="text-[10px] font-black text-primary uppercase tracking-widest">{booking.rideStatus}</p>
+                        </div>
+                    </div>
+                )}
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 pt-4 border-t border-gray-50">
+                <div className="flex items-center gap-2">
+                    <CarIcon className="w-4 h-4 text-gray-400" />
+                    <span className="text-xs font-bold">{booking.vehicle?.type || booking.vehicle}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                    <UsersIcon className="w-4 h-4 text-gray-400" />
+                    <span className="text-xs font-bold">{booking.passengers} Pax</span>
+                </div>
+                {booking.status === 'Completed' && (
+                    <div className="col-span-2 flex justify-between items-center bg-gray-50 p-2 border border-dashed border-gray-200 mt-2">
+                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Final Fare Paid</span>
+                        <span className="font-black text-primary font-display">${booking.fare?.toFixed(2)}</span>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+};
+
+const ScheduleRideCard = ({ booking }: { booking: any }) => {
+    return (
+        <div className="space-y-4">
+            <div className="flex justify-between items-center bg-blue-50/50 p-4 border border-blue-100">
+                <div>
+                    <p className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-1">Scheduled for</p>
+                    <p className="text-lg font-black text-blue-900 leading-none">{booking.date}</p>
+                    <p className="text-sm font-bold text-blue-800 mt-1">{booking.time}</p>
+                </div>
+                {booking.status === 'Upcoming' && (
+                    <div className="text-right">
+                        <p className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-1">Countdown</p>
+                        <p className="font-black text-blue-700 bg-white px-2 py-1 border border-blue-200">{booking.countdown}</p>
+                    </div>
+                )}
+            </div>
+
+            <div className="space-y-3 px-1">
+                <div className="flex items-start gap-4">
+                    <div className="mt-1">
+                        <div className="w-2 h-2 rounded-full bg-blue-500 ring-2 ring-blue-500/20"></div>
+                        <div className="w-px h-8 bg-gray-200 mx-auto my-1"></div>
+                        <div className="w-2 h-2 rounded-full bg-accent ring-2 ring-accent/20"></div>
+                    </div>
+                    <div className="flex-1 space-y-4">
+                        <div>
+                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 leading-none">Pick-up</p>
+                            <p className="text-sm font-bold text-gray-800">{booking.pickup}</p>
+                        </div>
+                        <div>
+                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 leading-none">Drop-off</p>
+                            <p className="text-sm font-bold text-gray-800">{booking.dropoff}</p>
+                        </div>
+                    </div>
                 </div>
             </div>
+
+            <div className="grid grid-cols-2 gap-4 pt-4 border-t border-gray-50">
+                <div className="flex items-center gap-2">
+                    <ShieldIcon className="w-4 h-4 text-gray-400" />
+                    <span className="text-xs font-bold">{booking.vehicleClass}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                    <UsersIcon className="w-4 h-4 text-gray-400" />
+                    <span className="text-xs font-bold">{booking.passengers} Pax</span>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+const CarRentalCard = ({ booking }: { booking: any }) => {
+    return (
+        <div className="space-y-4">
+            {booking.vehicleImage && (
+                <div className="relative h-40 bg-gray-100 overflow-hidden border border-gray-200">
+                    <img src={booking.vehicleImage} className="w-full h-full object-cover" alt={booking.vehicle} />
+                    <div className="absolute top-2 left-2 bg-black/60 text-white text-[10px] font-black px-2 py-1 uppercase tracking-widest backdrop-blur-sm">
+                        {booking.vehicle}
+                    </div>
+                    {booking.status === 'Active' && (
+                        <div className="absolute bottom-2 right-2 bg-primary text-white text-[10px] font-black px-3 py-1 uppercase tracking-[0.2em] shadow-lg">
+                            {booking.remainingDuration} Left
+                        </div>
+                    )}
+                </div>
+            )}
+
+            <div className="grid grid-cols-2 gap-4 pb-2">
+                <div className="bg-gray-50 p-3 border border-gray-100">
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 leading-none">Rental Start</p>
+                    <p className="text-[11px] font-bold text-gray-800">{booking.date}</p>
+                    <p className="text-[10px] font-medium text-gray-500">{booking.time}</p>
+                </div>
+                <div className="bg-gray-50 p-3 border border-gray-100">
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 leading-none">Rental Return</p>
+                    <p className="text-[11px] font-bold text-gray-800">{booking.returnDate}</p>
+                    <p className="text-[10px] font-medium text-gray-500">{booking.returnTime}</p>
+                </div>
+            </div>
+
+            <div className="space-y-3 px-1">
+                <div className="flex items-start gap-4">
+                    <MapPinIcon className="w-4 h-4 text-primary mt-1 shrink-0" />
+                    <div className="flex-1">
+                         <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 leading-none">Rental Hub</p>
+                         <p className="text-sm font-bold text-gray-800">{booking.pickup}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 pt-4 border-t border-gray-50">
+                 <div className="flex items-center gap-2 text-xs font-bold">
+                    <GlobeIcon className="w-4 h-4 text-gray-400" />
+                    Free WiFi Included
+                </div>
+                <div className="flex justify-end items-center gap-1 font-display">
+                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest mr-1">Total</span>
+                    <span className="text-lg font-black text-primary">${booking.totalRate || 'TBD'}</span>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+
+const TripDetailsViewScreen: React.FC<NavigationProps> = ({ navigate }) => {
+    const [showCancelModal, setShowCancelModal] = useState(false);
+    const [cancelReason, setCancelReason] = useState('');
+    const [isModifying, setIsModifying] = useState(false);
+
+    const booking = {
+        id: 'XT-12345',
+        type: 'Scheduled Ride',
+        pickup: 'Kotoka Int\'l Airport',
+        dropoff: 'East Legon',
+        date: '2025-05-15',
+        time: '02:30 PM',
+        passengers: 2,
+        vehicle: 'Economy Sedan',
+        status: 'Upcoming',
+        bookingFee: 2.00,
+        estimatedFare: 13.00,
+        total: 15.00
+    };
+
+    const handleCancel = () => {
+        alert(`Booking cancelled. Reason: ${cancelReason || 'No reason provided'}`);
+        setShowCancelModal(false);
+        navigate('MyBookings');
+    };
+
+    const handleModify = (e: React.FormEvent) => {
+        e.preventDefault();
+        alert('Booking updated successfully!');
+        setIsModifying(false);
+        navigate('MyBookings');
+    };
+
+    if (isModifying) {
+        return (
+            <ScreenContainer>
+                <Header title="Modify Booking" onBack={() => setIsModifying(false)} />
+                <div className="p-6 space-y-6">
+                    <div className="bg-primary/5 p-4 border border-primary/10">
+                         <p className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-2 text-center">Modification Policy</p>
+                         <p className="text-xs text-center text-gray-600 leading-relaxed">You can modify your booking details up to 2 hours before the scheduled time. Some changes may affect the final fare.</p>
+                    </div>
+                    
+                    <form onSubmit={handleModify} className="space-y-5 pb-20">
+                        <Input label="Pick-up Location" defaultValue={booking.pickup} />
+                        <Input label="Drop-off Location" defaultValue={booking.dropoff} />
+                        <div className="grid grid-cols-2 gap-4">
+                            <Input label="Date" type="date" defaultValue="2025-05-15" />
+                            <Input label="Time" type="time" defaultValue="14:30" />
+                        </div>
+                        <Input label="Passengers" type="number" defaultValue={booking.passengers} />
+                        
+                        <div className="pt-6">
+                            <Button type="submit">Update Booking</Button>
+                            <button 
+                                type="button" 
+                                onClick={() => setIsModifying(false)}
+                                className="w-full mt-3 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest hover:text-gray-600 underline"
+                            >
+                                Cancel Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </ScreenContainer>
+        );
+    }
+
+    return (
+        <ScreenContainer>
+            <Header title="Booking Details" onBack={() => navigate('MyBookings')} />
+            
+            <div className="p-4 space-y-6 pb-24 h-full overflow-y-auto">
+                {/* Map Placeholder */}
+                <div className="bg-gray-100 h-48 rounded-none border border-gray-200 flex flex-col items-center justify-center relative overflow-hidden">
+                    <div className="absolute inset-0 bg-[url('https://i.ibb.co/zWN7ZHns/Airport-Pickup-1.jpg')] bg-cover bg-center opacity-20"></div>
+                    <MapPinIcon className="w-10 h-10 text-primary mb-2 relative z-10" />
+                    <p className="text-gray-400 font-bold uppercase tracking-widest text-xs relative z-10">Route Map Placeholder</p>
+                    <div className="absolute bottom-4 left-4 right-4 flex justify-between items-center px-4 py-2 bg-white/90 backdrop-blur-sm border border-gray-100 shadow-sm z-10">
+                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Status</span>
+                        <span className="text-[10px] font-black text-primary uppercase tracking-widest">{booking.status}</span>
+                    </div>
+                </div>
+
+                <div className="space-y-8">
+                    {/* Main Details */}
+                    <section className="space-y-6">
+                        <div className="flex justify-between items-start">
+                            <div>
+                                <h2 className="text-2xl font-black text-gray-900 leading-none mb-1">{booking.type}</h2>
+                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">ID: {booking.id}</p>
+                            </div>
+                            <div className="bg-gray-50 border border-gray-100 p-2 text-center min-w-[80px]">
+                                <p className="text-[8px] font-black text-gray-400 uppercase tracking-widest leading-tight">Passengers</p>
+                                <p className="font-black text-primary">{booking.passengers}</p>
+                            </div>
+                        </div>
+
+                        <div className="space-y-4">
+                            <div className="flex items-start gap-4">
+                                <div className="mt-1 flex flex-col items-center">
+                                    <div className="w-2 h-2 rounded-none bg-primary"></div>
+                                    <div className="w-px h-10 bg-gray-100 my-1"></div>
+                                    <div className="w-2 h-2 rounded-none bg-accent"></div>
+                                </div>
+                                <div className="flex-1 space-y-4">
+                                    <div>
+                                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 leading-none">Pick-up Location</p>
+                                        <p className="text-sm font-bold text-gray-800">{booking.pickup}</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 leading-none">Drop-off Location</p>
+                                        <p className="text-sm font-bold text-gray-800">{booking.dropoff}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="bg-gray-50 p-4 border border-gray-100">
+                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Date</p>
+                                <p className="font-bold text-gray-900">{booking.date}</p>
+                            </div>
+                            <div className="bg-gray-50 p-4 border border-gray-100">
+                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Time</p>
+                                <p className="font-bold text-gray-900">{booking.time}</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Timeline */}
+                    <section className="space-y-4">
+                        <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Booking Timeline</h3>
+                        <div className="space-y-4 px-2">
+                             {[
+                                { status: 'Booking Confirmed', time: '10 May, 09:00 AM', completed: true },
+                                { status: 'Payment Processed', time: '10 May, 09:02 AM', completed: true },
+                                { status: 'Driver Assigned', time: 'Pending', completed: false },
+                                { status: 'Trip Started', time: 'Pending', completed: false },
+                             ].map((step, i) => (
+                                <div key={i} className="flex gap-4 items-start">
+                                    <div className="mt-1.5 shrink-0">
+                                        <div className={`w-3 h-3 rounded-full ${step.completed ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]' : 'bg-gray-200'}`}></div>
+                                    </div>
+                                    <div className="flex-1 border-b border-gray-50 pb-2">
+                                        <p className={`text-sm font-bold ${step.completed ? 'text-gray-900' : 'text-gray-400'}`}>{step.status}</p>
+                                        <p className="text-[10px] font-medium text-gray-400 uppercase tracking-widest">{step.time}</p>
+                                    </div>
+                                </div>
+                             ))}
+                        </div>
+                    </section>
+
+                    {/* Payment Summary */}
+                    <section className="bg-gray-50 p-6 rounded-none border border-dashed border-gray-300">
+                        <h4 className="text-xs font-black text-gray-900 uppercase tracking-widest mb-4 text-center">Payment Summary</h4>
+                        <div className="space-y-2">
+                            <div className="flex justify-between text-sm font-bold text-gray-600">
+                                <span>Estimated Fare</span>
+                                <span>${booking.estimatedFare.toFixed(2)}</span>
+                            </div>
+                            <div className="flex justify-between text-sm font-bold text-gray-600">
+                                <span>Booking Fee</span>
+                                <span>${booking.bookingFee.toFixed(2)}</span>
+                            </div>
+                            <div className="flex justify-between text-lg font-black text-gray-900 border-t border-gray-200 pt-2 mt-2">
+                                <span>Estimated Total</span>
+                                <span className="text-primary font-display">${booking.total.toFixed(2)}</span>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Contextual Actions */}
+                    <section className="flex flex-col gap-3 py-6">
+                        {booking.status === 'Upcoming' && (
+                            <div className="grid grid-cols-2 gap-3">
+                                <button 
+                                    onClick={() => setIsModifying(true)}
+                                    className="py-4 border border-gray-200 text-gray-800 font-black text-[10px] uppercase tracking-widest hover:bg-gray-50 transition-all rounded-none"
+                                >
+                                    Modify
+                                </button>
+                                <button 
+                                    onClick={() => setShowCancelModal(true)}
+                                    className="py-4 border border-red-100 text-red-600 font-black text-[10px] uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all rounded-none"
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        )}
+                        <button className="py-4 bg-gray-100 text-gray-400 font-black text-[10px] uppercase tracking-widest rounded-none opacity-50 cursor-not-allowed">
+                            Download Receipt
+                        </button>
+                    </section>
+                </div>
+            </div>
+
+            {/* Cancel Modal */}
+                <Modal 
+                    isOpen={showCancelModal} 
+                    onClose={() => setShowCancelModal(false)}
+                    title="Cancel Booking"
+                >
+                    <div className="space-y-6">
+                        <div className="bg-red-50 p-4 border border-red-100 text-red-800 text-sm font-medium">
+                            Are you sure you want to cancel this booking? This action cannot be undone.
+                        </div>
+                        <div>
+                            <label className="block text-xs font-black uppercase tracking-widest text-gray-400 mb-2">Reason for Cancellation (Optional)</label>
+                            <textarea 
+                                value={cancelReason}
+                                onChange={(e) => setCancelReason(e.target.value)}
+                                placeholder="Please let us know why you are cancelling..."
+                                className="w-full p-4 border border-gray-200 rounded-none focus:border-primary focus:ring-0 min-h-[120px] text-sm"
+                            ></textarea>
+                        </div>
+                        <div className="flex gap-4 pt-4">
+                            <button 
+                                onClick={handleCancel}
+                                className="flex-1 py-4 bg-red-600 text-white font-bold text-xs uppercase tracking-widest hover:bg-red-700 transition-all rounded-none shadow-lg shadow-red-600/20"
+                            >
+                                Confirm Cancellation
+                            </button>
+                            <button 
+                                onClick={() => setShowCancelModal(false)}
+                                className="flex-1 py-4 bg-gray-100 text-gray-800 font-bold text-xs uppercase tracking-widest hover:bg-gray-200 transition-all rounded-none"
+                            >
+                                Go Back
+                            </button>
+                        </div>
+                    </div>
+                </Modal>
         </ScreenContainer>
     );
 };
@@ -1885,6 +2543,7 @@ const AccountProfileScreen: React.FC<NavigationProps> = ({ navigate, logout }) =
                     <p className="text-gray-600">customer@xtass.com</p>
                 </div>
                 <div className="space-y-2">
+                    <button onClick={() => navigate('MyBookings')} className="w-full text-left p-4 bg-gray-50 rounded-lg flex justify-between items-center font-bold text-primary border border-primary/10"><span>My Bookings</span> <ArrowRightIcon className="w-5 h-5"/></button>
                     <button onClick={() => navigate('SavedPassengers')} className="w-full text-left p-4 bg-gray-50 rounded-lg flex justify-between items-center"><span>Saved Passengers</span> <ArrowRightIcon className="w-5 h-5"/></button>
                     <button onClick={() => navigate('EmergencyContacts')} className="w-full text-left p-4 bg-gray-50 rounded-lg flex justify-between items-center"><span>Emergency Contacts</span> <ArrowRightIcon className="w-5 h-5"/></button>
                     <button className="w-full text-left p-4 bg-gray-50 rounded-lg flex justify-between items-center"><span>Payment Methods</span> <ArrowRightIcon className="w-5 h-5"/></button>

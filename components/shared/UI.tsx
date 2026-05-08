@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Screen, NavigationProps } from '../../types';
-import { HomeIcon, HistoryIcon, UserIcon, PhoneIcon, ChevronLeftIcon, ChevronRightIcon, XCircleIcon, ChevronDownIcon } from '../Icons';
+import { HomeIcon, HistoryIcon, UserIcon, PhoneIcon, ChevronLeftIcon, ChevronRightIcon, XCircleIcon, ChevronDownIcon, BookingIcon } from '../Icons';
 
 // Reusable Button Component
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -109,7 +109,7 @@ interface BottomNavProps extends NavigationProps {
 export const BottomNav: React.FC<BottomNavProps> = ({ navigate, activeScreen }) => {
   const navItems = [
     { screen: 'ServiceSelection', icon: HomeIcon, label: 'Home' },
-    { screen: 'TripHistory', icon: HistoryIcon, label: 'History' },
+    { screen: 'MyBookings', icon: BookingIcon, label: 'My Bookings' },
     { screen: 'AccountProfile', icon: UserIcon, label: 'Profile' },
   ];
   const isActive = (screen: Screen) => activeScreen.startsWith(screen);

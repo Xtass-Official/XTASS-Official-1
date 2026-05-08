@@ -88,8 +88,13 @@ const SCREEN_ROUTES: Record<string, Screen> = {
   '/': 'Welcome',
   '/customer/login': 'Login',
   '/customer/register': 'Register',
+  '/customer/bookings': 'MyBookings',
+  '/customer/profile': 'AccountProfile',
   '/driver/login': 'DriverLogin',
+  '/driver/dashboard': 'DriverDashboard',
   '/admin/login': 'AdminLogin',
+  '/admin/dashboard': 'AdminDashboard',
+  '/admin/bookings': 'AdminBookings',
 };
 
 export const WELCOME_ROUTES_MAP: Record<string, string> = {
@@ -2779,6 +2784,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                 <NavLinkRed active={view === 'about'} onClick={() => setView('about')}>Who We Are</NavLinkRed>
                 <NavLinkRed active={view === 'services'} onClick={() => setView('services')}>What We Do</NavLinkRed>
                 <NavLinkRed active={view === 'hospitality'} onClick={() => setView('hospitality')}>Hospitality</NavLinkRed>
+                <NavLinkRed active={view === 'my-bookings'} onClick={() => { setView('manage-reservation'); onRoleSelect('Customer'); }}>My Bookings</NavLinkRed>
                 
                 {/* Reservations Dropdown Trigger */}
                 <div 
@@ -2886,6 +2892,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                 <MobileNavLink onClick={() => { setView('about'); setIsMobileMenuOpen(false); }}>Who We Are</MobileNavLink>
                 <MobileNavLink onClick={() => { setView('services'); setIsMobileMenuOpen(false); }}>What We Do</MobileNavLink>
                 <MobileNavLink onClick={() => { setView('hospitality'); setIsMobileMenuOpen(false); }}>Hospitality</MobileNavLink>
+                <MobileNavLink onClick={() => { onRoleSelect('Customer'); setIsMobileMenuOpen(false); }}>My Bookings</MobileNavLink>
                 
                 {/* Mobile Reservations Accordion */}
                 <div className="flex flex-col">

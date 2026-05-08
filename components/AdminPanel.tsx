@@ -2,7 +2,7 @@ import React from 'react';
 import type { Screen, NavigationProps } from '../types';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Button, Input } from './shared/UI';
-import { UserIcon, LockIcon, MenuIcon, CarIcon, DollarSignIcon, UsersIcon, ShieldIcon, BarChart2Icon, MapPinIcon, SettingsIcon, LogOutIcon, ChevronLeftIcon, SearchIcon, BusIcon } from './Icons';
+import { UserIcon, LockIcon, MenuIcon, CarIcon, DollarSignIcon, UsersIcon, ShieldIcon, BarChart2Icon, MapPinIcon, SettingsIcon, LogOutIcon, ChevronLeftIcon, SearchIcon, BusIcon, FileTextIcon } from './Icons';
 
 interface AdminPanelProps extends NavigationProps {
   screen: Screen;
@@ -19,6 +19,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ screen, navigate, logout
         return <AdminDashboardScreen />;
       case 'DriverManagement':
         return <DriverManagementScreen />;
+      case 'AdminBookings':
+        return <AdminBookingsScreen />;
       case 'LiveOperations':
         return <LiveOperationsScreen />;
       case 'SystemConfig':
@@ -59,6 +61,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children, screen, navigate, l
             <nav className="flex-1 p-4 space-y-2">
                 <NavItem screenName="AdminDashboard" currentScreen={screen} navigate={navigate} icon={<BarChart2Icon />}>Dashboard</NavItem>
                 <NavItem screenName="DriverManagement" currentScreen={screen} navigate={navigate} icon={<UsersIcon />}>Drivers</NavItem>
+                <NavItem screenName="AdminBookings" currentScreen={screen} navigate={navigate} icon={<FileTextIcon />}>Bookings</NavItem>
                 <NavItem screenName="LiveOperations" currentScreen={screen} navigate={navigate} icon={<MapPinIcon />}>Live Map</NavItem>
                 <NavItem screenName="SystemConfig" currentScreen={screen} navigate={navigate} icon={<SettingsIcon />}>Configuration</NavItem>
             </nav>
@@ -328,3 +331,77 @@ const SystemConfigScreen: React.FC = () => (
         </div>
   </div>
 );
+
+const AdminBookingsScreen: React.FC = () => {
+    const [filter, setFilter] = React.useState('All');
+    const bookings = [
+        { id: 'XT-12345', customer: 'John Doe', type: 'Instant Ride', status: 'Upcoming', date: '2025-05-15', amount: '$15.00' },
+        { id: 'XT-RC001', customer: 'Ama Serwaa', type: 'Car Rental', status: 'Active', date: '2025-05-10', amount: '$750.00' },
+        { id: 'XT-99001', customer: 'Kwame Appiah', type: 'Scheduled Ride', status: 'Upcoming', date: '2025-05-20', amount: '$45.00' },
+        { id: 'XT-12347', customer: 'Esi Koomson', type: 'Instant Ride', status: 'Completed', date: '2025-05-01', amount: '$12.50' },
+    ];
+
+    const filtered = filter === 'All' ? bookings : bookings.filter(b => b.type.includes(filter));
+
+    return (
+        <div className="space-y-6">
+            <div className="bg-white p-6 rounded-lg shadow-md">
+                <div className="flex justify-between items-center mb-6">
+                    <h3 className="font-bold text-xl">Booking Management</h3>
+                    <div className="flex gap-2">
+                        {['All', 'Instant', 'Scheduled', 'Rental'].map(f => (
+                            <button
+                                key={f}
+                                onClick={() => setFilter(f)}
+                                className={`px-4 py-2 text-xs font-bold uppercase tracking-widest rounded-none border transition-all ${filter === f ? 'bg-primary text-white border-primary' : 'bg-white text-gray-400 border-gray-200 hover:border-primary hover:text-primary'}`}
+                            >
+                                {f}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
+                <div className="overflow-x-auto">
+                    <table className="w-full text-left">
+                        <thead>
+                            <tr className="bg-gray-50 border-b">
+                                <th className="p-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">ID</th>
+                                <th className="p-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Customer</th>
+                                <th className="p-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Type</th>
+                                <th className="p-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Status</th>
+                                <th className="p-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Date</th>
+                                <th className="p-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Amount</th>
+                                <th className="p-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {filtered.map(booking => (
+                                <tr key={booking.id} className="border-b hover:bg-gray-50 transition-colors">
+                                    <td className="p-4 font-mono text-xs">{booking.id}</td>
+                                    <td className="p-4 font-bold text-gray-800">{booking.customer}</td>
+                                    <td className="p-4">
+                                        <span className={`px-2 py-0.5 text-[9px] font-black uppercase tracking-widest rounded-none border ${
+                                            booking.type.includes('Instant') ? 'border-primary text-primary' :
+                                            booking.type.includes('Scheduled') ? 'border-blue-500 text-blue-500' :
+                                            'border-accent text-accent'
+                                        }`}>
+                                            {booking.type}
+                                        </span>
+                                    </td>
+                                    <td className="p-4 text-xs font-bold">{booking.status}</td>
+                                    <td className="p-4 text-xs text-gray-500">{booking.date}</td>
+                                    <td className="p-4 font-bold text-gray-900">{booking.amount}</td>
+                                    <td className="p-4 space-x-2">
+                                        <button className="text-[10px] font-black text-primary hover:underline uppercase tracking-widest">View</button>
+                                        <button className="text-[10px] font-black text-red-600 hover:underline uppercase tracking-widest">Cancel</button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    );
+};
+
