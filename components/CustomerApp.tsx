@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import type { Screen, NavigationProps } from '../types';
 import { Button, Input, Select, Header, BottomNav, FloatingActionButtons, ScreenContainer, Toast, Modal } from './shared/UI';
-import { UserIcon, LockIcon, PhoneIcon, MapPinIcon, UsersIcon, BriefcaseIcon, CalendarIcon, ClockIcon, CreditCardIcon, ArrowRightIcon, CheckCircleIcon, XCircleIcon, ChevronLeftIcon, EyeIcon, EyeOffIcon, MailIcon, CameraIcon, ChevronDownIcon, ShieldIcon, GoogleIcon, AppleIcon, UploadCloudIcon, CarIcon, BabyIcon, BusIcon, SnowflakeIcon, FileTextIcon, StarIcon, GlobeIcon, BookingIcon } from './Icons';
+import { UserIcon, LockIcon, PhoneIcon, MapPinIcon, UsersIcon, BriefcaseIcon, CalendarIcon, ClockIcon, CreditCardIcon, ArrowRightIcon, CheckCircleIcon, XCircleIcon, ChevronLeftIcon, EyeIcon, EyeOffIcon, MailIcon, CameraIcon, ChevronDownIcon, ShieldIcon, GoogleIcon, AppleIcon, UploadCloudIcon, CarIcon, BabyIcon, BusIcon, SnowflakeIcon, FileTextIcon, StarIcon, GlobeIcon, BookingIcon, SettingsIcon, SearchIcon } from './Icons';
 
 // Type for booking details from the landing page form
 interface BookingDetails {
@@ -131,10 +131,10 @@ export const CustomerApp: React.FC<CustomerAppProps> = ({ screen, navigate, logo
   const [toast, setToast] = useState<{message: string, type: 'success' | 'error'} | null>(null);
   const [otpOrigin, setOtpOrigin] = useState<Screen>('Register');
   const [phoneForOTP, setPhoneForOTP] = useState({ phone: '241234567', code: '+233' });
-  const [selectedCar, setSelectedCar] = useState<Car | null>(null);
+  const [selectedVehicle, setSelectedVehicle] = useState<any>(null);
   const [selectedVehicleClassInfo, setSelectedVehicleClassInfo] = useState<VehicleClassInfo | null>(null);
   const [rentalDuration, setRentalDuration] = useState(0);
-  const [currentFlow, setCurrentFlow] = useState<'shuttle' | 'rental' | null>(null);
+  const [currentFlow, setCurrentFlow] = useState<'instant' | 'schedule' | 'rental' | null>(null);
   const [shuttleFlowOrigin, setShuttleFlowOrigin] = useState<Screen>('TripDetailsInput');
   const [rentalDetails, setRentalDetails] = useState<RentalDetails | null>(null);
   const previousScreen = usePrevious(screen);
@@ -196,43 +196,68 @@ export const CustomerApp: React.FC<CustomerAppProps> = ({ screen, navigate, logo
       case 'TripDetailsInput':
           return <TripDetailsInputScreen 
               navigate={(nextScreen: Screen) => {
-                  if (nextScreen === 'CompatibleShuttlesList') {
+                  if (nextScreen === 'AvailableShuttles') {
+                      setCurrentFlow('instant');
                       setShuttleFlowOrigin('TripDetailsInput');
                   }
                   navigate(nextScreen);
               }} 
               setVehicleTypeForFilter={setSelectedVehicleClassInfo}
+              setRideDetails={setRideDetails}
               initialDetails={rideDetails}
           />;
       case 'ScheduleRide':
           return <ScheduleRideScreen 
               navigate={(nextScreen: Screen) => {
-                  if (nextScreen === 'CompatibleShuttlesList') {
+                  if (nextScreen === 'AvailableShuttles') {
+                      setCurrentFlow('schedule');
                       setShuttleFlowOrigin('ScheduleRide');
                   }
                   navigate(nextScreen);
               }} 
               setVehicleTypeForFilter={setSelectedVehicleClassInfo}
+              setRideDetails={setRideDetails}
               initialDetails={rideDetails}
           />;
       case 'CarRental':
-          return <CarRentalScreen navigate={navigate} setRentalDuration={setRentalDuration} setVehicleTypeForFilter={setSelectedVehicleClassInfo} setRentalDetails={setRentalDetails} initialDetails={rideDetails} />;
+          return <CarRentalScreen 
+              navigate={(nextScreen: Screen) => {
+                  if (nextScreen === 'AvailableShuttles') {
+                      setCurrentFlow('rental');
+                      setShuttleFlowOrigin('CarRental');
+                  }
+                  navigate(nextScreen);
+              }} 
+              setRentalDuration={setRentalDuration} 
+              setVehicleTypeForFilter={setSelectedVehicleClassInfo} 
+              setRentalDetails={setRentalDetails} 
+              initialDetails={rideDetails} 
+          />;
+      case 'AvailableShuttles':
+          return <AvailableShuttlesScreen 
+              navigate={navigate} 
+              onBack={() => navigate(currentFlow === 'rental' ? 'CarRental' : shuttleFlowOrigin)} 
+              selectedClassInfo={selectedVehicleClassInfo} 
+              flow={currentFlow} 
+              onSelect={(vehicle) => {
+                  setSelectedVehicle(vehicle);
+                  if (currentFlow === 'rental') {
+                      navigate('CarRentDetails');
+                  } else {
+                      navigate('ShuttleDriverDetails');
+                  }
+              }} 
+          />;
       case 'AvailableCarsForRent':
-          return <AvailableCarsForRentScreen navigate={navigate} onBack={() => navigate('CarRental')} onCarSelect={setSelectedCar} selectedClassInfo={selectedVehicleClassInfo} />;
+          return <AvailableCarsForRentScreen navigate={navigate} onBack={() => navigate('CarRental')} onCarSelect={setSelectedVehicle} selectedClassInfo={selectedVehicleClassInfo} />;
       case 'CarRentDetails':
-          return <CarRentDetailsScreen navigate={navigate} car={selectedCar} onBack={() => navigate('AvailableCarsForRent')} rentalDuration={rentalDuration} />;
-// FIX: Resolve "Cannot find name" error by defining the component.
+          return <CarRentDetailsScreen navigate={navigate} car={selectedVehicle} onBack={() => navigate('AvailableShuttles')} rentalDuration={rentalDuration} />;
       case 'CarRentalConfirmation':
-          return <CarRentalConfirmationScreen navigate={navigate} car={selectedCar} rentalDetails={rentalDetails} rentalDuration={rentalDuration} onBack={() => navigate('CarRentDetails')} />;
-// FIX: Resolve "Cannot find name" error by defining the component.
-      case 'CompatibleShuttlesList':
-          return <CompatibleShuttlesListScreen navigate={navigate} onBack={() => navigate(shuttleFlowOrigin)} selectedClassInfo={selectedVehicleClassInfo} />;
-// FIX: Resolve "Cannot find name" error by defining the component.
+          return <CarRentalConfirmationScreen navigate={navigate} car={selectedVehicle} rentalDetails={rentalDetails} rentalDuration={rentalDuration} onBack={() => navigate('CarRentDetails')} />;
       case 'ShuttleDriverDetails':
-          return <ShuttleDriverDetailsScreen navigate={navigate} />;
-// FIX: Resolve "Cannot find name" error by defining the component.
+          return <ShuttleDriverDetailsScreen navigate={navigate} shuttle={selectedVehicle} />;
       case 'BookingConfirmation':
-          return <BookingConfirmationScreen navigate={navigate} />;
+          return <BookingConfirmationScreen navigate={navigate} shuttle={selectedVehicle} rideDetails={rideDetails} />;
       case 'PaymentSelection':
           const paymentBackTarget = currentFlow === 'rental' ? 'CarRentalConfirmation' : 'BookingConfirmation';
 // FIX: Resolve "Cannot find name" error by defining the component.
@@ -245,7 +270,7 @@ export const CustomerApp: React.FC<CustomerAppProps> = ({ screen, navigate, logo
           return <TripTrackingScreen navigate={navigate} />;
 // FIX: Resolve "Cannot find name" error by defining the component.
       case 'TripCompletionReceipt':
-          return <TripCompletionReceiptScreen navigate={navigate} flow={currentFlow} car={selectedCar} duration={rentalDuration} showToast={showToast} />;
+          return <TripCompletionReceiptScreen navigate={navigate} flow={currentFlow} car={selectedVehicle} duration={rentalDuration} showToast={showToast} />;
 // FIX: Resolve "Cannot find name" error by defining the component.
       case 'TripHistory':
           return <TripHistoryScreen navigate={navigate} />;
@@ -281,7 +306,7 @@ export const CustomerApp: React.FC<CustomerAppProps> = ({ screen, navigate, logo
     <div className="relative">
       {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
       {renderScreen()}
-      {showNav && <BottomNav navigate={navigate} activeScreen={screen} />}
+      {showNav && <BottomNav navigate={navigate} activeScreen={screen} currentFlow={currentFlow} />}
       {showNav && <FloatingActionButtons />}
     </div>
   );
@@ -959,15 +984,15 @@ const PostLoginVerificationScreen: React.FC<NavigationProps> = ({ navigate, logo
 };
 
 
-const ServiceSelectionScreen: React.FC<NavigationProps & { setFlow: (flow: 'shuttle' | 'rental') => void }> = ({ navigate, logout, setFlow }) => (
+const ServiceSelectionScreen: React.FC<NavigationProps & { setFlow: (flow: 'instant' | 'schedule' | 'rental') => void }> = ({ navigate, logout, setFlow }) => (
     <ScreenContainer>
         <Header title="Book a Ride" onBack={logout} />
         <div className="p-4 space-y-4">
-            <div onClick={() => { setFlow('shuttle'); navigate('TripDetailsInput'); }} className="bg-primary text-white p-6 rounded-lg shadow-lg cursor-pointer hover:bg-primary-hover transition-colors">
+            <div onClick={() => { setFlow('instant'); navigate('TripDetailsInput'); }} className="bg-primary text-white p-6 rounded-lg shadow-lg cursor-pointer hover:bg-primary-hover transition-colors">
                 <h3 className="text-2xl font-display font-bold">Instant Ride</h3>
                 <p className="mt-1">Book the next available shuttle.</p>
             </div>
-            <div onClick={() => { setFlow('shuttle'); navigate('ScheduleRide'); }} className="bg-accent text-[#660032] p-6 rounded-lg shadow-lg cursor-pointer hover:bg-yellow-400 transition-colors">
+            <div onClick={() => { setFlow('schedule'); navigate('ScheduleRide'); }} className="bg-accent text-[#660032] p-6 rounded-lg shadow-lg cursor-pointer hover:bg-yellow-400 transition-colors">
                  <h3 className="text-2xl font-display font-bold">Schedule Ride</h3>
                 <p className="mt-1">Plan your trip in advance.</p>
             </div>
@@ -981,14 +1006,15 @@ const ServiceSelectionScreen: React.FC<NavigationProps & { setFlow: (flow: 'shut
 
 interface TripDetailsInputScreenProps extends NavigationProps {
   setVehicleTypeForFilter: (info: VehicleClassInfo | null) => void;
+  setRideDetails: (details: BookingDetails | null) => void;
   initialDetails: BookingDetails | null;
 }
-const TripDetailsInputScreen: React.FC<TripDetailsInputScreenProps> = ({ navigate, setVehicleTypeForFilter, initialDetails }) => {
+const TripDetailsInputScreen: React.FC<TripDetailsInputScreenProps> = ({ navigate, setVehicleTypeForFilter, setRideDetails, initialDetails }) => {
     const [pickup, setPickup] = useState(initialDetails?.pickup || "");
     const [destination, setDestination] = useState(initialDetails?.dropoff || "");
     const [date, setDate] = useState(getCurrentDate());
     const [time, setTime] = useState(getCurrentTime());
-    const [passengers, setPassengers] = useState(initialDetails?.passengers || "");
+    const [passengers, setPassengers] = useState(initialDetails?.passengers || "1");
     const [bookerAge, setBookerAge] = useState("");
     const [luggage, setLuggage] = useState("");
     const [childSeat, setChildSeat] = useState(false);
@@ -1076,8 +1102,16 @@ const TripDetailsInputScreen: React.FC<TripDetailsInputScreenProps> = ({ navigat
         <ScreenContainer>
             <Header title="Instant Ride" onBack={() => navigate('ServiceSelection')} onForward={() => {
                 if (pickup && destination && passengers && date.length === 10 && !dateError && time) {
+                    setRideDetails({
+                        rideType: 'Instant Ride',
+                        pickup,
+                        dropoff: destination,
+                        date,
+                        time,
+                        passengers
+                    });
                     setVehicleTypeForFilter(vehicleTypes[vehicleType as keyof typeof vehicleTypes] || null);
-                    navigate('CompatibleShuttlesList');
+                    navigate('AvailableShuttles');
                 }
             }} />
             <div className="p-4 space-y-4">
@@ -1122,12 +1156,20 @@ const TripDetailsInputScreen: React.FC<TripDetailsInputScreenProps> = ({ navigat
                 <div className="pt-2">
                     <Button 
                         onClick={() => {
+                            setRideDetails({
+                                rideType: 'Instant Ride',
+                                pickup,
+                                dropoff: destination,
+                                date,
+                                time,
+                                passengers
+                            });
                             if (vehicleType && vehicleTypes[vehicleType as keyof typeof vehicleTypes]) {
                                 setVehicleTypeForFilter(vehicleTypes[vehicleType as keyof typeof vehicleTypes]);
                             } else {
                                 setVehicleTypeForFilter(null);
                             }
-                            navigate('CompatibleShuttlesList');
+                            navigate('AvailableShuttles');
                         }} 
                         disabled={!pickup || !destination || !passengers || date.length !== 10 || !!dateError || !time}
                     >
@@ -1141,14 +1183,15 @@ const TripDetailsInputScreen: React.FC<TripDetailsInputScreenProps> = ({ navigat
 
 interface ScheduleRideScreenProps extends NavigationProps {
   setVehicleTypeForFilter: (info: VehicleClassInfo | null) => void;
+  setRideDetails: (details: BookingDetails | null) => void;
   initialDetails: BookingDetails | null;
 }
-const ScheduleRideScreen: React.FC<ScheduleRideScreenProps> = ({ navigate, setVehicleTypeForFilter, initialDetails }) => {
+const ScheduleRideScreen: React.FC<ScheduleRideScreenProps> = ({ navigate, setVehicleTypeForFilter, setRideDetails, initialDetails }) => {
     const [pickup, setPickup] = useState(initialDetails?.pickup || "");
     const [destination, setDestination] = useState(initialDetails?.dropoff || "");
     const [date, setDate] = useState(initialDetails?.date || getCurrentDate());
     const [time, setTime] = useState(initialDetails?.time || getCurrentTime());
-    const [passengers, setPassengers] = useState(initialDetails?.passengers || "");
+    const [passengers, setPassengers] = useState(initialDetails?.passengers || "1");
     const [bookerAge, setBookerAge] = useState("");
     const [vehicleType, setVehicleType] = useState<string | null>('Business Class');
     const [dateError, setDateError] = useState('');
@@ -1167,12 +1210,20 @@ const ScheduleRideScreen: React.FC<ScheduleRideScreenProps> = ({ navigate, setVe
     };
 
     const handleFindRide = () => {
+        setRideDetails({
+            rideType: 'Scheduled Ride',
+            pickup,
+            dropoff: destination,
+            date,
+            time,
+            passengers
+        });
         if (vehicleType && vehicleTypes[vehicleType as keyof typeof vehicleTypes]) {
             setVehicleTypeForFilter(vehicleTypes[vehicleType as keyof typeof vehicleTypes]);
         } else {
             setVehicleTypeForFilter(null);
         }
-        navigate('CompatibleShuttlesList');
+        navigate('AvailableShuttles');
     };
     
     return (
@@ -1407,9 +1458,10 @@ const CarRentalScreen: React.FC<CarRentalScreenProps> = ({ navigate, setRentalDu
             return;
         }
 
-        const pickupDateParts = pickupDate.split('/'); // DD/MM/YYYY
+        const pickupDateParts = pickupDate.split('/');
         const returnDateParts = returnDate.split('/');
         
+        // Year is already in DD/MM/YYYY format from the helper
         const pickupDateTimeStr = `${pickupDateParts[2]}-${pickupDateParts[1]}-${pickupDateParts[0]}T${pickupTime}`;
         const returnDateTimeStr = `${returnDateParts[2]}-${returnDateParts[1]}-${returnDateParts[0]}T${returnTime}`;
 
@@ -1435,7 +1487,9 @@ const CarRentalScreen: React.FC<CarRentalScreenProps> = ({ navigate, setRentalDu
             rentingPurpose: details.rentingPurpose,
         });
         setVehicleTypeForFilter(null); 
-        navigate('AvailableCarsForRent');
+        // Force the flow to rental here just in case
+        // and navigate to AvailableShuttles
+        navigate('AvailableShuttles');
     };
 
     return (
@@ -1533,6 +1587,325 @@ const CarRentalScreen: React.FC<CarRentalScreenProps> = ({ navigate, setRentalDu
 
                 <Button onClick={handleSubmit} disabled={isDriving === null}>Select Ride</Button>
             </div>
+        </ScreenContainer>
+    );
+};
+
+interface Vehicle {
+    id: string;
+    name: string;
+    class: string;
+    type: string;
+    passengers: number;
+    luggage: number;
+    pricePerDay: number;
+    fuel: string;
+    drive: string;
+    rating: number;
+    reviews: number;
+    imageSeed: string;
+    features: string[];
+    driverName?: string;
+    image?: string;
+}
+
+interface AvailableShuttlesScreenProps extends NavigationProps {
+    onBack: () => void;
+    selectedClassInfo: VehicleClassInfo | null;
+    flow: 'instant' | 'schedule' | 'rental' | null;
+    onSelect: (vehicle: Vehicle) => void;
+}
+
+const AvailableShuttlesScreen: React.FC<AvailableShuttlesScreenProps> = ({ navigate, onBack, selectedClassInfo, flow, onSelect }) => {
+    const [filters, setFilters] = useState({
+        class: selectedClassInfo ? [selectedClassInfo.name] : [] as string[],
+        type: [] as string[],
+        fuel: [] as string[],
+        passengers: [] as number[],
+        drive: [] as string[],
+    });
+
+    const [sortBy, setSortBy] = useState('price-low');
+    const [showMobileFilters, setShowMobileFilters] = useState(false);
+
+    const vehicles = [
+        { id: '1', name: 'Mitsubishi Mirage or similar', class: 'Economy Class', type: 'Sedan', passengers: 4, luggage: 2, pricePerDay: 45, fuel: 'Gasoline', drive: '2WD', rating: 4.5, reviews: 128, imageSeed: 'car1', features: ['Automatic', 'Air Conditioning'] },
+        { id: '2', name: 'Toyota Corolla or similar', class: 'Economy Class', type: 'Sedan', passengers: 5, luggage: 3, pricePerDay: 55, fuel: 'Gasoline', drive: '2WD', rating: 4.7, reviews: 245, imageSeed: 'car2', features: ['Automatic', 'Bluetooth', 'Reverse Camera'] },
+        { id: '3', name: 'Ford Transit or similar', class: 'Business Class', type: 'Van', passengers: 12, luggage: 8, pricePerDay: 120, fuel: 'Diesel', drive: '2WD', rating: 4.8, reviews: 89, imageSeed: 'van1', features: ['Extra Legroom', 'WiFi', 'Charging Ports'] },
+        { id: '4', name: 'Mercedes Sprinter or similar', class: 'Premium Class', type: 'Van', passengers: 15, luggage: 12, pricePerDay: 180, fuel: 'Diesel', drive: 'RWD', rating: 4.9, reviews: 56, imageSeed: 'van2', features: ['Luxury Interior', 'Entertainment System', 'Refreshments'] },
+        { id: '5', name: 'Toyota Land Cruiser or similar', class: 'Premium Class', type: 'SUV', passengers: 7, luggage: 4, pricePerDay: 150, fuel: 'Gasoline', drive: '4WD', rating: 5.0, reviews: 34, imageSeed: 'suv1', features: ['All-Terrain', 'Panoramic Roof', 'Heated Seats'] },
+        { id: '6', name: 'Suzuki Espresso or similar', class: 'Basic Class', type: 'Hatchback', passengers: 4, luggage: 1, pricePerDay: 30, fuel: 'Gasoline', drive: '2WD', rating: 4.2, reviews: 210, imageSeed: 'car3', features: ['Manual', 'Compact'] },
+        { id: '7', name: 'Hyundai Staria or similar', class: 'Business Class', type: 'Van', passengers: 9, luggage: 6, pricePerDay: 110, fuel: 'Gasoline', drive: 'AWD', rating: 4.6, reviews: 72, imageSeed: 'van3', features: ['Spacious', 'Sliding Doors'] },
+        { id: '8', name: 'BMW 5 Series or similar', class: 'Premium Class', type: 'Sedan', passengers: 5, luggage: 3, pricePerDay: 100, fuel: 'Gasoline', drive: 'AWD', rating: 4.9, reviews: 41, imageSeed: 'car4', features: ['Leather Seats', 'Premium Audio'] }
+    ];
+
+    const toggleFilter = (category: keyof typeof filters, value: any) => {
+        setFilters(prev => {
+            const current = prev[category] as any[];
+            if (current.includes(value)) {
+                return { ...prev, [category]: current.filter(v => v !== value) };
+            } else {
+                return { ...prev, [category]: [...current, value] };
+            }
+        });
+    };
+
+    const filteredVehicles = vehicles.filter(v => {
+        if (filters.class.length > 0 && !filters.class.includes(v.class)) return false;
+        if (filters.type.length > 0 && !filters.type.includes(v.type)) return false;
+        if (filters.fuel.length > 0 && !filters.fuel.includes(v.fuel)) return false;
+        if (filters.drive.length > 0 && !filters.drive.includes(v.drive)) return false;
+        if (filters.passengers.length > 0 && !filters.passengers.some(p => v.passengers >= p)) return false;
+        return true;
+    }).sort((a, b) => {
+        if (sortBy === 'price-low') return a.pricePerDay - b.pricePerDay;
+        if (sortBy === 'price-high') return b.pricePerDay - a.pricePerDay;
+        if (sortBy === 'rating') return b.rating - a.rating;
+        return 0;
+    });
+
+    const FilterSection = ({ title, options, category, multi = true }: { title: string, options: any[], category: keyof typeof filters, multi?: boolean }) => (
+        <div className="mb-6">
+            <h4 className="font-bold text-gray-900 mb-3 text-sm uppercase tracking-wider">{title}</h4>
+            <div className="space-y-2">
+                {options.map(opt => (
+                    <label key={opt.value} className="flex items-center group cursor-pointer">
+                        <div 
+                            className={`w-5 h-5 rounded border flex items-center justify-center transition-all ${
+                                (filters[category] as any[]).includes(opt.value) 
+                                ? 'bg-primary border-primary shadow-sm' 
+                                : 'bg-white border-gray-300 group-hover:border-primary'
+                            }`}
+                            onClick={() => toggleFilter(category, opt.value)}
+                        >
+                            {(filters[category] as any[]).includes(opt.value) && <CheckCircleIcon className="w-3.5 h-3.5 text-white" />}
+                        </div>
+                        <span className="ml-3 text-gray-700 text-sm group-hover:text-primary transition-colors">{opt.label}</span>
+                    </label>
+                ))}
+            </div>
+        </div>
+    );
+
+    return (
+        <ScreenContainer>
+            <Header 
+                title="Available Shuttles" 
+                onBack={onBack} 
+                extra={
+                    <button 
+                        onClick={() => setShowMobileFilters(true)}
+                        className="md:hidden p-2 text-primary hover:bg-primary/10 rounded-full transition-colors"
+                    >
+                        <SettingsIcon className="w-6 h-6" />
+                    </button>
+                }
+            />
+            
+            <div className="flex flex-col md:flex-row gap-8 p-4 md:p-6 lg:p-8 max-w-7xl mx-auto w-full">
+                {/* Sidebar Filters */}
+                <aside className="hidden md:block w-64 flex-shrink-0">
+                    <div className="sticky top-6">
+                        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                            <h3 className="text-lg font-bold text-primary mb-6 flex items-center">
+                                <BusIcon className="w-5 h-5 mr-2" />
+                                Filters
+                            </h3>
+                            
+                            <FilterSection 
+                                title="Car Class" 
+                                category="class"
+                                options={[
+                                    { label: 'Premium Class', value: 'Premium Class' },
+                                    { label: 'Business Class', value: 'Business Class' },
+                                    { label: 'Economy Class', value: 'Economy Class' },
+                                    { label: 'Basic Class', value: 'Basic Class' }
+                                ]} 
+                            />
+                            
+                            <FilterSection 
+                                title="Car Type" 
+                                category="type"
+                                options={[
+                                    { label: 'SUV', value: 'SUV' },
+                                    { label: 'Sedan', value: 'Sedan' },
+                                    { label: 'Van', value: 'Van' },
+                                    { label: 'Hatchback', value: 'Hatchback' }
+                                ]} 
+                            />
+
+                            <FilterSection 
+                                title="Fuel" 
+                                category="fuel"
+                                options={[
+                                    { label: 'Gasoline', value: 'Gasoline' },
+                                    { label: 'Diesel', value: 'Diesel' },
+                                ]} 
+                            />
+
+                            <FilterSection 
+                                title="Passengers" 
+                                category="passengers"
+                                options={[
+                                    { label: '2+', value: 2 },
+                                    { label: '4+', value: 4 },
+                                    { label: '5+', value: 5 },
+                                    { label: '8+', value: 8 },
+                                    { label: '12+', value: 12 },
+                                ]} 
+                            />
+
+                            <FilterSection 
+                                title="Drive Type" 
+                                category="drive"
+                                options={[
+                                    { label: '2WD', value: '2WD' },
+                                    { label: '4WD / AWD', value: '4WD' },
+                                ]} 
+                            />
+
+                            <button 
+                                onClick={() => setFilters({ class: [], type: [], fuel: [], passengers: [], drive: [] })}
+                                className="w-full py-2.5 text-sm font-bold text-gray-500 hover:text-primary transition-colors border-t border-gray-100 mt-4"
+                            >
+                                Reset All Filters
+                            </button>
+                        </div>
+                    </div>
+                </aside>
+
+                {/* Main Content */}
+                <div className="flex-1">
+                    {/* Sort Bar */}
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4 bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                        <p className="text-gray-600 font-medium tracking-tight">
+                            Showing <span className="text-primary font-bold">{filteredVehicles.length}</span> vehicles
+                        </p>
+                        <div className="flex items-center gap-2">
+                            <span className="text-sm text-gray-500 font-medium">Sort by:</span>
+                            <div className="relative">
+                                <select 
+                                    className="appearance-none bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 pr-10 text-sm font-bold text-gray-700 hover:border-primary transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/20"
+                                    value={sortBy}
+                                    onChange={(e) => setSortBy(e.target.value)}
+                                >
+                                    <option value="price-low">Price: Low to High</option>
+                                    <option value="price-high">Price: High to Low</option>
+                                    <option value="rating">Top Rated</option>
+                                </select>
+                                <ChevronDownIcon className="w-4 h-4 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Listings */}
+                    <div className="space-y-6">
+                        {filteredVehicles.length > 0 ? (
+                            filteredVehicles.map(v => (
+                                <div key={v.id} className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 group">
+                                    <div className="flex flex-col lg:flex-row">
+                                        {/* Image Section */}
+                                        <div className="lg:w-72 h-48 lg:h-auto relative overflow-hidden bg-gray-50">
+                                            <img 
+                                                src={`https://picsum.photos/seed/${v.imageSeed}/400/250`} 
+                                                alt={v.name} 
+                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                            />
+                                            <div className="absolute top-4 left-4">
+                                                <span className="bg-white/90 backdrop-blur-sm text-primary px-3 py-1 rounded-full text-xs font-bold shadow-sm uppercase tracking-widest border border-primary/10">
+                                                    {v.class}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        {/* Middle content */}
+                                        <div className="flex-1 p-6">
+                                            <div className="mb-4">
+                                                <h3 className="text-xl font-bold text-gray-900 group-hover:text-primary transition-colors">{v.name}</h3>
+                                                <div className="flex items-center mt-1 text-sm text-gray-500">
+                                                    <StarIcon className="w-4 h-4 text-yellow-400 fill-current mr-1" />
+                                                    <span className="font-bold text-gray-900">{v.rating}</span>
+                                                    <span className="mx-1">·</span>
+                                                    <span>{v.reviews} reviews</span>
+                                                </div>
+                                            </div>
+
+                                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+                                                <div className="flex items-center text-gray-600 bg-gray-50 p-2 rounded-lg">
+                                                    <UsersIcon className="w-4 h-4 mr-2 text-primary/70" />
+                                                    <span className="text-xs font-bold">{v.passengers} Adults</span>
+                                                </div>
+                                                <div className="flex items-center text-gray-600 bg-gray-50 p-2 rounded-lg">
+                                                    <BriefcaseIcon className="w-4 h-4 mr-2 text-primary/70" />
+                                                    <span className="text-xs font-bold">{v.luggage} Bags</span>
+                                                </div>
+                                                <div className="flex items-center text-gray-600 bg-gray-50 p-2 rounded-lg">
+                                                    <SnowflakeIcon className="w-4 h-4 mr-2 text-primary/70" />
+                                                    <span className="text-xs font-bold">A/C</span>
+                                                </div>
+                                                <div className="flex items-center text-gray-600 bg-gray-50 p-2 rounded-lg">
+                                                    <GlobeIcon className="w-4 h-4 mr-2 text-primary/70" />
+                                                    <span className="text-xs font-bold">{v.fuel}</span>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex flex-wrap gap-2">
+                                                {v.features.map(f => (
+                                                    <span key={f} className="text-[10px] font-bold text-gray-400 bg-gray-100/50 px-2 py-1 rounded uppercase tracking-wider">
+                                                        {f}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        {/* Right Sidebar */}
+                                        <div className="lg:w-64 p-6 bg-gray-50/50 border-t lg:border-t-0 lg:border-l border-gray-100 flex flex-col justify-between">
+                                            <div>
+                                                <p className="text-xs text-gray-400 uppercase tracking-widest mb-1 font-bold">Total Price</p>
+                                                <div className="flex items-baseline gap-1">
+                                                    <span className="text-2xl font-black text-gray-900">${v.pricePerDay.toFixed(2)}</span>
+                                                    <span className="text-sm font-bold text-gray-500">/trip</span>
+                                                </div>
+                                            </div>
+                                            
+                                            <div className="mt-6 flex flex-col gap-2">
+                                                <Button 
+                                                    onClick={() => onSelect(v)}
+                                                    className="w-full group/btn"
+                                                >
+                                                    Select Ride
+                                                    <ArrowRightIcon className="ml-2 w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+                                                </Button>
+                                                <p className="text-[10px] text-center text-gray-400 font-medium">Free cancellation up to 24h before</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            <div className="bg-white rounded-2xl p-12 text-center border border-dashed border-gray-200">
+                                <SearchIcon className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+                                <h3 className="text-lg font-bold text-gray-900 mb-2">No matching vehicles found</h3>
+                                <p className="text-gray-500 mb-6 max-w-xs mx-auto">Try adjusting your filters or search criteria to see more available options.</p>
+                                <Button variant="secondary" onClick={() => setFilters({ class: [], type: [], fuel: [], passengers: [], drive: [] })}>
+                                    Clear all filters
+                                </Button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+
+            {/* Mobile Filters Modal */}
+            <Modal isOpen={showMobileFilters} onClose={() => setShowMobileFilters(false)} title="Filter Results">
+                <div className="space-y-6">
+                    <FilterSection title="Car Class" category="class" options={[{ label: 'Premium Class', value: 'Premium Class' }, { label: 'Business Class', value: 'Business Class' }, { label: 'Economy Class', value: 'Economy Class' }, { label: 'Basic Class', value: 'Basic Class' }]} />
+                    <FilterSection title="Car Type" category="type" options={[{ label: 'SUV', value: 'SUV' }, { label: 'Sedan', value: 'Sedan' }, { label: 'Van', value: 'Van' }, { label: 'Hatchback', value: 'Hatchback' }]} />
+                    <FilterSection title="Fuel" category="fuel" options={[{ label: 'Gasoline', value: 'Gasoline' }, { label: 'Diesel', value: 'Diesel' }]} />
+                    <FilterSection title="Drive" category="drive" options={[{ label: '2WD', value: '2WD' }, { label: '4WD', value: '4WD' }]} />
+                    <Button onClick={() => setShowMobileFilters(false)} className="w-full mt-4">Apply Filters</Button>
+                </div>
+            </Modal>
         </ScreenContainer>
     );
 };
@@ -1677,20 +2050,20 @@ const CompatibleShuttlesListScreen: React.FC<CompatibleShuttlesListScreenProps> 
     );
 };
 
-const ShuttleDriverDetailsScreen: React.FC<NavigationProps> = ({ navigate }) => {
+const ShuttleDriverDetailsScreen: React.FC<NavigationProps & { shuttle: any }> = ({ navigate, shuttle }) => {
     return (
         <ScreenContainer>
-            <Header title="Driver Details" onBack={() => navigate('CompatibleShuttlesList')} onForward={() => navigate('BookingConfirmation')} />
+            <Header title="Driver Details" onBack={() => navigate('AvailableShuttles')} onForward={() => navigate('BookingConfirmation')} />
             <div className="p-4 text-center">
-                <img src="https://i.pravatar.cc/150?u=Kofi Mensah" alt="Driver" className="w-32 h-32 rounded-full mx-auto mb-4 border-4 border-primary" />
-                <h2 className="text-2xl font-bold">Kofi Mensah</h2>
+                <img src={shuttle?.image || "https://i.pravatar.cc/150?u=Kofi Mensah"} alt="Driver" className="w-32 h-32 rounded-full mx-auto mb-4 border-4 border-primary object-cover" />
+                <h2 className="text-2xl font-bold">{shuttle?.driverName || 'Kofi Mensah'}</h2>
                 <div className="flex items-center justify-center text-lg mt-1">
-                    <StarIcon className="w-5 h-5 text-yellow-500 mr-1" /> 4.8
+                    <StarIcon className="w-5 h-5 text-yellow-500 mr-1" /> {shuttle?.rating || '4.8'}
                 </div>
                 <div className="mt-4 bg-gray-50 p-4 rounded-lg text-left space-y-2">
-                    <p><strong>Vehicle:</strong> Toyota Hiace</p>
+                    <p><strong>Vehicle:</strong> {shuttle?.name || 'Toyota Hiace'}</p>
+                    <p><strong>Class:</strong> {shuttle?.class || 'Premium Class'}</p>
                     <p><strong>License Plate:</strong> GT-1234-20</p>
-                    <p><strong>Member Since:</strong> 2023</p>
                 </div>
                 <Button onClick={() => navigate('BookingConfirmation')} className="mt-6">Confirm Booking</Button>
             </div>
@@ -1698,7 +2071,7 @@ const ShuttleDriverDetailsScreen: React.FC<NavigationProps> = ({ navigate }) => 
     );
 };
 
-const BookingConfirmationScreen: React.FC<NavigationProps> = ({ navigate }) => {
+const BookingConfirmationScreen: React.FC<NavigationProps & { shuttle: any; rideDetails: any }> = ({ navigate, shuttle, rideDetails }) => {
     return (
         <ScreenContainer>
             <Header title="Confirm Booking" onBack={() => navigate('ShuttleDriverDetails')} onForward={() => navigate('PaymentSelection')} />
@@ -1706,10 +2079,11 @@ const BookingConfirmationScreen: React.FC<NavigationProps> = ({ navigate }) => {
                  <div className="bg-white p-4 rounded-lg shadow">
                     <h3 className="font-bold text-lg mb-2">Trip Summary</h3>
                     <div className="space-y-2 border-t pt-2">
-                        <p><strong>From:</strong> Kotoka Int'l Airport</p>
-                        <p><strong>To:</strong> Accra Mall</p>
-                        <p><strong>Est. Fare:</strong> $10.00</p>
-                        <p><strong>Driver:</strong> Kofi Mensah</p>
+                        <p><strong>From:</strong> {rideDetails?.pickup || 'Kotoka Int\'l Airport'}</p>
+                        <p><strong>To:</strong> {rideDetails?.dropoff || 'Accra Mall'}</p>
+                        <p><strong>Vehicle:</strong> {shuttle?.name || 'Toyota Hiace'}</p>
+                        <p><strong>Est. Fare:</strong> ${shuttle?.pricePerDay?.toFixed(2) || '10.00'}</p>
+                        <p><strong>Driver:</strong> {shuttle?.driverName || 'Kofi Mensah'}</p>
                     </div>
                 </div>
                 <Button onClick={() => navigate('PaymentSelection')}>Proceed to Payment</Button>

@@ -76,8 +76,9 @@ interface HeaderProps {
     title: string;
     onBack?: () => void;
     onForward?: () => void;
+    extra?: React.ReactNode;
 }
-export const Header: React.FC<HeaderProps> = ({ title, onBack, onForward }) => {
+export const Header: React.FC<HeaderProps> = ({ title, onBack, onForward, extra }) => {
     return (
         <header className="bg-white shadow-md sticky top-0 z-10">
             <div className="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
@@ -89,12 +90,14 @@ export const Header: React.FC<HeaderProps> = ({ title, onBack, onForward }) => {
                     )}
                 </div>
                 <h1 className="text-xl font-display font-bold text-primary text-center flex-1">{title}</h1>
-                <div className="w-10 text-right">
+                <div className="flex items-center gap-1">
+                    {extra}
                     {onForward && (
                         <button onClick={onForward} className="text-primary p-2 -mr-2" aria-label="Go forward">
                             <ChevronRightIcon className="w-6 h-6" />
                         </button>
                     )}
+                    {!onForward && !extra && <div className="w-10" />}
                 </div>
             </div>
         </header>
@@ -104,18 +107,26 @@ export const Header: React.FC<HeaderProps> = ({ title, onBack, onForward }) => {
 // Customer Bottom Navigation
 interface BottomNavProps extends NavigationProps {
   activeScreen: Screen;
+  currentFlow?: 'instant' | 'schedule' | 'rental' | null;
 }
 
-export const BottomNav: React.FC<BottomNavProps> = ({ navigate, activeScreen }) => {
+export const BottomNav: React.FC<BottomNavProps> = ({ navigate, activeScreen, currentFlow }) => {
   const getBookingScreen = (): Screen => {
     // Determine which themed bookings page to show based on current flow
-    if (['TripDetailsInput', 'CompatibleShuttlesList', 'ShuttleDriverDetails', 'BookingConfirmation', 'TripTracking', 'TripCompletionReceipt', 'MyBookingsInstant'].includes(activeScreen)) {
+    if (activeScreen === 'AvailableShuttles') {
+        if (currentFlow === 'rental') return 'MyBookingsRental';
+        if (currentFlow === 'schedule') return 'MyBookingsSchedule';
+        if (currentFlow === 'instant') return 'MyBookingsInstant';
+        return 'MyBookings';
+    }
+    
+    if (['TripDetailsInput', 'AvailableShuttles', 'ShuttleDriverDetails', 'BookingConfirmation', 'TripTracking', 'TripCompletionReceipt', 'MyBookingsInstant'].includes(activeScreen) || currentFlow === 'instant') {
         return 'MyBookingsInstant';
     }
-    if (['ScheduleRide', 'MyBookingsSchedule'].includes(activeScreen)) {
+    if (['ScheduleRide', 'MyBookingsSchedule'].includes(activeScreen) || currentFlow === 'schedule') {
         return 'MyBookingsSchedule';
     }
-    if (['CarRental', 'AvailableCarsForRent', 'CarRentDetails', 'CarRentalConfirmation', 'MyBookingsRental'].includes(activeScreen)) {
+    if (['CarRental', 'AvailableCarsForRent', 'CarRentDetails', 'CarRentalConfirmation', 'MyBookingsRental'].includes(activeScreen) || currentFlow === 'rental') {
         return 'MyBookingsRental';
     }
     return 'MyBookings';

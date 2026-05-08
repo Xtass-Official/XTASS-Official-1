@@ -16,6 +16,7 @@ export type Screen =
   | 'AvailableCarsForRent'
   | 'CarRentDetails'
   | 'CarRentalConfirmation'
+  | 'AvailableShuttles'
   | 'CompatibleShuttlesList'
   | 'ShuttleDriverDetails'
   | 'BookingConfirmation'
@@ -40,6 +41,7 @@ export type Screen =
   | 'LongTermRental'
   | 'BusinessSolutions'
   | 'Hospitality'
+  | 'Sitemap'
   // Driver
   | 'DriverLogin'
   | 'DriverPasswordRecovery'
@@ -61,6 +63,6 @@ export type Screen =
   | 'SystemConfig';
   
 export interface NavigationProps {
-    navigate: (screen: Screen) => void;
+    navigate: (screen: Screen, view?: string) => void;
     logout?: () => void;
 }

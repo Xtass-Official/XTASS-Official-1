@@ -2,6 +2,7 @@ import React, { useState, useCallback, useRef } from 'react';
 import { CustomerApp } from './components/CustomerApp';
 import { DriverApp } from './components/DriverApp';
 import { AdminPanel } from './components/AdminPanel';
+import { SitemapScreen } from './components/SitemapScreen';
 import { AuthDropdown } from './components/shared/AuthDropdown';
 import { ReservationLayout } from './components/ReservationLayout';
 import type { Role, Screen } from './types';
@@ -88,13 +89,33 @@ const SCREEN_ROUTES: Record<string, Screen> = {
   '/': 'Welcome',
   '/customer/login': 'Login',
   '/customer/register': 'Register',
+  '/customer/forgot-password': 'ForgotPassword',
+  '/customer/service-selection': 'ServiceSelection',
   '/customer/bookings': 'MyBookings',
+  '/customer/bookings/instant': 'MyBookingsInstant',
+  '/customer/bookings/schedule': 'MyBookingsSchedule',
+  '/customer/bookings/rental': 'MyBookingsRental',
+  '/customer/trip-history': 'TripHistory',
   '/customer/profile': 'AccountProfile',
+  '/customer/saved-passengers': 'SavedPassengers',
+  '/customer/emergency-contacts': 'EmergencyContacts',
+  '/booking/instant': 'TripDetailsInput',
+  '/booking/schedule': 'ScheduleRide',
+  '/booking/rental': 'CarRental',
+  '/booking/shuttles': 'AvailableShuttles',
   '/driver/login': 'DriverLogin',
+  '/driver/register': 'DriverRegistration',
   '/driver/dashboard': 'DriverDashboard',
+  '/driver/earnings': 'EarningsDashboard',
+  '/driver/application-status': 'ApplicationStatus',
   '/admin/login': 'AdminLogin',
   '/admin/dashboard': 'AdminDashboard',
   '/admin/bookings': 'AdminBookings',
+  '/admin/live-operations': 'LiveOperations',
+  '/admin/driver-management': 'DriverManagement',
+  '/admin/system-config': 'SystemConfig',
+  '/sitemap': 'Sitemap',
+  '/hospitality': 'Hospitality',
 };
 
 export const WELCOME_ROUTES_MAP: Record<string, string> = {
@@ -105,6 +126,18 @@ export const WELCOME_ROUTES_MAP: Record<string, string> = {
   '/reservations/car-rental/long-term': 'long-term-rental',
   '/reservations/business/solutions': 'business-solutions',
   '/reservations/business/corporate': 'corporate-services',
+  '/services/hospitality': 'hospitality',
+  '/legal/terms': 'terms',
+  '/legal/privacy': 'privacy',
+  '/legal/refund': 'refund',
+  '/legal/cookie': 'cookie',
+  '/legal/compliance': 'compliance',
+  '/legal/licensing': 'licensing',
+  '/support/accessibility': 'accessibility',
+  '/support/careers': 'careers',
+  '/support/report-issue': 'report-issue',
+  '/support/lost-and-found': 'lost-and-found',
+  '/support/community': 'community',
 };
 
 const REVERSE_WELCOME_ROUTES: Record<string, string> = {};
@@ -143,6 +176,15 @@ const App: React.FC = () => {
         const potentialScreenEntry = Object.entries(ROUTE_FOR_SCREEN).find(([, r]) => r === path);
         if (potentialScreenEntry) {
            targetScreen = potentialScreenEntry[0] as Screen;
+        } else {
+           // Provide a case-insensitive fallback mapping loop if we can't find it
+           // This requires knowing the list of screens, but since we don't have it at runtime reliably without hardcoding,
+           // we'll just set it to the path name and let React components handle it.
+           // However we know that `navigate` uses `.toString().toLowerCase()`.
+           // Let's at least just cast it. It might break the switch if the casing doesn't match EXACTLY.
+           // To fix this perfectly without a huge runtime array, we will just let it fallback to Welcome if it fails the switches,
+           //. But wait, `renderScreen` in `CustomerApp` uses EXACT case.
+           // Let's add all the missing Sitemap screens to SCREEN_ROUTES instead!
         }
       }
       
@@ -165,9 +207,10 @@ const App: React.FC = () => {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  const navigate = useCallback((newScreen: Screen) => {
+  const navigate = useCallback((newScreen: Screen, view: string = 'home') => {
     setScreen(newScreen);
-    const path = ROUTE_FOR_SCREEN[newScreen] || `/${newScreen.toString().toLowerCase()}`;
+    setInitialWelcomeView(view);
+    const path = REVERSE_WELCOME_ROUTES[view] || ROUTE_FOR_SCREEN[newScreen] || `/${newScreen.toString().toLowerCase()}`;
     window.history.pushState({}, '', path);
   }, []);
 
@@ -193,8 +236,11 @@ const App: React.FC = () => {
   };
 
   const renderContent = () => {
+    if (screen === 'Sitemap') {
+      return <SitemapScreen navigate={navigate} onBack={() => navigate('Welcome')} />;
+    }
     if (!role) {
-      return <WelcomeScreen initialView={initialWelcomeView} onRoleSelect={handleRoleSelect} setInitialBookingDetails={setInitialBookingDetails} />;
+      return <WelcomeScreen initialView={initialWelcomeView} onRoleSelect={handleRoleSelect} setInitialBookingDetails={setInitialBookingDetails} navigate={navigate} />;
     }
 
     switch (role) {
@@ -205,7 +251,7 @@ const App: React.FC = () => {
       case 'Admin':
         return <AdminPanel screen={screen} navigate={navigate} logout={logout} />;
       default:
-        return <WelcomeScreen initialView={initialWelcomeView} onRoleSelect={handleRoleSelect} setInitialBookingDetails={setInitialBookingDetails} />;
+        return <WelcomeScreen initialView={initialWelcomeView} onRoleSelect={handleRoleSelect} setInitialBookingDetails={setInitialBookingDetails} navigate={navigate} />;
     }
   };
 
@@ -220,9 +266,10 @@ interface WelcomeScreenProps {
   onRoleSelect: (role: Role) => void;
   setInitialBookingDetails: (details: BookingDetails | null) => void;
   initialView?: string;
+  navigate: (screen: Screen, view?: string) => void;
 }
 
-const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialBookingDetails, initialView = 'home' }) => {
+const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialBookingDetails, initialView = 'home', navigate }) => {
   const [view, setView] = useState(initialView);
   
   // Keep view in sync with initialView if it changes from back/forward
@@ -2673,6 +2720,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                 <li><a href="#" onClick={(e) => {e.preventDefault(); setView('lost-and-found')}} className="hover:text-white transition-colors">Lost & Found</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Safety Guidelines</a></li>
                 <li><a href="#" onClick={(e) => {e.preventDefault(); setView('accessibility')}} className="hover:text-white underline transition-colors">Accessibility Services</a></li>
+                <li><a href="#" onClick={(e) => {e.preventDefault(); navigate('Sitemap')}} className="hover:text-white transition-colors">Sitemap</a></li>
               </ul>
             </div>
             
