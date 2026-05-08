@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import type { Screen, NavigationProps } from '../types';
 import { Button, Input, Header, BottomNav, FloatingActionButtons, ScreenContainer, Toast, Modal } from './shared/UI';
-import { UserIcon, LockIcon, PhoneIcon, MapPinIcon, UsersIcon, BriefcaseIcon, CalendarIcon, ClockIcon, CreditCardIcon, ArrowRightIcon, CheckCircleIcon, XCircleIcon, ChevronLeftIcon, EyeIcon, EyeOffIcon, MailIcon, CameraIcon, ChevronDownIcon, ShieldIcon, GoogleIcon, AppleIcon, UploadCloudIcon, CarIcon, BabyIcon, BusIcon, SnowflakeIcon, FileTextIcon, StarIcon } from './Icons';
+import { UserIcon, LockIcon, PhoneIcon, MapPinIcon, UsersIcon, BriefcaseIcon, CalendarIcon, ClockIcon, CreditCardIcon, ArrowRightIcon, CheckCircleIcon, XCircleIcon, ChevronLeftIcon, EyeIcon, EyeOffIcon, MailIcon, CameraIcon, ChevronDownIcon, ShieldIcon, GoogleIcon, AppleIcon, UploadCloudIcon, CarIcon, BabyIcon, BusIcon, SnowflakeIcon, FileTextIcon, StarIcon, GlobeIcon } from './Icons';
 
 // Type for booking details from the landing page form
 interface BookingDetails {
@@ -1166,6 +1166,132 @@ interface CarRentalScreenProps extends NavigationProps {
     setVehicleTypeForFilter: (info: VehicleClassInfo | null) => void;
     setRentalDetails: (details: RentalDetails | null) => void;
 }
+const DetailsSection: React.FC<{
+    title: string;
+    section: string;
+    data: any;
+    onUpdate: (field: string, value: any) => void;
+}> = ({ title, section, data, onUpdate }) => {
+    return (
+        <div className="space-y-4 pt-6 mt-6 border-t border-gray-200 animate-fade-in">
+            <h3 className="text-xl font-bold font-display text-primary">{title}</h3>
+            <Input 
+                id={`${section}-name`} 
+                label="Full Name" 
+                value={data.fullName || ''} 
+                onChange={e => onUpdate('fullName', e.target.value)} 
+                icon={<UserIcon className="w-5 h-5 text-gray-400"/>} 
+            />
+            <Input 
+                id={`${section}-phone`} 
+                label="Phone Number (Required)" 
+                type="tel"
+                value={data.phone || ''} 
+                onChange={e => onUpdate('phone', e.target.value)} 
+                icon={<PhoneIcon className="w-5 h-5 text-gray-400"/>} 
+                required
+            />
+            <Input 
+                id={`${section}-whatsapp`} 
+                label="WhatsApp Number (Optional)" 
+                type="tel"
+                value={data.whatsapp || ''} 
+                onChange={e => onUpdate('whatsapp', e.target.value)} 
+                icon={<PhoneIcon className="w-5 h-5 text-green-500"/>} 
+            />
+            <Input 
+                id={`${section}-email`} 
+                label="Email Address" 
+                type="email"
+                value={data.email || ''} 
+                onChange={e => onUpdate('email', e.target.value)} 
+                icon={<MailIcon className="w-5 h-5 text-gray-400"/>} 
+            />
+            
+            <Input 
+                id={`${section}-address`} 
+                label="Residential Address" 
+                value={data.address || ''} 
+                onChange={e => onUpdate('address', e.target.value)} 
+                icon={<MapPinIcon className="w-5 h-5 text-gray-400"/>} 
+            />
+            <Input 
+                id={`${section}-digital-address`} 
+                label="Digital Address (GhanaPostGPS format)" 
+                placeholder="GA-123-4567"
+                value={data.digitalAddress || ''} 
+                onChange={e => onUpdate('digitalAddress', e.target.value)} 
+                icon={<GlobeIcon className="w-5 h-5 text-gray-400"/>} 
+            />
+
+            <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Identification Type</label>
+                <div className="relative">
+                    <select 
+                        className="block w-full px-4 py-3.5 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary text-base sm:text-sm min-h-[48px] appearance-none"
+                        value={data.idType || ''}
+                        onChange={e => onUpdate('idType', e.target.value)}
+                    >
+                        <option value="">Select ID Type</option>
+                        <option value="Ghana Card">Ghana Card</option>
+                        <option value="Passport">Passport</option>
+                        <option value="Driver's License">Driver's License</option>
+                    </select>
+                    <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-gray-400">
+                        <ChevronDownIcon className="w-5 h-5" />
+                    </div>
+                </div>
+            </div>
+
+            <Input 
+                id={`${section}-id-number`} 
+                label="ID Number" 
+                value={data.idNumber || ''} 
+                onChange={e => onUpdate('idNumber', e.target.value)} 
+                icon={<FileTextIcon className="w-5 h-5 text-gray-400"/>} 
+            />
+
+            <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Front of ID Card</label>
+                <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-primary transition-colors cursor-pointer" onClick={() => document.getElementById(`${section}-front-upload`)?.click()}>
+                    <div className="space-y-1 text-center">
+                        <UploadCloudIcon className="mx-auto h-10 w-10 text-gray-400" />
+                        <div className="flex text-sm text-gray-600">
+                            <span className="relative cursor-pointer bg-white rounded-md font-medium text-primary hover:text-primary-hover">
+                                Upload front image
+                                <input id={`${section}-front-upload`} type="file" className="sr-only" onChange={e => {
+                                    if(e.target.files?.[0]) onUpdate('frontId', e.target.files[0]);
+                                }} />
+                            </span>
+                        </div>
+                        <p className="text-xs text-gray-500">PNG, JPG up to 10MB</p>
+                        {data.frontId && <p className="text-xs text-green-600 font-bold">{data.frontId.name}</p>}
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Back of ID Card</label>
+                <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-primary transition-colors cursor-pointer" onClick={() => document.getElementById(`${section}-back-upload`)?.click()}>
+                    <div className="space-y-1 text-center">
+                        <UploadCloudIcon className="mx-auto h-10 w-10 text-gray-400" />
+                        <div className="flex text-sm text-gray-600">
+                            <span className="relative cursor-pointer bg-white rounded-md font-medium text-primary hover:text-primary-hover">
+                                Upload back image
+                                <input id={`${section}-back-upload`} type="file" className="sr-only" onChange={e => {
+                                   if(e.target.files?.[0]) onUpdate('backId', e.target.files[0]);
+                                }} />
+                            </span>
+                        </div>
+                        <p className="text-xs text-gray-500">PNG, JPG up to 10MB</p>
+                        {data.backId && <p className="text-xs text-green-600 font-bold">{data.backId.name}</p>}
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 const CarRentalScreen: React.FC<CarRentalScreenProps> = ({ navigate, setRentalDuration, setVehicleTypeForFilter, setRentalDetails }) => {
     const [details, setDetails] = useState({
         pickupDate: '20/12/2025',
@@ -1179,6 +1305,30 @@ const CarRentalScreen: React.FC<CarRentalScreenProps> = ({ navigate, setRentalDu
     });
     const [pickupDateError, setPickupDateError] = useState('');
     const [returnDateError, setReturnDateError] = useState('');
+    const [isDriving, setIsDriving] = useState<boolean | null>(null);
+
+    const initialDetailFields = {
+        fullName: '',
+        phone: '',
+        whatsapp: '',
+        email: '',
+        address: '',
+        digitalAddress: '',
+        idType: '',
+        idNumber: '',
+        frontId: null as File | null,
+        backId: null as File | null,
+    };
+
+    const [renterDetails, setRenterDetails] = useState(initialDetailFields);
+    const [driverDetails, setDriverDetails] = useState(initialDetailFields);
+    const [yourDetails, setYourDetails] = useState(initialDetailFields);
+
+    const handleDetailUpdate = (section: 'renter' | 'driver' | 'you', field: string, value: any) => {
+        if (section === 'renter') setRenterDetails(prev => ({ ...prev, [field]: value }));
+        else if (section === 'driver') setDriverDetails(prev => ({ ...prev, [field]: value }));
+        else setYourDetails(prev => ({ ...prev, [field]: value }));
+    };
 
     const handleInputChange = (field: keyof typeof details, value: string) => {
         setDetails(prev => ({ ...prev, [field]: value }));
@@ -1263,7 +1413,54 @@ const CarRentalScreen: React.FC<CarRentalScreenProps> = ({ navigate, setRentalDu
                     <Input id="passengersRental" label="Passengers" type="number" value={details.passengers} onChange={e => handleInputChange('passengers', e.target.value)} icon={<UsersIcon className="w-5 h-5 text-gray-400"/>} />
                     <Input id="luggageRental" label="Luggage" type="number" value={details.luggage} onChange={e => handleInputChange('luggage', e.target.value)} icon={<BriefcaseIcon className="w-5 h-5 text-gray-400"/>} />
                 </div>
-                <Button onClick={handleSubmit}>See Available Cars</Button>
+
+                <div className="pt-4 border-t border-gray-100">
+                    <p className="block text-sm font-medium text-gray-700 mb-3">Are you the one driving the car?</p>
+                    <div className="flex gap-4">
+                        <button 
+                            type="button"
+                            onClick={() => setIsDriving(true)}
+                            className={`flex-1 py-3 px-4 rounded-lg border-2 font-bold transition-all ${isDriving === true ? 'bg-primary text-white border-primary shadow-md' : 'bg-white text-gray-600 border-gray-200 hover:border-primary/50'}`}
+                        >
+                            Yes
+                        </button>
+                        <button 
+                            type="button"
+                            onClick={() => setIsDriving(false)}
+                            className={`flex-1 py-3 px-4 rounded-lg border-2 font-bold transition-all ${isDriving === false ? 'bg-primary text-white border-primary shadow-md' : 'bg-white text-gray-600 border-gray-200 hover:border-primary/50'}`}
+                        >
+                            No
+                        </button>
+                    </div>
+                </div>
+
+                {isDriving === true && (
+                    <DetailsSection 
+                        title="Your Details" 
+                        section="you" 
+                        data={yourDetails} 
+                        onUpdate={(f, v) => handleDetailUpdate('you', f, v)} 
+                    />
+                )}
+
+                {isDriving === false && (
+                    <>
+                        <DetailsSection 
+                            title="Account Owner's Details" 
+                            section="renter" 
+                            data={renterDetails} 
+                            onUpdate={(f, v) => handleDetailUpdate('renter', f, v)} 
+                        />
+                        <DetailsSection 
+                            title="Driver's Details" 
+                            section="driver" 
+                            data={driverDetails} 
+                            onUpdate={(f, v) => handleDetailUpdate('driver', f, v)} 
+                        />
+                    </>
+                )}
+
+                <Button onClick={handleSubmit} disabled={isDriving === null}>See Available Cars</Button>
             </div>
         </ScreenContainer>
     );
