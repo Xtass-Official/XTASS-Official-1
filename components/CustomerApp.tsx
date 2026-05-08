@@ -1,7 +1,7 @@
 // SCREEN 2 UPDATED ONLY — All other screens remain untouched. Removed duplicate contact icons from the Welcome/Login screen.
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import type { Screen, NavigationProps } from '../types';
-import { Button, Input, Header, BottomNav, FloatingActionButtons, ScreenContainer, Toast, Modal } from './shared/UI';
+import { Button, Input, Select, Header, BottomNav, FloatingActionButtons, ScreenContainer, Toast, Modal } from './shared/UI';
 import { UserIcon, LockIcon, PhoneIcon, MapPinIcon, UsersIcon, BriefcaseIcon, CalendarIcon, ClockIcon, CreditCardIcon, ArrowRightIcon, CheckCircleIcon, XCircleIcon, ChevronLeftIcon, EyeIcon, EyeOffIcon, MailIcon, CameraIcon, ChevronDownIcon, ShieldIcon, GoogleIcon, AppleIcon, UploadCloudIcon, CarIcon, BabyIcon, BusIcon, SnowflakeIcon, FileTextIcon, StarIcon, GlobeIcon } from './Icons';
 
 // Type for booking details from the landing page form
@@ -47,6 +47,8 @@ interface RentalDetails {
   luggage: string;
   pickupLocation: string;
   dropoffLocation: string;
+  renterAge: string;
+  rentingPurpose: string;
 }
 
 const validateAndFormatDate = (value: string, previousValue: string): { newValue: string; error: string } => {
@@ -980,6 +982,7 @@ const TripDetailsInputScreen: React.FC<TripDetailsInputScreenProps> = ({ navigat
     const [date, setDate] = useState(getCurrentDate());
     const [time, setTime] = useState(getCurrentTime());
     const [passengers, setPassengers] = useState(initialDetails?.passengers || "");
+    const [bookerAge, setBookerAge] = useState("");
     const [luggage, setLuggage] = useState("");
     const [childSeat, setChildSeat] = useState(false);
     const [wheelchairAccess, setWheelchairAccess] = useState(false);
@@ -1095,6 +1098,7 @@ const TripDetailsInputScreen: React.FC<TripDetailsInputScreenProps> = ({ navigat
                 </div>
 
                 <Input id="passengers" label="Passengers" type="number" placeholder="1" value={passengers} onChange={e => setPassengers(e.target.value)} icon={<UsersIcon className="w-5 h-5 text-gray-400" />} />
+                <Input id="bookerAge" label="Booker's Age (Optional)" type="number" placeholder="Enter age" value={bookerAge} onChange={e => setBookerAge(e.target.value)} icon={<UserIcon className="w-5 h-5 text-gray-400" />} />
                 <Input id="luggage" label="Luggage" type="number" placeholder="1" value={luggage} onChange={e => setLuggage(e.target.value)} icon={<BriefcaseIcon className="w-5 h-5 text-gray-400" />} />
                 
                 <div className="flex items-center justify-between mt-2">
@@ -1138,6 +1142,7 @@ const ScheduleRideScreen: React.FC<ScheduleRideScreenProps> = ({ navigate, setVe
     const [date, setDate] = useState(initialDetails?.date || getCurrentDate());
     const [time, setTime] = useState(initialDetails?.time || getCurrentTime());
     const [passengers, setPassengers] = useState(initialDetails?.passengers || "");
+    const [bookerAge, setBookerAge] = useState("");
     const [vehicleType, setVehicleType] = useState<string | null>('Business Class');
     const [dateError, setDateError] = useState('');
 
@@ -1192,6 +1197,7 @@ const ScheduleRideScreen: React.FC<ScheduleRideScreenProps> = ({ navigate, setVe
                     <Input id="time" label="Time" type="time" value={time} onChange={e => setTime(e.target.value)} icon={<ClockIcon className="w-5 h-5 text-gray-400" />} />
                 </div>
                 <Input id="passengers" label="Passengers" type="number" placeholder="1" value={passengers} onChange={e => setPassengers(e.target.value)} icon={<UsersIcon className="w-5 h-5 text-gray-400" />} />
+                <Input id="bookerAge" label="Booker's Age (Optional)" type="number" placeholder="Enter age" value={bookerAge} onChange={e => setBookerAge(e.target.value)} icon={<UserIcon className="w-5 h-5 text-gray-400" />} />
                 <div className="pt-2">
                     <Button onClick={handleFindRide} disabled={!pickup || !destination || !passengers || date.length !== 10 || !!dateError || !time}>Select Ride</Button>
                 </div>
@@ -1341,6 +1347,8 @@ const CarRentalScreen: React.FC<CarRentalScreenProps> = ({ navigate, setRentalDu
         luggage: "",
         pickupLocation: "",
         dropoffLocation: "",
+        renterAge: "",
+        rentingPurpose: "Leisure / Personal Travel",
     });
     const [pickupDateError, setPickupDateError] = useState('');
     const [returnDateError, setReturnDateError] = useState('');
@@ -1416,6 +1424,8 @@ const CarRentalScreen: React.FC<CarRentalScreenProps> = ({ navigate, setRentalDu
             luggage: details.luggage,
             pickupLocation: details.pickupLocation,
             dropoffLocation: details.dropoffLocation,
+            renterAge: details.renterAge,
+            rentingPurpose: details.rentingPurpose,
         });
         setVehicleTypeForFilter(null); 
         navigate('AvailableCarsForRent');
@@ -1452,6 +1462,21 @@ const CarRentalScreen: React.FC<CarRentalScreenProps> = ({ navigate, setRentalDu
                     <Input id="passengersRental" label="Passengers" type="number" value={details.passengers} onChange={e => handleInputChange('passengers', e.target.value)} icon={<UsersIcon className="w-5 h-5 text-gray-400"/>} />
                     <Input id="luggageRental" label="Luggage" type="number" value={details.luggage} onChange={e => handleInputChange('luggage', e.target.value)} icon={<BriefcaseIcon className="w-5 h-5 text-gray-400"/>} />
                 </div>
+
+                <Input id="renterAge" label="Renter's Age (Optional)" type="number" placeholder="Enter age" value={details.renterAge} onChange={e => handleInputChange('renterAge', e.target.value)} icon={<UserIcon className="w-5 h-5 text-gray-400" />} />
+                
+                <Select 
+                    id="rentingPurpose" 
+                    label="Purpose of Renting the Car" 
+                    value={details.rentingPurpose} 
+                    onChange={e => handleInputChange('rentingPurpose', e.target.value)} 
+                    icon={<FileTextIcon className="w-5 h-5 text-gray-400" />}
+                    options={[
+                        { value: "Leisure / Personal Travel", label: "Leisure / Personal Travel" },
+                        { value: "Business Travel", label: "Business Travel" },
+                        { value: "Replacement for Personal Vehicle (Due to Accident, Warranty, or Repair Work)", label: "Replacement for Personal Vehicle (Due to Accident, Warranty, or Repair Work)" }
+                    ]}
+                />
 
                 <div className="pt-4 border-t border-gray-100">
                     <p className="block text-sm font-medium text-gray-700 mb-3">Are you the one driving the car?</p>

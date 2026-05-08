@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Screen, NavigationProps } from '../../types';
-import { HomeIcon, HistoryIcon, UserIcon, PhoneIcon, ChevronLeftIcon, ChevronRightIcon, XCircleIcon } from '../Icons';
+import { HomeIcon, HistoryIcon, UserIcon, PhoneIcon, ChevronLeftIcon, ChevronRightIcon, XCircleIcon, ChevronDownIcon } from '../Icons';
 
 // Reusable Button Component
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -37,6 +37,35 @@ export const Input: React.FC<InputProps> = ({ icon, label, id, ...props }) => {
           className={`block w-full px-4 py-3.5 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary text-base sm:text-sm min-h-[48px] ${icon ? 'pl-10' : ''}`}
           {...props}
         />
+      </div>
+    </div>
+  );
+};
+
+// Reusable Select Component
+interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
+  icon?: React.ReactNode;
+  label: string;
+  options: { value: string; label: string }[];
+}
+export const Select: React.FC<SelectProps> = ({ icon, label, id, options, ...props }) => {
+  return (
+    <div className="w-full">
+      <label htmlFor={id} className="block text-sm font-medium text-gray-700 mb-1.5">{label}</label>
+      <div className="relative">
+        {icon && <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">{icon}</div>}
+        <select
+          id={id}
+          className={`block w-full px-4 py-3.5 border border-gray-300 rounded-md shadow-sm bg-white focus:outline-none focus:ring-primary focus:border-primary text-base sm:text-sm min-h-[48px] appearance-none ${icon ? 'pl-10' : ''}`}
+          {...props}
+        >
+          {options.map(opt => (
+            <option key={opt.value} value={opt.value}>{opt.label}</option>
+          ))}
+        </select>
+        <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+          <ChevronDownIcon className="w-5 h-5 text-gray-400" />
+        </div>
       </div>
     </div>
   );
