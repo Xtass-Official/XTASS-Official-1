@@ -101,6 +101,21 @@ const validateAndFormatDate = (value: string, previousValue: string): { newValue
     return { newValue: formatted, error };
 };
 
+const getCurrentDate = () => {
+    const now = new Date();
+    const day = String(now.getDate()).padStart(2, '0');
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    // Forcing 2025 to match the application's current date logic
+    return `${day}/${month}/2025`;
+};
+
+const getCurrentTime = () => {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    return `${hours}:${minutes}`;
+};
+
 
 function usePrevious(value: Screen): Screen | undefined {
     const ref = useRef<Screen | undefined>();
@@ -960,13 +975,16 @@ interface TripDetailsInputScreenProps extends NavigationProps {
   initialDetails: BookingDetails | null;
 }
 const TripDetailsInputScreen: React.FC<TripDetailsInputScreenProps> = ({ navigate, setVehicleTypeForFilter, initialDetails }) => {
-    const [pickup, setPickup] = useState(initialDetails?.pickup || "Kotoka Int'l Airport, Terminal 3");
-    const [destination, setDestination] = useState(initialDetails?.dropoff || 'Labadi Beach Hotel, Accra');
-    const [passengers, setPassengers] = useState(initialDetails?.passengers || '2');
-    const [luggage, setLuggage] = useState('2');
+    const [pickup, setPickup] = useState(initialDetails?.pickup || "");
+    const [destination, setDestination] = useState(initialDetails?.dropoff || "");
+    const [date, setDate] = useState(getCurrentDate());
+    const [time, setTime] = useState(getCurrentTime());
+    const [passengers, setPassengers] = useState(initialDetails?.passengers || "");
+    const [luggage, setLuggage] = useState("");
     const [childSeat, setChildSeat] = useState(false);
     const [wheelchairAccess, setWheelchairAccess] = useState(false);
     const [vehicleType, setVehicleType] = useState<string | null>('Premium Class');
+    const [dateError, setDateError] = useState('');
     const [documentType, setDocumentType] = useState('');
     const [isCaptureModalOpen, setIsCaptureModalOpen] = useState(false);
     const [capturedImage, setCapturedImage] = useState<string | null>(null);
@@ -980,6 +998,12 @@ const TripDetailsInputScreen: React.FC<TripDetailsInputScreenProps> = ({ navigat
         'Business Class': { name: 'Business Class', icon: <CarIcon/>, baseRate: 150 },
         'Economy Class': { name: 'Economy Class', icon: <CarIcon/>, baseRate: 80 },
         'Basic Class': { name: 'Basic Class', icon: <CarIcon/>, baseRate: 50 },
+    };
+
+    const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { newValue, error } = validateAndFormatDate(e.target.value, date);
+        setDate(newValue);
+        setDateError(error);
     };
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -1041,7 +1065,7 @@ const TripDetailsInputScreen: React.FC<TripDetailsInputScreenProps> = ({ navigat
     return (
         <ScreenContainer>
             <Header title="Instant Ride" onBack={() => navigate('ServiceSelection')} onForward={() => {
-                if (pickup && destination && passengers) {
+                if (pickup && destination && passengers && date.length === 10 && !dateError && time) {
                     setVehicleTypeForFilter(vehicleTypes[vehicleType as keyof typeof vehicleTypes] || null);
                     navigate('CompatibleShuttlesList');
                 }
@@ -1061,6 +1085,15 @@ const TripDetailsInputScreen: React.FC<TripDetailsInputScreenProps> = ({ navigat
 
                 <Input id="pickup" label="Pick Up Location" type="text" placeholder="Kotoka International Airport" value={pickup} onChange={e => setPickup(e.target.value)} icon={<MapPinIcon className="w-5 h-5 text-gray-400" />} />
                 <Input id="destination" label="Drop Off Location" type="text" placeholder="Enter your destination" value={destination} onChange={e => setDestination(e.target.value)} icon={<MapPinIcon className="w-5 h-5 text-gray-400" />} />
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <Input id="date" label="Select Date (DD/MM/2025)" type="tel" placeholder="DD/MM/2025" value={date} onChange={handleDateChange} icon={<CalendarIcon className="w-5 h-5 text-gray-400" />} maxLength={10} />
+                        {dateError && <p className="text-red-500 text-xs mt-1">{dateError}</p>}
+                    </div>
+                    <Input id="time" label="Time" type="time" value={time} onChange={e => setTime(e.target.value)} icon={<ClockIcon className="w-5 h-5 text-gray-400" />} />
+                </div>
+
                 <Input id="passengers" label="Passengers" type="number" placeholder="1" value={passengers} onChange={e => setPassengers(e.target.value)} icon={<UsersIcon className="w-5 h-5 text-gray-400" />} />
                 <Input id="luggage" label="Luggage" type="number" placeholder="1" value={luggage} onChange={e => setLuggage(e.target.value)} icon={<BriefcaseIcon className="w-5 h-5 text-gray-400" />} />
                 
@@ -1085,9 +1118,9 @@ const TripDetailsInputScreen: React.FC<TripDetailsInputScreenProps> = ({ navigat
                             }
                             navigate('CompatibleShuttlesList');
                         }} 
-                        disabled={!pickup || !destination || !passengers}
+                        disabled={!pickup || !destination || !passengers || date.length !== 10 || !!dateError || !time}
                     >
-                        Find Ride
+                        Select Ride
                     </Button>
                 </div>
             </div>
@@ -1100,11 +1133,11 @@ interface ScheduleRideScreenProps extends NavigationProps {
   initialDetails: BookingDetails | null;
 }
 const ScheduleRideScreen: React.FC<ScheduleRideScreenProps> = ({ navigate, setVehicleTypeForFilter, initialDetails }) => {
-    const [pickup, setPickup] = useState(initialDetails?.pickup || "Kotoka Int'l Airport, Terminal 3");
-    const [destination, setDestination] = useState(initialDetails?.dropoff || 'Mövenpick Ambassador Hotel, Accra');
-    const [date, setDate] = useState(initialDetails?.date || '15/12/2025');
-    const [time, setTime] = useState(initialDetails?.time || '14:30');
-    const [passengers, setPassengers] = useState(initialDetails?.passengers || '3');
+    const [pickup, setPickup] = useState(initialDetails?.pickup || "");
+    const [destination, setDestination] = useState(initialDetails?.dropoff || "");
+    const [date, setDate] = useState(initialDetails?.date || getCurrentDate());
+    const [time, setTime] = useState(initialDetails?.time || getCurrentTime());
+    const [passengers, setPassengers] = useState(initialDetails?.passengers || "");
     const [vehicleType, setVehicleType] = useState<string | null>('Business Class');
     const [dateError, setDateError] = useState('');
 
@@ -1160,7 +1193,7 @@ const ScheduleRideScreen: React.FC<ScheduleRideScreenProps> = ({ navigate, setVe
                 </div>
                 <Input id="passengers" label="Passengers" type="number" placeholder="1" value={passengers} onChange={e => setPassengers(e.target.value)} icon={<UsersIcon className="w-5 h-5 text-gray-400" />} />
                 <div className="pt-2">
-                    <Button onClick={handleFindRide} disabled={!pickup || !destination || !passengers || date.length !== 10 || !!dateError || !time}>Find Ride</Button>
+                    <Button onClick={handleFindRide} disabled={!pickup || !destination || !passengers || date.length !== 10 || !!dateError || !time}>Select Ride</Button>
                 </div>
             </div>
         </ScreenContainer>
@@ -1300,14 +1333,14 @@ const DetailsSection: React.FC<{
 
 const CarRentalScreen: React.FC<CarRentalScreenProps> = ({ navigate, setRentalDuration, setVehicleTypeForFilter, setRentalDetails, initialDetails }) => {
     const [details, setDetails] = useState({
-        pickupDate: initialDetails?.pickupDateRental || '20/12/2025',
-        pickupTime: initialDetails?.pickupTimeRental || '10:00',
-        returnDate: initialDetails?.returnDateRental || '25/12/2025',
-        returnTime: initialDetails?.returnTimeRental || '10:00',
-        passengers: initialDetails?.passengers || '4',
-        luggage: '3',
-        pickupLocation: "Kotoka Int'l Airport, Terminal 3",
-        dropoffLocation: "Labone, Accra",
+        pickupDate: initialDetails?.pickupDateRental || getCurrentDate(),
+        pickupTime: initialDetails?.pickupTimeRental || getCurrentTime(),
+        returnDate: initialDetails?.returnDateRental || getCurrentDate(),
+        returnTime: initialDetails?.returnTimeRental || getCurrentTime(),
+        passengers: initialDetails?.passengers || "",
+        luggage: "",
+        pickupLocation: "",
+        dropoffLocation: "",
     });
     const [pickupDateError, setPickupDateError] = useState('');
     const [returnDateError, setReturnDateError] = useState('');
@@ -1466,7 +1499,7 @@ const CarRentalScreen: React.FC<CarRentalScreenProps> = ({ navigate, setRentalDu
                     </>
                 )}
 
-                <Button onClick={handleSubmit} disabled={isDriving === null}>See Available Cars</Button>
+                <Button onClick={handleSubmit} disabled={isDriving === null}>Select Ride</Button>
             </div>
         </ScreenContainer>
     );
