@@ -107,12 +107,32 @@ interface BottomNavProps extends NavigationProps {
 }
 
 export const BottomNav: React.FC<BottomNavProps> = ({ navigate, activeScreen }) => {
-  const navItems = [
+  const getBookingScreen = (): Screen => {
+    // Determine which themed bookings page to show based on current flow
+    if (['TripDetailsInput', 'CompatibleShuttlesList', 'ShuttleDriverDetails', 'BookingConfirmation', 'TripTracking', 'TripCompletionReceipt', 'MyBookingsInstant'].includes(activeScreen)) {
+        return 'MyBookingsInstant';
+    }
+    if (['ScheduleRide', 'MyBookingsSchedule'].includes(activeScreen)) {
+        return 'MyBookingsSchedule';
+    }
+    if (['CarRental', 'AvailableCarsForRent', 'CarRentDetails', 'CarRentalConfirmation', 'MyBookingsRental'].includes(activeScreen)) {
+        return 'MyBookingsRental';
+    }
+    return 'MyBookings';
+  };
+
+  const navItems: { screen: Screen; icon: React.FC<any>; label: string }[] = [
     { screen: 'ServiceSelection', icon: HomeIcon, label: 'Home' },
-    { screen: 'MyBookings', icon: BookingIcon, label: 'My Bookings' },
+    { screen: getBookingScreen(), icon: BookingIcon, label: 'My Bookings' },
     { screen: 'AccountProfile', icon: UserIcon, label: 'Profile' },
   ];
-  const isActive = (screen: Screen) => activeScreen.startsWith(screen);
+
+  const isActive = (screen: Screen) => {
+    if (screen.startsWith('MyBookings')) {
+        return activeScreen.startsWith('MyBookings');
+    }
+    return activeScreen.startsWith(screen);
+  };
 
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-white shadow-[0_-2px_10px_rgba(0,0,0,0.1)] z-10 max-w-md mx-auto">
@@ -120,9 +140,9 @@ export const BottomNav: React.FC<BottomNavProps> = ({ navigate, activeScreen }) 
         {navItems.map((item) => (
           <button
             key={item.label}
-            onClick={() => navigate(item.screen as Screen)}
+            onClick={() => navigate(item.screen)}
             className={`flex flex-col items-center justify-center space-y-1 w-full h-full text-sm font-medium transition-colors ${
-              isActive(item.screen as Screen) ? 'text-primary' : 'text-gray-500 hover:text-primary'
+              isActive(item.screen) ? 'text-primary' : 'text-gray-500 hover:text-primary'
             }`}
           >
             <item.icon className="w-6 h-6" />

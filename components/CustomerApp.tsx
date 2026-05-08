@@ -251,7 +251,12 @@ export const CustomerApp: React.FC<CustomerAppProps> = ({ screen, navigate, logo
           return <TripHistoryScreen navigate={navigate} />;
       case 'MyBookings':
           return <MyBookingsScreen navigate={navigate} />;
-// FIX: Resolve "Cannot find name" error by defining the component.
+      case 'MyBookingsInstant':
+          return <MyBookingsScreen navigate={navigate} defaultFilter="Instant" />;
+      case 'MyBookingsSchedule':
+          return <MyBookingsScreen navigate={navigate} defaultFilter="Schedule" />;
+      case 'MyBookingsRental':
+          return <MyBookingsScreen navigate={navigate} defaultFilter="Rental" />;
       case 'TripDetailsView':
           return <TripDetailsViewScreen navigate={navigate} />;
 // FIX: Resolve "Cannot find name" error by defining the component.
@@ -1869,9 +1874,15 @@ const TripHistoryScreen: React.FC<NavigationProps> = ({ navigate }) => {
     );
 };
 
-const MyBookingsScreen: React.FC<NavigationProps> = ({ navigate }) => {
-    const [serviceFilter, setServiceFilter] = useState<'Instant' | 'Schedule' | 'Rental'>('Instant');
+const MyBookingsScreen: React.FC<NavigationProps & { defaultFilter?: 'Instant' | 'Schedule' | 'Rental' }> = ({ navigate, defaultFilter }) => {
+    const [serviceFilter, setServiceFilter] = useState<'Instant' | 'Schedule' | 'Rental'>(defaultFilter || 'Instant');
     const [selectedTab, setSelectedTab] = useState<'Upcoming' | 'Active' | 'Completed' | 'Cancelled'>('Upcoming');
+    
+    useEffect(() => {
+        if (defaultFilter) {
+            setServiceFilter(defaultFilter);
+        }
+    }, [defaultFilter]);
     
     const allBookings = [
         // Instant Rides
@@ -2022,20 +2033,22 @@ const MyBookingsScreen: React.FC<NavigationProps> = ({ navigate }) => {
             <Header title={getTitle()} onBack={() => navigate('ServiceSelection')} />
             
             {/* Service Type Selector */}
-            <div className="bg-gray-100 p-1 flex gap-1 sticky top-0 z-20 border-b border-gray-200">
-                {(['Instant', 'Schedule', 'Rental'] as const).map(type => (
-                    <button
-                        key={type}
-                        onClick={() => setServiceFilter(type)}
-                        className={`flex-1 py-3 text-[10px] font-black uppercase tracking-widest transition-all ${serviceFilter === type ? 'bg-white text-primary shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
-                    >
-                        {type === 'Schedule' ? 'Schedule' : type}
-                    </button>
-                ))}
-            </div>
+            {!defaultFilter && (
+                <div className="bg-gray-100 p-1 flex gap-1 sticky top-0 z-20 border-b border-gray-200">
+                    {(['Instant', 'Schedule', 'Rental'] as const).map(type => (
+                        <button
+                            key={type}
+                            onClick={() => setServiceFilter(type)}
+                            className={`flex-1 py-3 text-[10px] font-black uppercase tracking-widest transition-all ${serviceFilter === type ? 'bg-white text-primary shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+                        >
+                            {type === 'Schedule' ? 'Schedule' : type}
+                        </button>
+                    ))}
+                </div>
+            )}
 
             {/* Tab Navigation */}
-            <div className="flex border-b overflow-x-auto scrollbar-hide bg-white sticky top-[49px] z-10 shadow-sm">
+            <div className={`flex border-b overflow-x-auto scrollbar-hide bg-white sticky z-10 shadow-sm ${defaultFilter ? 'top-0' : 'top-[49px]'}`}>
                 {(['Upcoming', 'Active', 'Completed', 'Cancelled'] as const).map(tab => (
                     <button
                         key={tab}
