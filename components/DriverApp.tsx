@@ -245,7 +245,7 @@ const DriverTripCompletionScreen: React.FC<NavigationProps> = ({ navigate }) => 
             </div>
              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
                 <UploadCloudIcon className="mx-auto h-12 w-12 text-gray-400" />
-                <p className="mt-2 text-sm font-semibold">Upload Drop-off Photo (Optional)</p>
+                <p className="mt-2 text-sm font-semibold">Upload Drop-off Photo</p>
              </div>
             <Button onClick={() => navigate('DriverDashboard')} className="mt-6">Back to Dashboard</Button>
         </div>

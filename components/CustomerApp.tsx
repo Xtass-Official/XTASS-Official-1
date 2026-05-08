@@ -12,6 +12,10 @@ interface BookingDetails {
   date: string;
   time: string;
   passengers: string;
+  pickupDateRental?: string;
+  pickupTimeRental?: string;
+  returnDateRental?: string;
+  returnTimeRental?: string;
 }
 
 interface CustomerAppProps extends NavigationProps {
@@ -127,6 +131,8 @@ export const CustomerApp: React.FC<CustomerAppProps> = ({ screen, navigate, logo
         navigate('TripDetailsInput');
       } else if (initialBookingDetails.rideType === 'Scheduled Ride') {
         navigate('ScheduleRide');
+      } else if (initialBookingDetails.rideType === 'Car Rental') {
+        navigate('CarRental');
       }
       clearInitialBookingDetails();
     }
@@ -193,7 +199,7 @@ export const CustomerApp: React.FC<CustomerAppProps> = ({ screen, navigate, logo
               initialDetails={rideDetails}
           />;
       case 'CarRental':
-          return <CarRentalScreen navigate={navigate} setRentalDuration={setRentalDuration} setVehicleTypeForFilter={setSelectedVehicleClassInfo} setRentalDetails={setRentalDetails} />;
+          return <CarRentalScreen navigate={navigate} setRentalDuration={setRentalDuration} setVehicleTypeForFilter={setSelectedVehicleClassInfo} setRentalDetails={setRentalDetails} initialDetails={rideDetails} />;
       case 'AvailableCarsForRent':
           return <AvailableCarsForRentScreen navigate={navigate} onBack={() => navigate('CarRental')} onCarSelect={setSelectedCar} selectedClassInfo={selectedVehicleClassInfo} />;
       case 'CarRentDetails':
@@ -534,7 +540,7 @@ const AuthScreen: React.FC<{ navigate: (s: Screen) => void, isLogin: boolean, lo
                         )}
                         {step === 2 && (
                             <div>
-                                <h3 className="text-lg font-semibold mb-4 text-center">Enter your email (optional)</h3>
+                                <h3 className="text-lg font-semibold mb-4 text-center">Enter your email</h3>
                                 <Input id="email" label="Email" type="email" placeholder="you@example.com" value={formData.email} onChange={e => { handleInputChange('email', e.target.value); validateEmail(e.target.value); }} />
                                 {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
                             </div>
@@ -1165,6 +1171,7 @@ interface CarRentalScreenProps extends NavigationProps {
     setRentalDuration: (duration: number) => void;
     setVehicleTypeForFilter: (info: VehicleClassInfo | null) => void;
     setRentalDetails: (details: RentalDetails | null) => void;
+    initialDetails: BookingDetails | null;
 }
 const DetailsSection: React.FC<{
     title: string;
@@ -1184,16 +1191,15 @@ const DetailsSection: React.FC<{
             />
             <Input 
                 id={`${section}-phone`} 
-                label="Phone Number (Required)" 
+                label="Phone Number" 
                 type="tel"
                 value={data.phone || ''} 
                 onChange={e => onUpdate('phone', e.target.value)} 
                 icon={<PhoneIcon className="w-5 h-5 text-gray-400"/>} 
-                required
             />
             <Input 
                 id={`${section}-whatsapp`} 
-                label="WhatsApp Number (Optional)" 
+                label="WhatsApp Number" 
                 type="tel"
                 value={data.whatsapp || ''} 
                 onChange={e => onUpdate('whatsapp', e.target.value)} 
@@ -1292,13 +1298,13 @@ const DetailsSection: React.FC<{
     );
 };
 
-const CarRentalScreen: React.FC<CarRentalScreenProps> = ({ navigate, setRentalDuration, setVehicleTypeForFilter, setRentalDetails }) => {
+const CarRentalScreen: React.FC<CarRentalScreenProps> = ({ navigate, setRentalDuration, setVehicleTypeForFilter, setRentalDetails, initialDetails }) => {
     const [details, setDetails] = useState({
-        pickupDate: '20/12/2025',
-        pickupTime: '10:00',
-        returnDate: '25/12/2025',
-        returnTime: '10:00',
-        passengers: '4',
+        pickupDate: initialDetails?.pickupDateRental || '20/12/2025',
+        pickupTime: initialDetails?.pickupTimeRental || '10:00',
+        returnDate: initialDetails?.returnDateRental || '25/12/2025',
+        returnTime: initialDetails?.returnTimeRental || '10:00',
+        passengers: initialDetails?.passengers || '4',
         luggage: '3',
         pickupLocation: "Kotoka Int'l Airport, Terminal 3",
         dropoffLocation: "Labone, Accra",

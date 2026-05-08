@@ -24,6 +24,10 @@ interface BookingDetails {
   date: string;
   time: string;
   passengers: string;
+  pickupDateRental?: string;
+  pickupTimeRental?: string;
+  returnDateRental?: string;
+  returnTimeRental?: string;
 }
 
 const validateAndFormatDate = (value: string, previousValue: string): { newValue: string; error: string } => {
@@ -243,6 +247,14 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
   const [dateError, setDateError] = useState('');
   const [timeError, setTimeError] = useState('');
 
+  // Car Rental specific fields for homepage
+  const [pickupDateRental, setPickupDateRental] = useState('');
+  const [pickupTimeRental, setPickupTimeRental] = useState('');
+  const [returnDateRental, setReturnDateRental] = useState('');
+  const [returnTimeRental, setReturnTimeRental] = useState('');
+  const [pickupDateRentalError, setPickupDateRentalError] = useState('');
+  const [returnDateRentalError, setReturnDateRentalError] = useState('');
+
 
   // State for Report an Issue form
   const [reportIssueData, setReportIssueData] = useState({
@@ -447,6 +459,18 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
     setDateError(error);
   };
 
+  const handlePickupDateRentalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { newValue, error } = validateAndFormatDate(e.target.value, pickupDateRental);
+    setPickupDateRental(newValue);
+    setPickupDateRentalError(error);
+  };
+
+  const handleReturnDateRentalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { newValue, error } = validateAndFormatDate(e.target.value, returnDateRental);
+    setReturnDateRental(newValue);
+    setReturnDateRentalError(error);
+  };
+
   const validateTime = (val: string, setError: (err: string) => void): boolean => {
     if (!val) {
         setError('Please select a time.');
@@ -477,30 +501,22 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
   const timeOptions = generateTimeOptions();
 
   const handleBookNow = () => {
-    if (rideType === 'Scheduled Ride') {
-      const isDateValid = date.length === 10 && !dateError;
-      const isTimeValid = validateTime(time, setTimeError);
-
-      if (!isDateValid || !isTimeValid) {
-        if (!isDateValid) setDateError(dateError || "Please enter a valid date.");
-        if (!isTimeValid) setTimeError(timeError || "Please select a time.");
-        alert('Please enter a valid date and time.');
-        return;
-      }
-    }
-
-    if (rideType) {
-      setInitialBookingDetails({
-        rideType,
-        pickup,
-        dropoff,
-        date: date,
-        time,
-        passengers,
-      });
-    } else {
-      setInitialBookingDetails(null);
-    }
+    setDateError('');
+    setTimeError('');
+    setPickupDateRentalError('');
+    setReturnDateRentalError('');
+    setInitialBookingDetails({
+      rideType,
+      pickup: rideType === 'Car Rental' ? '' : pickup,
+      dropoff: rideType === 'Car Rental' ? '' : dropoff,
+      date: rideType === 'Car Rental' ? `${pickupDateRental} to ${returnDateRental}` : date,
+      time: rideType === 'Car Rental' ? `${pickupTimeRental} to ${returnTimeRental}` : time,
+      passengers,
+      pickupDateRental: rideType === 'Car Rental' ? pickupDateRental : undefined,
+      pickupTimeRental: rideType === 'Car Rental' ? pickupTimeRental : undefined,
+      returnDateRental: rideType === 'Car Rental' ? returnDateRental : undefined,
+      returnTimeRental: rideType === 'Car Rental' ? returnTimeRental : undefined,
+    });
     onRoleSelect('Customer');
   };
   
@@ -601,9 +617,8 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                   <div className="flex justify-between items-end mb-4 px-1">
                     <label className="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
                        <MapPinIcon className="w-4 h-4 text-primary" />
-                       Pick-Up & Return Location (City or Airport)*
+                       Pick-Up & Return Location (City or Airport)
                     </label>
-                    <span className="text-[10px] text-gray-300 font-normal italic uppercase tracking-tighter">* Required Field</span>
                   </div>
                   <div className="relative group">
                     <div className="absolute left-0 top-0 bottom-0 w-16 bg-gray-50 flex items-center justify-center text-gray-400 group-focus-within:text-primary transition-colors border-r border-gray-100">
@@ -1039,9 +1054,8 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                   <div className="flex justify-between items-end mb-4 px-1">
                     <label className="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
                        <MapPinIcon className="w-4 h-4 text-primary" />
-                       Pick-Up & Return Location (City or Airport)*
+                       Pick-Up & Return Location (City or Airport)
                     </label>
-                    <span className="text-[10px] text-gray-300 font-normal italic uppercase tracking-tighter">* Required Field</span>
                   </div>
                   <div className="relative group">
                     <div className="absolute left-0 top-0 bottom-0 w-14 bg-gray-50 flex items-center justify-center text-gray-400 group-focus-within:text-primary transition-colors border-r border-gray-100">
@@ -1385,7 +1399,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
               {errors.cv && <p className="text-red-500 text-xs mt-1">{errors.cv}</p>}
             </div>
             <div className="space-y-1.5">
-              <label className="block text-sm font-semibold text-gray-700">Upload Cover Letter (Optional)</label>
+              <label className="block text-sm font-semibold text-gray-700">Upload Cover Letter</label>
               <div className="relative group border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-primary/50 transition-colors cursor-pointer">
                 <input
                   type="file"
@@ -1603,9 +1617,8 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                   <div className="flex justify-between items-end">
                     <label className="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
                        <MapPinIcon className="w-4 h-4 text-primary" />
-                       Pick-Up & Return Location (City or Airport)*
+                       Pick-Up & Return Location (City or Airport)
                     </label>
-                    <span className="text-[10px] text-gray-300 font-normal italic uppercase tracking-tighter">* Required Field</span>
                   </div>
                   <div className="relative group">
                     <div className="absolute left-0 top-0 bottom-0 w-14 bg-gray-50 flex items-center justify-center text-gray-400 group-focus-within:text-primary transition-colors border-r border-gray-100">
@@ -2156,9 +2169,8 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                 <div className="text-left">
                   <div className="flex justify-between items-end mb-3">
                     <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] flex items-center gap-2">
-                       Pick-Up & Return Location (City or Airport)*
+                       Pick-Up & Return Location (City or Airport)
                     </label>
-                    <span className="text-[10px] text-gray-300 font-normal italic uppercase tracking-tighter">* Required Field</span>
                   </div>
                   <div className="relative">
                     <input 
@@ -2965,7 +2977,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
             {/* Form - positioned to overlap */}
             <div className="relative z-10 -mt-20 sm:-mt-24 md:-mt-28 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="bg-white p-6 sm:p-8 shadow-2xl text-left text-gray-800 border border-gray-100">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className={`grid grid-cols-1 ${rideType === 'Car Rental' ? 'md:grid-cols-2 lg:grid-cols-2' : 'md:grid-cols-3'} gap-6`}>
                     {/* Types of Ride */}
                     <div>
                       <label htmlFor="rideType" className="block text-lg font-semibold text-gray-800 mb-2">Types of Ride</label>
@@ -2975,7 +2987,6 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                           value={rideType}
                           onChange={(e) => setRideType(e.target.value)}
                           className={`w-full p-3 pl-4 pr-10 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-accent appearance-none bg-white ${!rideType ? 'text-gray-500' : 'text-gray-800'}`}
-                          required
                         >
                           <option value="" disabled>Select your ride</option>
                           <option value="Instant Ride">Instant Ride</option>
@@ -2987,36 +2998,85 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                         </div>
                       </div>
                     </div>
-                    {/* Pick Up Location */}
-                    <div>
-                      <label htmlFor="pickup" className="block text-lg font-semibold text-gray-800 mb-2">Pick Up Location</label>
-                      <div className="relative">
-                        <input
-                          type="text"
-                          id="pickup"
-                          placeholder="Kotoka International Airport, Ghana."
-                          className="w-full p-3 pl-4 pr-4 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-accent placeholder-gray-500"
-                          value={pickup}
-                          onChange={e => setPickup(e.target.value)}
-                        />
-                      </div>
-                    </div>
-                    {/* Drop Off Location */}
-                    <div>
-                      <label htmlFor="dropoff" className="block text-lg font-semibold text-gray-800 mb-2">Drop Off Location</label>
-                      <div className="relative">
-                        <input
-                          type="text"
-                          id="dropoff"
-                          placeholder="East Legon, Accra."
-                          className="w-full p-3 pl-4 pr-4 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-accent placeholder-gray-500"
-                          value={dropoff}
-                          onChange={e => setDropoff(e.target.value)}
-                        />
-                      </div>
-                    </div>
+                    {rideType !== 'Car Rental' ? (
+                      <>
+                        {/* Pick Up Location */}
+                        <div>
+                          <label htmlFor="pickup" className="block text-lg font-semibold text-gray-800 mb-2">Pick Up Location</label>
+                          <div className="relative">
+                            <input
+                              type="text"
+                              id="pickup"
+                              placeholder="Kotoka International Airport, Ghana."
+                              className="w-full p-3 pl-4 pr-4 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-accent placeholder-gray-500"
+                              value={pickup}
+                              onChange={e => setPickup(e.target.value)}
+                            />
+                          </div>
+                        </div>
+                        {/* Drop Off Location */}
+                        <div>
+                          <label htmlFor="dropoff" className="block text-lg font-semibold text-gray-800 mb-2">Drop Off Location</label>
+                          <div className="relative">
+                            <input
+                              type="text"
+                              id="dropoff"
+                              placeholder="East Legon, Accra."
+                              className="w-full p-3 pl-4 pr-4 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-accent placeholder-gray-500"
+                              value={dropoff}
+                              onChange={e => setDropoff(e.target.value)}
+                            />
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                        <div>
+                            <label htmlFor="passengersRental" className="block text-lg font-semibold text-gray-800 mb-2">Passengers</label>
+                            <div className="relative">
+                                {!showCustomPassengers ? (
+                                    <div className="relative">
+                                    <select
+                                        id="passengersRental"
+                                        className={`w-full p-3 pl-4 pr-10 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-accent appearance-none bg-white ${!passengers ? 'text-gray-500' : 'text-gray-800'}`}
+                                        value={passengers}
+                                        onChange={(e) => {
+                                        if (e.target.value === 'custom') {
+                                            setShowCustomPassengers(true);
+                                            setPassengers('');
+                                        } else {
+                                            setPassengers(e.target.value);
+                                        }
+                                        }}
+                                    >
+                                        <option value="" disabled>No. of Passengers</option>
+                                        {[1, 2, 3, 4, 5, 6, 7].map(num => (
+                                        <option key={num} value={num}>{num}</option>
+                                        ))}
+                                        <option value="custom">Custom...</option>
+                                    </select>
+                                    <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                                        <ChevronDownIcon className="w-5 h-5" />
+                                    </div>
+                                    </div>
+                                ) : (
+                                    <div className="relative flex items-center">
+                                    <input
+                                        type="number"
+                                        id="passengersRental_custom"
+                                        autoFocus
+                                        placeholder="Enter number"
+                                        className="w-full p-3 pl-4 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-accent placeholder-gray-500"
+                                        value={passengers}
+                                        onChange={e => setPassengers(e.target.value)}
+                                        min="1"
+                                    />
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
                   </div>
-                  <div className={`mt-6 grid grid-cols-1 sm:grid-cols-2 ${rideType === 'Scheduled Ride' ? 'lg:grid-cols-4' : 'lg:grid-cols-2'} gap-6 items-end`}>
+                  <div className={`mt-6 grid grid-cols-1 sm:grid-cols-2 ${rideType === 'Scheduled Ride' || rideType === 'Car Rental' ? 'lg:grid-cols-4' : 'lg:grid-cols-2'} gap-6 items-end`}>
                     {rideType === 'Scheduled Ride' && (
                       <>
                         {/* Date */}
@@ -3049,53 +3109,109 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                         </div>
                       </>
                     )}
-                    {/* Passengers */}
-                    <div>
-                      <label htmlFor="passengers" className="block text-lg font-semibold text-gray-800 mb-2">Passengers</label>
-                      <div className="relative">
-                        {!showCustomPassengers ? (
-                          <div className="relative">
-                            <select
-                              id="passengers"
-                              className={`w-full p-3 pl-4 pr-10 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-accent appearance-none bg-white ${!passengers ? 'text-gray-500' : 'text-gray-800'}`}
-                              value={passengers}
-                              onChange={(e) => {
-                                if (e.target.value === 'custom') {
-                                  setShowCustomPassengers(true);
-                                  setPassengers('');
-                                } else {
-                                  setPassengers(e.target.value);
-                                }
-                              }}
-                            >
-                              <option value="" disabled>No. of Passengers</option>
-                              {[1, 2, 3, 4, 5, 6, 7].map(num => (
-                                <option key={num} value={num}>{num}</option>
-                              ))}
-                              <option value="custom">Custom...</option>
-                            </select>
-                            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
-                              <ChevronDownIcon className="w-5 h-5" />
+                    {rideType === 'Car Rental' && (
+                        <>
+                            {/* Pick Up Date */}
+                            <div>
+                                <label htmlFor="pickupDateRental" className="block text-lg font-semibold text-gray-800 mb-2">Pick Up Date</label>
+                                <input
+                                    type="tel"
+                                    id="pickupDateRental"
+                                    placeholder="DD/MM/2025"
+                                    className="w-full p-3 pl-4 pr-4 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-accent text-gray-800 placeholder-gray-500"
+                                    value={pickupDateRental}
+                                    onChange={handlePickupDateRentalChange}
+                                    maxLength={10}
+                                />
+                                {pickupDateRentalError && <p className="text-red-500 text-xs mt-1">{pickupDateRentalError}</p>}
                             </div>
-                          </div>
-                        ) : (
-                          <div className="relative flex items-center">
-                            <input
-                              type="number"
-                              id="passengers_custom"
-                              autoFocus
-                              placeholder="Enter number"
-                              className="w-full p-3 pl-4 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-accent placeholder-gray-500"
-                              value={passengers}
-                              onChange={e => setPassengers(e.target.value)}
-                              min="1"
-                            />
-                          </div>
-                        )}
-                      </div>
-                    </div>
+                            {/* Pick Up Time */}
+                            <div>
+                                <label htmlFor="pickupTimeRental" className="block text-lg font-semibold text-gray-800 mb-2">Pick Up Time</label>
+                                <input
+                                    type="time"
+                                    id="pickupTimeRental"
+                                    className="w-full p-3 pl-4 pr-4 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-accent bg-white text-gray-800"
+                                    value={pickupTimeRental}
+                                    onChange={e => setPickupTimeRental(e.target.value)}
+                                />
+                            </div>
+                            {/* Return Date */}
+                            <div>
+                                <label htmlFor="returnDateRental" className="block text-lg font-semibold text-gray-800 mb-2">Return Date</label>
+                                <input
+                                    type="tel"
+                                    id="returnDateRental"
+                                    placeholder="DD/MM/2025"
+                                    className="w-full p-3 pl-4 pr-4 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-accent text-gray-800 placeholder-gray-500"
+                                    value={returnDateRental}
+                                    onChange={handleReturnDateRentalChange}
+                                    maxLength={10}
+                                />
+                                {returnDateRentalError && <p className="text-red-500 text-xs mt-1">{returnDateRentalError}</p>}
+                            </div>
+                            {/* Return Time */}
+                            <div>
+                                <label htmlFor="returnTimeRental" className="block text-lg font-semibold text-gray-800 mb-2">Return Time</label>
+                                <input
+                                    type="time"
+                                    id="returnTimeRental"
+                                    className="w-full p-3 pl-4 pr-4 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-accent bg-white text-gray-800"
+                                    value={returnTimeRental}
+                                    onChange={e => setReturnTimeRental(e.target.value)}
+                                />
+                            </div>
+                        </>
+                    )}
+                    {/* Passengers - only show in second/third grid if not car rental (because it's in the first grid for rental) */}
+                    {rideType !== 'Car Rental' && (
+                        <div>
+                        <label htmlFor="passengers" className="block text-lg font-semibold text-gray-800 mb-2">Passengers</label>
+                        <div className="relative">
+                            {!showCustomPassengers ? (
+                            <div className="relative">
+                                <select
+                                id="passengers"
+                                className={`w-full p-3 pl-4 pr-10 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-accent appearance-none bg-white ${!passengers ? 'text-gray-500' : 'text-gray-800'}`}
+                                value={passengers}
+                                onChange={(e) => {
+                                    if (e.target.value === 'custom') {
+                                    setShowCustomPassengers(true);
+                                    setPassengers('');
+                                    } else {
+                                    setPassengers(e.target.value);
+                                    }
+                                }}
+                                >
+                                <option value="" disabled>No. of Passengers</option>
+                                {[1, 2, 3, 4, 5, 6, 7].map(num => (
+                                    <option key={num} value={num}>{num}</option>
+                                ))}
+                                <option value="custom">Custom...</option>
+                                </select>
+                                <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                                <ChevronDownIcon className="w-5 h-5" />
+                                </div>
+                            </div>
+                            ) : (
+                            <div className="relative flex items-center">
+                                <input
+                                type="number"
+                                id="passengers_custom"
+                                autoFocus
+                                placeholder="Enter number"
+                                className="w-full p-3 pl-4 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-accent placeholder-gray-500"
+                                value={passengers}
+                                onChange={e => setPassengers(e.target.value)}
+                                min="1"
+                                />
+                            </div>
+                            )}
+                        </div>
+                        </div>
+                    )}
                     {/* Book Now Button */}
-                    <div>
+                    <div className={rideType === 'Car Rental' ? 'lg:col-start-4' : ''}>
                       <button onClick={handleBookNow} className="w-full bg-accent text-primary font-bold py-3 px-6 hover:bg-yellow-400 transition-colors text-lg">Book Now</button>
                     </div>
                   </div>
@@ -4520,7 +4636,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                               <textarea name="description" id="description" rows={5} value={reportIssueData.description} onChange={handleReportIssueChange} className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary" placeholder="Please provide as much detail as possible..." required></textarea>
                           </div>
                           <div>
-                              <label className="block text-sm font-medium text-gray-700">Attach File or Screenshot (optional)</label>
+                              <label className="block text-sm font-medium text-gray-700">Attach File or Screenshot</label>
                               <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
                                   <div className="space-y-1 text-center">
                                       <UploadCloudIcon className="mx-auto h-12 w-12 text-gray-400" />
@@ -4619,7 +4735,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                     <li>Open the XTASS App.</li>
                     <li>Go to Menu → Help → Lost & Found.</li>
                     <li>Select the trip where you believe the item was lost.</li>
-                    <li>Provide details of the lost item and upload any helpful photos (optional).</li>
+                    <li>Provide details of the lost item and upload any helpful photos.</li>
                     <li>Submit the report and wait for confirmation.</li>
                   </ul>
                   
@@ -4661,7 +4777,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onRoleSelect, setInitialB
                               <textarea name="description" id="lostDescription" rows={5} value={lostAndFoundData.description} onChange={handleLostAndFoundChange} className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary" placeholder="Please describe the item, including color, brand, or any unique features..." required></textarea>
                           </div>
                           <div>
-                              <label className="block text-sm font-medium text-gray-700">Attach File or Photo (optional)</label>
+                              <label className="block text-sm font-medium text-gray-700">Attach File or Photo</label>
                               <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
                                   <div className="space-y-1 text-center">
                                       <UploadCloudIcon className="mx-auto h-12 w-12 text-gray-400" />
